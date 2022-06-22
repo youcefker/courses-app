@@ -1,0 +1,13 @@
+version: '3'
+services:
+  maildev-service:
+    image: maildev/maildev
+    ports:
+      - "1025:1025"
+      - "1080:1080"
+  api-service: 
+    build: .
+    depends_on:
+      - maildev-service
+    ports:
+      - "4000:4000"
