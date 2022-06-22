@@ -49,7 +49,7 @@ module.exports = {
                     student.password = undefined
                     student.role = undefined
                     const currentDate = new Date();
-                    const expiresAt = new Date(currentDate.getTime() + 1 * 60000);
+                    const expiresAt = new Date(currentDate.getTime() + 15 * 60000);
                     const confirmationToken = new ConfirmationToken({
                         account_id: student.id,
                         token: crypto.randomBytes(16).toString('hex'),
@@ -215,7 +215,7 @@ module.exports = {
                     })
                 }
                 const currentDate = new Date();
-                const expiresAt = new Date(currentDate.getTime() + 1 * 60000);
+                const expiresAt = new Date(currentDate.getTime() + 15 * 60000);
                 const confirmationToken = new ConfirmationToken({
                     account_id: account.id,
                     token: crypto.randomBytes(16).toString('hex'),
