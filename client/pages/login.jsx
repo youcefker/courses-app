@@ -7,6 +7,7 @@ import { Button } from '@mui/material'
 import Footer from '../components/layout/footer'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
+import axios from 'axios'
 
 function Login() {
   const  router = useRouter() 
@@ -15,6 +16,25 @@ function Login() {
   const [username, setUsername] = useState('')
 
   const [password, setPassword] = useState('')
+
+  const [token, setToken] = useState('')
+
+
+
+  const handleLogin =() => {
+ 
+ 
+      
+      axios.get('http://localhost:4000/api/v1/auth/verify?token='+token)
+          .then((res) => {
+              console.log(res.data)
+          }).catch((error) => {
+              console.log(error)
+          });
+      setUsername('')
+      setPassword('')
+  
+  }
 
   const handleHide = ()=> setHide(!hide)
 

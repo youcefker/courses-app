@@ -7,6 +7,8 @@ import { Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormHelperT
 import Footer from '../components/layout/footer'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
+import  axios  from "axios";
+import ReCAPTCHA from "react-google-recaptcha";
 
 
 function Signup() {
@@ -17,6 +19,35 @@ function Signup() {
 
   const [password, setPassword] = useState('')
   const [cours, setCours] = React.useState('');
+
+
+  // const handleSignup = () => {
+  //   const requestOptions = {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({ email: email, password: password })
+  //   };
+  //   axios.post("http://localhost:4000/api/v1/auth/signup", requestOptions)
+  //     .then(response => response.json()).catch((err) => {console.log(err);})
+  // };
+
+  const handleSignup =() => {
+ 
+    const userObject = {
+          email: email,
+          password : password
+      };
+      
+      axios.post('http://localhost:4000/api/v1/auth/signup', userObject)
+          .then((res) => {
+              console.log(res.data)
+          }).catch((error) => {
+              console.log(error)
+          });
+      setEmail('')
+      setPassword('')
+  
+  }
 
   const handleChange = (event) => {
     setCours(event.target.value);
@@ -92,7 +123,12 @@ function Signup() {
                              <FormControlLabel control={<Checkbox  style={{color:'#000'}} />} label={subscribe} color='#000' />
                           </FormGroup>
                         </div>
-                        <Button onClick={()=> router.push("/verificationSent")} disableRipple={email === '' || password === ''} className={(email !== '' && password !== '') ? 'muiBt loginBtn bg-[#079C49] w-[50%] mt-[30px] rounded-[32px] text-[#fff] h-[64px] text-[22px] hover:bg-[#078C49] normal-case' : 'muiBt loginBtn bg-[#111111] w-[50%] mt-[30px] rounded-[32px] text-[#fff] h-[64px] text-[22px] opacity-[0.25] hover:bg-[#111111] normal-case '}>Sign up</Button>
+                        <div className="mt-[30px]">
+                        <ReCAPTCHA
+                           sitekey="Your client site key"
+                         />
+                        </div>
+                        <Button onClick={handleSignup} disableRipple={email === '' || password === ''} className={(email !== '' && password !== '') ? 'muiBt loginBtn bg-[#079C49] w-[50%] mt-[30px] rounded-[32px] text-[#fff] h-[64px] text-[22px] hover:bg-[#078C49] normal-case' : 'muiBt loginBtn bg-[#111111] w-[50%] mt-[30px] rounded-[32px] text-[#fff] h-[64px] text-[22px] opacity-[0.25] hover:bg-[#111111] normal-case '}>Sign up</Button>
                         <h6 className='text-[#333333] text-[20px] font-[400] mt-[10px]' >Already have an ccount?   <span className='underline cursor-pointer' onClick={() => router.push("/login")}> Log in </span> </h6>
                         
                 </div>

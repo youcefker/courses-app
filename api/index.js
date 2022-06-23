@@ -5,10 +5,12 @@ const authRoutes = require("./Routes/AuthRoutes")
 const mongoose = require('mongoose')
 require("dotenv").config()
 const port = process.env.PORT || 4000
-
+app.use(cors());
 app.use(express.json())
 
 app.use('/api/v1/auth', authRoutes)
+
+
 
 const MONGO_URL = process.env.MONGO_URL
 mongoose.connect("mongodb://localhost:27017/courses")
@@ -19,3 +21,6 @@ mongoose.connect("mongodb://localhost:27017/courses")
             console.log(`server is listening at port ${port}`)
         })
     })
+
+
+  
