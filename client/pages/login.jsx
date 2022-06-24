@@ -23,16 +23,26 @@ function Login() {
 
   const handleLogin =() => {
  
- 
+    const userObject = {
+          email: username,
+          password : password
+      };
       
-      axios.get('http://localhost:4000/api/v1/auth/verify?token='+token)
+      axios.post('http://localhost:4000/api/v1/auth/signin', userObject)
           .then((res) => {
               console.log(res.data)
+             
+              if (!res.data.error){
+                router.push({
+                  pathname :"/profile",
+  
+               })
+              }
+             
           }).catch((error) => {
               console.log(error)
           });
-      setUsername('')
-      setPassword('')
+  
   
   }
 
@@ -78,7 +88,7 @@ function Login() {
                           </label>
                           <input type={hide ? "password": "text"} className='input border-2 border-[#66666640] h-[64px] rounded-xl outline-none px-3 text-[20px]' placeholder='password' value={password} onChange={handlePassword} id='username' name='username' />   
                         </div>
-                        <Button disableRipple={username === '' || password === ''} className={(username !== '' && password !== '') ? 'muiBt loginBtn bg-[#079C49] w-full mt-[30px] rounded-[32px] text-[#fff] h-[64px] text-[22px] hover:bg-[#078C49] normal-case' : 'muiBt loginBtn bg-[#111111] w-full mt-[30px] rounded-[32px] text-[#fff] h-[64px] text-[22px] opacity-[0.25] hover:bg-[#111111] normal-case '}>Log in</Button>
+                        <Button onClick={handleLogin} disableRipple={username === '' || password === ''} className={(username !== '' && password !== '') ? 'muiBt loginBtn bg-[#079C49] w-full mt-[30px] rounded-[32px] text-[#fff] h-[64px] text-[22px] hover:bg-[#078C49] normal-case' : 'muiBt loginBtn bg-[#111111] w-full mt-[30px] rounded-[32px] text-[#fff] h-[64px] text-[22px] opacity-[0.25] hover:bg-[#111111] normal-case '}>Log in</Button>
                         <div className="flex justify-between mt-[35px] items-center">
                             <div className='h-[2px] w-[40%] bg-[#66666640]'></div>
                             <span className='text-[#666666] text-[24px] font-[400]'>OR</span>

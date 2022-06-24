@@ -15,12 +15,13 @@ function VerificationPage() {
     
 
     useEffect(() => {
+     
      handleVerify()
-    }, [])
+    }, [pid])
     
   
     const handleVerify =() => {
- 
+  
        const tokenObj = {
           token : pid
        } 
@@ -28,7 +29,7 @@ function VerificationPage() {
         axios.put('http://localhost:4000/api/v1/auth/verify', tokenObj)
             .then((res) => {
                 console.log(res.data)
-                setErr(res.data !== null)
+                setErr(res.data.error)
                
          
             }).catch((error) => {
@@ -59,7 +60,7 @@ function VerificationPage() {
     </div>
     )}
 
-    {err && ( <h1>Error 404 not found</h1> )}
+    {(err && pid) &&( <h1>Error 404 not found</h1> )}
     
    
 

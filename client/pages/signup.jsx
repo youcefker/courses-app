@@ -41,7 +41,15 @@ function Signup() {
       axios.post('http://localhost:4000/api/v1/auth/signup', userObject)
           .then((res) => {
               console.log(res.data)
-              router.push("/verificationSent")
+             
+              if (!res.data.error){
+                router.push({
+                  pathname :"/verificationSent",
+                  query : {email : email}
+  
+               })
+              }
+             
           }).catch((error) => {
               console.log(error)
           });
