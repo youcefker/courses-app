@@ -9,7 +9,25 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 import  axios  from "axios";
 import ReCAPTCHA from "react-google-recaptcha";
+import { useFormik } from "formik";
+import * as yup from "yup";
 
+
+
+
+
+const validationSchema = yup.object({
+  email: yup
+    .string("Enter your email")
+    .email("Email not valide")
+    .required("Email is required"),
+
+  password: yup
+    .string("Enter your password")
+    .min(8, "Password is too short - should be 8 chars minimum")
+    .required("Password is required"),
+
+});
 
 function Signup() {
   const  router = useRouter() 
@@ -34,8 +52,8 @@ function Signup() {
   const handleSignup =() => {
  
     const userObject = {
-          email: email,
-          password : password
+          email: formik.values.email,
+          password : formik.values.password
       };
       
       axios.post('http://localhost:4000/api/v1/auth/signup', userObject)
@@ -45,7 +63,7 @@ function Signup() {
               if (!res.data.error){
                 router.push({
                   pathname :"/verificationSent",
-                  query : {email : email}
+                  query : {email : formik.values.email}
   
                })
               }
@@ -71,6 +89,23 @@ function Signup() {
 
   const subscribe = <h6 className='text-[#333333] text-[16px]'>Subscribe to our monthly newsletter</h6>
 
+
+
+
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password : ""
+    
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      // alert(JSON.stringify(values, null, 2));
+      handleSignup()
+   
+    },
+  });
+
   return (
     <>
       <div className="container mx-auto pt-[33.32px] mb-[230px]">
@@ -80,9 +115,16 @@ function Signup() {
                 <h5 className='text-[#333333] text-[32px]'>Sign up</h5>
                 <h6 className='text-[#666666CC] text-[16px] font-[400]'>Sign up for free to access to in any of our products </h6>
                 <div className="sign_inputs mt-[53px]">
+                  <form onSubmit={formik.handleSubmit}>
                        <div className='flex flex-col'>
                           <label htmlFor="email" className="text-[#666666] text-[16px] font-[400] mb-2">Email address</label>
-                          <input type="email" className='input border-2 border-[#66666640] h-[64px] rounded-xl outline-none px-3 text-[20px]' placeholder='Email' id='email' name='email' value={email} onChange={handleEmail} />   
+                          <input type="email" className='input border-2 border-[#66666640] h-[64px] rounded-xl outline-none px-3 text-[20px]' placeholder='Email' id='email' name='email' 
+                          value={formik.values.email}
+                          onChange={formik.handleChange}
+                          />
+                         {formik.touched.email && formik.errors.email ? (
+                             <div className='text-[red] text-[14px] ml-2'>{formik.errors.email}</div>
+                           ) : null}
                         </div>
                 
                         <div className='flex flex-col mt-[30px]'>
@@ -103,7 +145,14 @@ function Signup() {
                                     )}
                                    
                                   </label>
-                                  <input type={hide ? "password": "text"} className='input border-2 border-[#66666640] h-[64px] rounded-xl outline-none px-3 text-[20px]' placeholder='password' value={password} onChange={handlePassword} id='username' name='username' />   
+                                  <input type={hide ? "password": "text"} className='input border-2 border-[#66666640] h-[64px] rounded-xl outline-none px-3 text-[20px]' placeholder='password'  value={formik.values.password}
+                                     onChange={formik.handleChange}
+                                     id='password'
+                                     name='password' 
+                                   />   
+                                   {formik.touched.password && formik.errors.password ? (
+                                       <div className='text-[red] text-[14px] ml-2'>{formik.errors.password}</div>
+                                     ) : null}  
                         </div>
                         <div className='flex flex-col mt-[30px]'>
                           <FormControl>
@@ -136,9 +185,9 @@ function Signup() {
                            sitekey="Your client site key"
                          />
                         </div>
-                        <Button onClick={handleSignup} disableRipple={email === '' || password === ''} className={(email !== '' && password !== '') ? 'muiBt loginBtn bg-[#079C49] w-[50%] mt-[30px] rounded-[32px] text-[#fff] h-[64px] text-[22px] hover:bg-[#078C49] normal-case' : 'muiBt loginBtn bg-[#111111] w-[50%] mt-[30px] rounded-[32px] text-[#fff] h-[64px] text-[22px] opacity-[0.25] hover:bg-[#111111] normal-case '}>Sign up</Button>
+                        <Button type='submit' disableRipple={formik.values.email === '' || formik.values.password === ''} className={(formik.values.email !== '' && formik.values.password !== '') ? 'muiBt loginBtn bg-[#079C49] w-[50%] mt-[30px] rounded-[32px] text-[#fff] h-[64px] text-[22px] hover:bg-[#078C49] normal-case' : 'muiBt loginBtn bg-[#111111] w-[50%] mt-[30px] rounded-[32px] text-[#fff] h-[64px] text-[22px] opacity-[0.25] hover:bg-[#111111] normal-case '}>Sign up</Button>
                         <h6 className='text-[#333333] text-[20px] font-[400] mt-[10px]' >Already have an ccount?   <span className='underline cursor-pointer' onClick={() => router.push("/login")}> Log in </span> </h6>
-                        
+                    </form> 
                 </div>
                 
             </div>

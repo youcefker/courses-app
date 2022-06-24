@@ -8,6 +8,25 @@ import Footer from '../components/layout/footer'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import axios from 'axios'
+import { useFormik } from "formik";
+import * as yup from "yup";
+
+
+
+
+
+const validationSchema = yup.object({
+  username: yup
+    .string("Enter your email")
+    .email("Email not valide")
+    .required("Email is required"),
+
+  password: yup
+    .string("Enter your password")
+    .min(8, "Password is too short - should be 8 chars minimum")
+    .required("Password is required"),
+
+});
 
 function Login() {
   const  router = useRouter() 
@@ -24,8 +43,8 @@ function Login() {
   const handleLogin =() => {
  
     const userObject = {
-          email: username,
-          password : password
+          email: formik.values.username,
+          password : formik.values.password
       };
       
       axios.post('http://localhost:4000/api/v1/auth/signin', userObject)
@@ -52,6 +71,20 @@ function Login() {
   const handleUsername = (e)=> setUsername(e.target.value)
   const handlePassword = (e)=> setPassword(e.target.value)
 
+  const formik = useFormik({
+    initialValues: {
+      username: "",
+      password : ""
+    
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      // alert(JSON.stringify(values, null, 2));
+      handleLogin()
+   
+    },
+  });
+
   return (
     <>
       <div className="container mx-auto pt-[33.32px] mb-[230px]">
@@ -64,9 +97,16 @@ function Login() {
                       <h5 className='text-[#333333] text-[32px]'>Log in</h5>
                     </div>
                     <div className="login_inputs mt-[35px]">
+                      <form onSubmit={formik.handleSubmit}>
                         <div className='flex flex-col'>
                           <label htmlFor="username" className="text-[#666666] text-[16px] font-[400] mb-2">Phone number, user name, or email address</label>
-                          <input type="text" className='input border-2 border-[#66666640] h-[64px] rounded-xl outline-none px-3 text-[20px]' placeholder='username' id='username' name='username' onChange={handleUsername} value={username}/>   
+                          <input type="text" className='input border-2 border-[#66666640] h-[64px] rounded-xl outline-none px-3 text-[20px]' placeholder='username' id='username' name='username' 
+                           value={formik.values.username}
+                           onChange={formik.handleChange}
+                           />
+                          {formik.touched.username && formik.errors.username ? (
+                              <div className='text-[red] text-[14px] ml-2'>{formik.errors.username}</div>
+                            ) : null}
                         </div>
                         <div className='flex flex-col mt-[30px]'>
                           <label htmlFor="password" className="text-[#666666] text-[16px] font-[400] mb-2 flex justify-between">
@@ -86,9 +126,18 @@ function Login() {
                             )}
                            
                           </label>
-                          <input type={hide ? "password": "text"} className='input border-2 border-[#66666640] h-[64px] rounded-xl outline-none px-3 text-[20px]' placeholder='password' value={password} onChange={handlePassword} id='username' name='username' />   
+                          <input type={hide ? "password": "text"} className='input border-2 border-[#66666640] h-[64px] rounded-xl outline-none px-3 text-[20px]' placeholder='password' 
+                            value={formik.values.password}
+                            onChange={formik.handleChange}
+                            id='password'
+                            name='password' 
+                          />   
+                          {formik.touched.password && formik.errors.password ? (
+                              <div className='text-[red] text-[14px] ml-2'>{formik.errors.password}</div>
+                            ) : null}
                         </div>
-                        <Button onClick={handleLogin} disableRipple={username === '' || password === ''} className={(username !== '' && password !== '') ? 'muiBt loginBtn bg-[#079C49] w-full mt-[30px] rounded-[32px] text-[#fff] h-[64px] text-[22px] hover:bg-[#078C49] normal-case' : 'muiBt loginBtn bg-[#111111] w-full mt-[30px] rounded-[32px] text-[#fff] h-[64px] text-[22px] opacity-[0.25] hover:bg-[#111111] normal-case '}>Log in</Button>
+                        <Button type='submit'  disableRipple={formik.values.username === '' || formik.values.password === ''} className={(formik.values.username !== '' && formik.values.password !== '') ? 'muiBt loginBtn bg-[#079C49] w-full mt-[30px] rounded-[32px] text-[#fff] h-[64px] text-[22px] hover:bg-[#078C49] normal-case' : 'muiBt loginBtn bg-[#111111] w-full mt-[30px] rounded-[32px] text-[#fff] h-[64px] text-[22px] opacity-[0.25] hover:bg-[#111111] normal-case '}>Log in</Button>
+                      </form>
                         <div className="flex justify-between mt-[35px] items-center">
                             <div className='h-[2px] w-[40%] bg-[#66666640]'></div>
                             <span className='text-[#666666] text-[24px] font-[400]'>OR</span>
