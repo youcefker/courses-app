@@ -276,6 +276,14 @@ module.exports = {
                         data: null
                     })
                 }
+                if(!token) {
+                    return res.json({
+                        error: true,
+                        status: 401, 
+                        message: "token not found!",
+                        data: null
+                    })
+                }
                 if(Date.now() > token.expiresAt){
                     return res.json({
                         error: true,
@@ -292,6 +300,14 @@ module.exports = {
                             message: "something went wrong!",
                             data: null
                         }) 
+                    }
+                    if(!account){
+                        return res.json({
+                            error: true,
+                            status: 401, 
+                            message: "account might be deleted. token doesn't belong to any account!",
+                            data: null
+                        })
                     }
                     if(account.isVerified) {
                         return res.json({
