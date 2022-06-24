@@ -65,7 +65,7 @@ module.exports = {
                                 data: null
                             })
                         }
-                        const body = `<p>http://localhost:4000/api/v1/auth/verify?token=${savedConfirmationToken.token}</p>`
+                        const body = `<p>http://localhost:3000/verify/${savedConfirmationToken.token}</p>`
                         await sendMail(student.email, "hello@gmail.com", body, async (err, result) => {
                             if(err) {
                                 console.log(err)
@@ -230,7 +230,7 @@ module.exports = {
                             data: null
                         })
                     }
-                    const body = `<p>http://localhost:4000/api/v1/auth/verify?token=${savedConfirmationToken.token}</p>`
+                    const body = `<p>http://localhost:3000/verify/${savedConfirmationToken.token}</p>`
                     await sendMail(account.email, "no-reply@coursesapp.com", body, async (err, result) => {
                         if(err) {
                             console.log(err)
@@ -265,9 +265,9 @@ module.exports = {
         }
     },
     verifyAccount: async (req, res) => {
-        console.log(req.query.token)
+        const token = req.body.token
         try {
-            await getConfirmationToken(req.query.token, async (err, token) => {
+            await getConfirmationToken(token, async (err, token) => {
                 if(err){
                     return res.json({
                         error: true,
@@ -333,5 +333,24 @@ module.exports = {
                 data: null
             })
         }
+    },
+    activateAccount: async (req, res) => {
+        const account_id = req.params.account_id
+        updateAccount(account_id, { isActive: true }, (err, account) => {
+            if(err){
+                return res.json({
+                    error: true,
+                    status: 401, 
+                    message: "something went wrong!",
+                    data: null
+                })
+            }
+            return res.json({
+                error: false,
+                status: 200, 
+                message: "Account is activated Succesfully",
+                data: null
+            })
+        })
     }
 }

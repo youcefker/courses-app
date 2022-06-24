@@ -41,11 +41,11 @@ function Signup() {
       axios.post('http://localhost:4000/api/v1/auth/signup', userObject)
           .then((res) => {
               console.log(res.data)
+              router.push("/verificationSent")
           }).catch((error) => {
               console.log(error)
           });
-      setEmail('')
-      setPassword('')
+  
   
   }
 

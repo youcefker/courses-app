@@ -1,14 +1,48 @@
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import React from 'react'
-import Footer from '../components/layout/footer'
+import Footer from '../../components/layout/footer'
+import axios from 'axios'
+import { useEffect,useState } from 'react'
 
 function VerificationPage() {
+
+  const [err, setErr] = useState(true)
+
+
     const router = useRouter()
+    const { pid } = router.query
+    
+
+    useEffect(() => {
+     handleVerify()
+    }, [])
+    
+  
+    const handleVerify =() => {
+ 
+       const tokenObj = {
+          token : pid
+       } 
+        
+        axios.put('http://localhost:4000/api/v1/auth/verify', tokenObj)
+            .then((res) => {
+                console.log(res.data)
+                setErr(res.data !== null)
+               
+         
+            }).catch((error) => {
+                console.log(error)
+                
+            });
+    
+    
+    }
+
   return (
     <>
-    
-    <div className="ml-[140px]">
+    {!err &&(
+      <div className="ml-[140px]">
      
       <div className="flex justify-between">
         <div className='w-[40%] mt-[33.32px]'>
@@ -23,6 +57,10 @@ function VerificationPage() {
         </div>
       </div>
     </div>
+    )}
+
+    {err && ( <h1>Error 404 not found</h1> )}
+    
    
 
   </>
