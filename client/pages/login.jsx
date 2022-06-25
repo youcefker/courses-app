@@ -87,29 +87,29 @@ function Login() {
 
   return (
     <>
-      <div className="container mx-auto pt-[33.32px] mb-[230px]">
+      <div className="container px-4 mx-auto pt-4 md:pt-[33.32px] mb-[100px] sm:mb-[230px]">
         <Image onClick={() => router.push("/")} className="cursor-pointer" src="/images/footer_logo.svg" width={60} height={60} />
-        <div className="flex justify-between items-center mt-[54px]">
-            <div className='w-[40%]'>
-                <div className="login__box border-2 border-[#66666640] rounded-[16px]  p-[32px] ">
+        <div className="flex justify-between items-center  md:mt-[54px]">
+            <div className='w-full md:w-[70%] xl:w-[40%]'>
+                <div className="login__box md:border-2 border-[#66666640] rounded-[16px] p-1 md:p-[32px] ">
                     <div className="flex flex-col items-center">
-                      <div className='bg-[#079C49] rounded-full w-[64px] h-[64px]'></div>
+                      <div className='bg-[#079C49] rounded-full  w-[50px] h-[50px]'></div>
                       <h5 className='text-[#333333] text-[32px]'>Log in</h5>
                     </div>
-                    <div className="login_inputs mt-[35px]">
+                    <div className="login_inputs mt-5 sm:mt-[35px]">
                       <form onSubmit={formik.handleSubmit}>
                         <div className='flex flex-col'>
-                          <label htmlFor="username" className="text-[#666666] text-[16px] font-[400] mb-2">Phone number, user name, or email address</label>
-                          <input type="text" className='input border-2 border-[#66666640] h-[64px] rounded-xl outline-none px-3 text-[20px]' placeholder='username' id='username' name='username' 
+                          <label htmlFor="username" className="text-[#666666] text-[13px] sm:text-[16px] font-[400] mb-2">Phone number, user name, or email address</label>
+                          <input type="text" className='input border-2 border-[#66666640] h-[45px] sm:h-[64px] rounded-lg sm:rounded-xl outline-none px-3 sm:text-[20px]' placeholder='username' id='username' name='username' 
                            value={formik.values.username}
                            onChange={formik.handleChange}
                            />
                           {formik.touched.username && formik.errors.username ? (
-                              <div className='text-[red] text-[14px] ml-2'>{formik.errors.username}</div>
+                              <div className='text-[red] text-[13px] ml-2'>{formik.errors.username}</div>
                             ) : null}
                         </div>
-                        <div className='flex flex-col mt-[30px]'>
-                          <label htmlFor="password" className="text-[#666666] text-[16px] font-[400] mb-2 flex justify-between">
+                        <div className='flex flex-col mt-4 sm:mt-[30px]'>
+                          <label htmlFor="password" className="text-[#666666] text-[13px] sm:text-[16px] font-[400] mb-2 flex justify-between">
                             <span>Your password</span>
                             {!hide && (
                                  <span onClick={handleHide} className="cursor-pointer">
@@ -126,24 +126,24 @@ function Login() {
                             )}
                            
                           </label>
-                          <input type={hide ? "password": "text"} className='input border-2 border-[#66666640] h-[64px] rounded-xl outline-none px-3 text-[20px]' placeholder='password' 
+                          <input type={hide ? "password": "text"} className='input border-2 border-[#66666640] h-[45px] sm:h-[64px] rounded-lg sm:rounded-xl outline-none px-3 text-[20px]' placeholder='password' 
                             value={formik.values.password}
                             onChange={formik.handleChange}
                             id='password'
                             name='password' 
                           />   
                           {formik.touched.password && formik.errors.password ? (
-                              <div className='text-[red] text-[14px] ml-2'>{formik.errors.password}</div>
+                              <div className='text-[red] text-[13px] ml-2'>{formik.errors.password}</div>
                             ) : null}
                         </div>
                         <Button type='submit'  disableRipple={formik.values.username === '' || formik.values.password === ''} className={(formik.values.username !== '' && formik.values.password !== '') ? 'muiBt loginBtn bg-[#079C49] w-full mt-[30px] rounded-[32px] text-[#fff] h-[64px] text-[22px] hover:bg-[#078C49] normal-case' : 'muiBt loginBtn bg-[#111111] w-full mt-[30px] rounded-[32px] text-[#fff] h-[64px] text-[22px] opacity-[0.25] hover:bg-[#111111] normal-case '}>Log in</Button>
                       </form>
-                        <div className="flex justify-between mt-[35px] items-center">
-                            <div className='h-[2px] w-[40%] bg-[#66666640]'></div>
-                            <span className='text-[#666666] text-[24px] font-[400]'>OR</span>
-                            <div className='h-[2px] w-[40%] bg-[#66666640]'></div>
+                        <div className="flex justify-between mt-4 sm:mt-[35px] items-center">
+                            <div className='h-[1px] sm:h-[2px] w-[40%] bg-[#66666640]'></div>
+                            <span className='text-[#666666]  sm:text-[24px] font-[400]'>OR</span>
+                            <div className='h-[1px] sm:h-[2px] w-[40%] bg-[#66666640]'></div>
                         </div>
-                        <Button className='flex w-full mt-[30px] rounded-[32px]  h-[64px] text-[22px] normal-case  border-3 googleBtn'>
+                        <Button className='flex w-full mt-4 sm:mt-[30px] rounded-[32px]  h-[64px] text-[21px] normal-case  border-3 googleBtn'>
                             <Image src="/icons/google.svg" width={34} height={34}/>
                             <span className='text-[#333333] font-[400] ml-[16px]'>Continue with Google</span>
                         </Button>
@@ -151,11 +151,11 @@ function Login() {
                     </div>
                    
                 </div>
-                <div className='border-2 border-[#66666640] rounded-[16px] mt-[32px] p-[32px]'>
+                <div className='md:border-2 border-[#66666640] rounded-[16px] mt-5 sm:mt-[32px] sm:p-[32px]'>
                     <h6 className='text-[#333333] text-[20px] font-[400] text-center'>Don’t have an ccount? <span className='underline cursor-pointer' onClick={() => router.push("/signup")}> Sign up </span> </h6>
                 </div>
             </div>
-            <div className='w-[40%]'>
+            <div className='hidden md:block '>
              <ImgDisplayer login/>
             </div>
          

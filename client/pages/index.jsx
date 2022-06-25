@@ -19,7 +19,7 @@ export default function Home() {
 
   return (
     <>
-    <div className="container mx-auto pt-[33.32px] mb-[230px]">
+    <div className="container mx-auto px-[20px] sm:px-[20px] pt-[20px] md:pt-[33.32px] mb-[230px]">
   
       <MainHeader />
       <MainHero/>

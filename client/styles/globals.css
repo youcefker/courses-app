@@ -42,8 +42,7 @@ a {
 
 .blur__circle{
 
-width: 120px;
-height: 120px;
+
 top: -7%;
 right: -9%;
 border-radius: 50%;
@@ -59,10 +58,8 @@ backdrop-filter: blur(10px);
 .blur__best{
 
 position: absolute;
-width: 254px;
-height: 100px;
-bottom: 5%;
-left: -30%;
+
+
 filter: blur(4px);
 
 background: linear-gradient(90deg, #E1E1E1 5.31%, rgba(242, 242, 242, 0) 111.81%);
@@ -73,10 +70,6 @@ backdrop-filter: blur(10px);
 /* Note: backdrop-filter has minimal browser support */
 
 border-radius: 10px;
-}
-.best{
-  bottom: 9%;
-left: -26%;
 }
 
  .googleBtn{
