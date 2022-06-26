@@ -8,17 +8,24 @@ import Sidebar from '../components/dashboard/sidebar'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ProgressCard from '../components/dashboard/progressCard'
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import { useState } from 'react'
+import SearchIcon from '@mui/icons-material/Search';
+import { Button } from '@mui/material'
+import StudentRow from '../components/dashboard/studentRow'
 
 const percentage = 65;
 
 
 function Dashboard() {
     const router = useRouter()
+    const [student, setStudent] = useState(false)
   return (
     <>
     <Sidebar active="dashboard"/>
     <IndexPage>
-        <div className="flex justify-between">
+        {student &&(
+            <>
+            <div className="flex justify-between">
             <div>
                <h3 className='text-[#1F1F1F] text-[20px] font-[600]'>Home</h3>
                <h5 className='text-[#1F1F1F] text-[16px]'>Hello and welcome back! Let’s keep learning</h5>
@@ -113,6 +120,65 @@ function Dashboard() {
                </div>
             </div>
         </div>
+        </>
+        )}
+
+        {!student && (
+            <>
+              <div className="grid grid-cols-2 gap-4">
+                <div className='px-4 py-6 bg-[#fff] rounded-[15px]'>
+                    <h4 className='text-[22px] text-[#1F1F1F]'>New students <span className='text-[14px]'>(10)</span> </h4>
+                    <div className='flex items-center border-[1px] border-[#9DA6BACC] p-2 rounded-[10px] mt-3 text-[#9DA6BA]'>
+                        <SearchIcon />
+                        <input type="search" className='w-full outline-none pl-2 text-[#000]' placeholder='Search a student’s name ...'/>
+                    </div>
+                    <div className='mt-5'>
+                      <div className="grid grid-cols-4">
+                         <h5 className='text-[#1F1F1F] text-[12px] font-[600] '>Name</h5>
+                         <h5 className='text-[#1F1F1F] text-[12px] font-[600] col-span-2'>Cours</h5>
+                         <h5 className='text-[#1F1F1F] text-[12px] font-[600] text-center'>Admission</h5>
+                      </div>
+
+                      <StudentRow name="Nagoudi Nada" cours="Introduction to investment" actions/>
+                      <StudentRow name="Nagoudi Nada" cours="Introduction to investment" actions/>
+                      <StudentRow name="Nagoudi Nada" cours="Introduction to investment" actions/>
+                      <StudentRow name="Nagoudi Nada" cours="Introduction to investment" actions/>
+                      <StudentRow name="Nagoudi Nada" cours="Introduction to investment" actions/>
+                   
+                       
+                    </div>
+                </div>
+
+
+
+
+
+                <div className='px-4 py-6 bg-[#fff] rounded-[15px]'>
+                    <h4 className='text-[22px] text-[#1F1F1F]'>My students <span className='text-[14px]'>(100)</span> </h4>
+                    <div className='flex items-center border-[1px] border-[#9DA6BACC] p-2 rounded-[10px] mt-3 text-[#9DA6BA]'>
+                        <SearchIcon />
+                        <input type="search" className='w-full outline-none pl-2 text-[#000]' placeholder='Search a student’s name ...'/>
+                    </div>
+                    <div className='mt-5'>
+                        <div className="grid grid-cols-4">
+                            <h5 className='text-[#1F1F1F] text-[12px] font-[600] '>Name</h5>
+                            <h5 className='text-[#1F1F1F] text-[12px] font-[600] col-span-2'>Cours</h5>
+                            <h5 className='text-[#1F1F1F] text-[12px] font-[600] text-center'>Progress</h5>
+                        </div>
+
+                        <StudentRow name="Nagoudi Nada" cours="Introduction to investment" progress="75"/>
+                        <StudentRow name="Nagoudi Nada" cours="Introduction to investment" progress="75"/>
+                        <StudentRow name="Nagoudi Nada" cours="Introduction to investment" progress="75"/>
+                        <StudentRow name="Nagoudi Nada" cours="Introduction to investment" progress="75"/>
+                        <StudentRow name="Nagoudi Nada" cours="Introduction to investment" progress="75"/>
+                        <StudentRow name="Nagoudi Nada" cours="Introduction to investment" progress="75"/>
+                       
+                    </div>
+                </div>
+              </div>
+            </>
+        )}
+        
     </IndexPage>
     </>
   )
