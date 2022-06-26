@@ -9,6 +9,9 @@ const lessonSchema = new Schema({
         type: String,
         required: true,
     },
+    filename: {
+        type: String
+    },
     course_id: {
         type: Schema.Types.ObjectId, 
         ref: "Course"

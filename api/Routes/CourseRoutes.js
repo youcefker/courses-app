@@ -8,9 +8,4 @@ router.get('/:course_id', getCourse)
 router.put('/:course_id', updateCourse)
 router.delete('/:course_id', deleteCourse)
 
-// lesson routes
-
-router.post("/:course_id/lesson", addLessonToCourse)
-router.get("/lesson", getAllLessons)
-
 module.exports = router

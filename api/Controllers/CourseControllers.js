@@ -8,6 +8,7 @@ module.exports = {
         }
         createCourse(course, (err, result) => {
             if(err) {
+                console.log("err")
                 return res.json({
                     error: true,
                     status: 401, 
@@ -129,6 +130,8 @@ module.exports = {
         })
     },
     addLessonToCourse : async (req, res) => {
+        console.log(req.file)
+        const filename = req.file.filename
         if(!req.params.course_id) {
             return res.json({
                 error: true,
@@ -157,6 +160,7 @@ module.exports = {
             const lesson = {
                 name: req.body.name,
                 description: req.body.description,
+                filename,
                 course_id: course.course_id
             }
             createLesson(lesson, async (err, lesson) => {

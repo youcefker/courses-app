@@ -8,4 +8,5 @@ router.post("/resend", resendConfirmationLink)
 router.put("/verify", verifyAccount)
 router.put("/activate/:account_id", activateAccount)
 
+
 module.exports = router 

@@ -6,8 +6,10 @@ module.exports = {
     createCourse : async (data, callBack) => {
         try {
             const doc = await Course.create(data)
+            console.log(doc)
             return callBack(false, doc)
         } catch(err) {
+            console.log(err)
             return(true)
         }
     },
@@ -16,6 +18,7 @@ module.exports = {
             const doc = await Lesson.create(data)
             return callBack(false, doc)
         } catch(err) {
+            console.log(err)
             return(true)
         }
     },
