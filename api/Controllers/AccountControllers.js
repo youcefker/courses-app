@@ -1,4 +1,4 @@
-const { getAccountByEmail, createAccount, getAccount, updateAccount } = require("../Services/AccountService")
+const { getAccountByEmail, createAccount, getAccount, updateAccount, getAccounts } = require("../Services/AccountService")
 const bcrypt = require('bcryptjs')
 const crypto = require('crypto')
 const jwt = require('jsonwebtoken')
@@ -366,6 +366,24 @@ module.exports = {
                 status: 200, 
                 message: "Account is activated Succesfully",
                 data: null
+            })
+        })
+    },
+    getAccounts : async (req, res) => {
+        getAccounts((err, accounts) => {
+            if(err) {
+                return res.json({
+                    error: true,
+                    status: 401, 
+                    message: "something went wrong!",
+                    data: null
+                })
+            }
+            return res.json({
+                error: false,
+                status: 200, 
+                message: "Accounts fetched Succesfully",
+                data: accounts
             })
         })
     }
