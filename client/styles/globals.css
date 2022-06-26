@@ -76,3 +76,16 @@ border-radius: 10px;
   border: 2px solid #333333 !important;
   border-radius: 32px !important;
 } 
+
+
+.courseIcon{
+  background: linear-gradient(236.62deg, #079C49 13.53%, #AAFBCE 101.01%);
+}
+
+
+.CircularProgressbar-text{
+  transform: translate(-20%, 5px);
+}
+.circleProgress{
+  background: linear-gradient(180deg, rgba(1, 131, 255, 0.036) 0%, rgba(1, 131, 255, 0.132) 100%);
+}
