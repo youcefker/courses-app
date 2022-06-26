@@ -18,7 +18,7 @@ const percentage = 65;
 
 function Dashboard() {
     const router = useRouter()
-    const [student, setStudent] = useState(false)
+    const [student, setStudent] = useState(true)
   return (
     <>
     <Sidebar active="dashboard"/>
@@ -136,7 +136,7 @@ function Dashboard() {
                       <div className="grid grid-cols-4">
                          <h5 className='text-[#1F1F1F] text-[12px] font-[600] '>Name</h5>
                          <h5 className='text-[#1F1F1F] text-[12px] font-[600] col-span-2'>Cours</h5>
-                         <h5 className='text-[#1F1F1F] text-[12px] font-[600] text-center'>Admission</h5>
+                         <h5 className='text-[#1F1F1F] text-[12px] font-[600]'>Admission</h5>
                       </div>
 
                       <StudentRow name="Nagoudi Nada" cours="Introduction to investment" actions/>
