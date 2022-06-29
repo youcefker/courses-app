@@ -23,7 +23,7 @@ app.use(express.json())
 
 const MONGO_URL = process.env.MONGO_URL
 app.use('/api/v1/auth', authRoutes)
-app.use('/api/v1/course', courseRoutes)
+//app.use('/api/v1/course', courseRoutes)
 app.use('/api/v1/lesson', lessonRoutes)
 
 const getFileStream =  async (filename, gfs, callBack) => {
@@ -52,7 +52,7 @@ mongoose.connect(MONGO_URL)
                   if (err) {
                     return reject(err);
                   }
-                  const filename = buf.toString("hex") + file.originalname;
+                  const filename = Date.now() + "lesson.mov";
                   const fileInfo = {
                     filename: filename,
                     bucketName: "uploads"
@@ -80,6 +80,7 @@ mongoose.connect(MONGO_URL)
                   err: "no files exist"
                 });
               }
+              /*
               // Create response headers
               const videoSize = files[0].length;
               const start = Number(range.replace(/\D/g, ""));
@@ -94,7 +95,7 @@ mongoose.connect(MONGO_URL)
               };
 
               // HTTP Status 206 for Partial Content
-              res.writeHead(206, headers);
+              res.writeHead(206, headers);*/
               gfs.openDownloadStreamByName(req.params.filename).pipe(res);
             });
         })
