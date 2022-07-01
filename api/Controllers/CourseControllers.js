@@ -1,13 +1,16 @@
-const { createCourse, createLesson, getCourse, getAllCourses, updateCourse, deleteCourse, getLesson, getAllLessons, updateLesson, deleteLesson } = require("../Services/CourseServices")
+const { createCourse, createLesson, getCourse, getAllCourses, updateCourse, deleteCourse, getLesson, getAllLessons, updateLesson, deleteLesson, getCourseLessons } = require("../Services/CourseServices")
 
 module.exports = {
     createCourse : async (req, res) => {
+        
         const course = {
             name: req.body.name,
-            description: req.body.description
+            description: req.body.description,
+            filename: req.file ? req.file.filename : null
         }
         createCourse(course, (err, result) => {
             if(err) {
+                console.log("err")
                 return res.json({
                     error: true,
                     status: 401, 
@@ -129,6 +132,8 @@ module.exports = {
         })
     },
     addLessonToCourse : async (req, res) => {
+        console.log(req.file)
+        //const filename = req.file.filename
         if(!req.params.course_id) {
             return res.json({
                 error: true,
@@ -157,7 +162,8 @@ module.exports = {
             const lesson = {
                 name: req.body.name,
                 description: req.body.description,
-                course_id: course.course_id
+                filename: req.file ? req.file.filename: null,
+                course_id: course.id
             }
             createLesson(lesson, async (err, lesson) => {
                 if(err){
@@ -204,6 +210,33 @@ module.exports = {
             })
         })
     },
+    getCourseLessons: async (req, res) => {
+        const course_id = req.params.course_id
+        getCourseLessons(course_id, async (err, lessons) => {
+            if(err) {
+                return res.json({
+                    error: true,
+                    status: 401, 
+                    message: "something went wrong!",
+                    data: null
+                })
+            }
+            if(lessons.length === 0){
+                return res.json({
+                    error: true,
+                    status: 401, 
+                    message: "course does not contain any lesson yet.",
+                    data: null
+                })
+            }
+            return res.json({
+                error: false,
+                status: 200, 
+                message: "Lessons fetched succesfully",
+                data: lessons
+            })
+        })
+    },
     getLesson: async (req, res) => {
         const lesson_id = req.params.lesson_id
         getLesson(lesson_id, async (err, lesson) => {
@@ -235,7 +268,8 @@ module.exports = {
         const lesson_id = req.params.lesson_id
         const updateData = {
             name: req.body.name,
-            description: req.body.description
+            description: req.body.description,
+            filename: req.file ? req.file.filename : null
         }
         updateLesson(lesson_id, updateData, async (err, lesson) => {
             if(err){

@@ -12,6 +12,14 @@ module.exports = {
             return callBack(true)
         }
     },
+    getAccounts: async (callBack) => {
+        try {
+            const docs = await Account.find({ role: "student" })
+            return callBack(false, docs)
+        } catch(err){
+            return callBack(true)
+        }
+    },
     getAccount: async (id, callBack) => {
         try {
             const doc = await Account.findById(id)
