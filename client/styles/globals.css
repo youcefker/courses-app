@@ -89,3 +89,7 @@ border-radius: 10px;
 .circleProgress{
   background: linear-gradient(180deg, rgba(1, 131, 255, 0.036) 0%, rgba(1, 131, 255, 0.132) 100%);
 }
+
+.doc__card{
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}

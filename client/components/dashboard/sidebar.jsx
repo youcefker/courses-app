@@ -49,7 +49,7 @@ const Sidebar = ({ active }) => {
         <li
           onClick={() => {
             setActiveItem("courses");
-            router.push("/courses");
+            router.push("/courses/list");
           }}
           className={
             activeItem === "courses"
