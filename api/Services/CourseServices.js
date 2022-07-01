@@ -10,7 +10,7 @@ module.exports = {
             return callBack(false, doc)
         } catch(err) {
             console.log(err)
-            return(true)
+            return callBack(true)
         }
     },
     createLesson : async (data, callBack) => {
@@ -19,7 +19,7 @@ module.exports = {
             return callBack(false, doc)
         } catch(err) {
             console.log(err)
-            return(true)
+            return callBack(true)
         }
     },
     getAllCourses: async (callBack) => {
@@ -27,7 +27,7 @@ module.exports = {
             const doc = await Course.find()
             return callBack(false, doc)
         } catch(err) {
-            return(true)
+            return callBack(true)
         }
     },
     getAllLessons: async (callBack) => {
@@ -49,7 +49,7 @@ module.exports = {
                 callBack(false, course.lessons)
             })
         } catch(err) {
-            callBack(true)
+            return callBack(true)
         }
     },
     getCourse: async (id, callBack) => {
@@ -57,7 +57,16 @@ module.exports = {
             const doc = await Course.findById(id)
             return callBack(false, doc)
         } catch(err) {
-            return(true)
+            console.log(err)
+            return callBack(true)
+        }
+    },
+    getCourseByName : async (name, callBack) => {
+        try {
+            const doc = await Course.findOne({name})
+            return callBack(false, doc)
+        } catch(err){
+            return callBack(true)
         }
     },
     getLesson: async (id, callBack) => {
@@ -65,7 +74,7 @@ module.exports = {
             const doc = await Lesson.findById(id)
             return callBack(false, doc)
         } catch(err) {
-            return(true)
+            return callBack(true)
         }
     },
     updateCourse: async (id, data, callBack) => {

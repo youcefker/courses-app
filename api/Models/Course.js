@@ -13,10 +13,6 @@ const courseSchema = new Schema({
     filename: {
         type: String,
     },
-    course_number: {
-        type: Number,
-        required: true,
-    },
     lessons: [{
         type: Schema.Types.ObjectId, 
         ref: "Lesson"

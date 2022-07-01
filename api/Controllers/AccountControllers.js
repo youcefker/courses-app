@@ -6,6 +6,10 @@ const { sendMail } = require("../Services/EmailServices")
 const Account = require("../Models/Account")
 const ConfirmationToken = require("../Models/ConfirmationToken")
 const { createConfirmationToken, getConfirmationToken } = require("../Services/ConfirmationTokenServices")
+const { getCourseByName, getCourse } = require("../Services/CourseServices")
+const { createStudent, getStudent, getStudentByName } = require("../Services/StudentService")
+const Student = require("../Models/Student")
+const { createEnrollRequest, getEnrollRequests } = require("../Services/EnrollRequestService")
 
 module.exports = {
     signup: async (req, res) => {
@@ -29,16 +33,16 @@ module.exports = {
                 })
             }
             try {
-                const salt = await bcrypt.genSalt(10)
-                const hashedPassword = await bcrypt.hash(req.body.password, salt)
-                const account = {
-                    email: req.body.email, 
-                    password : hashedPassword, 
-                    role: "student"
+                if(!req.body.course_name) {
+                    return res.json({
+                        error: true,
+                        status: 401, 
+                        message: "You need to choose a course.",
+                        data: null
+                    })
                 }
-                await createAccount(account, async (err, student) => {
+                await getCourseByName(req.body.course_name, async (err, course) => {
                     if(err){
-                        console.log("create account", err)
                         return res.json({
                             error: true,
                             status: 401, 
@@ -46,18 +50,24 @@ module.exports = {
                             data: null
                         })
                     }
-                    student.password = undefined
-                    student.role = undefined
-                    const currentDate = new Date();
-                    const expiresAt = new Date(currentDate.getTime() + 15 * 60000);
-                    const confirmationToken = new ConfirmationToken({
-                        account_id: student.id,
-                        token: crypto.randomBytes(16).toString('hex'),
-                        expiresAt
-                    })
-                    await createConfirmationToken(confirmationToken, async (err, savedConfirmationToken) => {
+                    if(!course){
+                        return res.json({
+                            error: true,
+                            status: 401, 
+                            message: "the course you choose not found!",
+                            data: null
+                        })
+                    }
+                    const salt = await bcrypt.genSalt(10)
+                    const hashedPassword = await bcrypt.hash(req.body.password, salt)
+                    const account = {
+                        email: req.body.email, 
+                        password : hashedPassword, 
+                        role: "student"
+                    }
+                    await createAccount(account, async (err, account) => {
                         if(err){
-                            console.log("create confirmation token", err)
+                            console.log("create account", err)
                             return res.json({
                                 error: true,
                                 status: 401, 
@@ -65,25 +75,76 @@ module.exports = {
                                 data: null
                             })
                         }
-                        const body = `<p>http://localhost:3000/verify/${savedConfirmationToken.token}</p>`
-                        await sendMail(student.email, "hello@gmail.com", body, async (err, result) => {
-                            if(err) {
-                                console.log(err)
-                                await Account.deleteOne({
-                                    id: student.id
-                                })
+                        account.password = undefined
+                        account.role = undefined
+                        const currentDate = new Date();
+                        const expiresAt = new Date(currentDate.getTime() + 15 * 60000);
+                        const confirmationToken = new ConfirmationToken({
+                            account_id: account.id,
+                            token: crypto.randomBytes(16).toString('hex'),
+                            expiresAt
+                        })
+                        await createConfirmationToken(confirmationToken, async (err, savedConfirmationToken) => {
+                            if(err){
+                                console.log("create confirmation token", err)
                                 return res.json({
                                     error: true,
-                                    status: 400, 
-                                    message: "Email not sent",
+                                    status: 401, 
+                                    message: "something went wrong!",
                                     data: null
                                 })
                             }
-                            return res.json({
-                                error: false,
-                                status: 201, 
-                                message: "Student signed up succesfully",
-                                data: student
+                            const body = `<p>http://localhost:3000/verify/${savedConfirmationToken.token}</p>`
+                            await sendMail(account.email, "hello@gmail.com", body, async (err, result) => {
+                                if(err) {
+                                    console.log(err)
+                                    await Account.deleteOne({
+                                        id: account.id
+                                    })
+                                    return res.json({
+                                        error: true,
+                                        status: 400, 
+                                        message: "Email not sent",
+                                        data: null
+                                    })
+                                }
+                                const studentData = {
+                                    name: req.body.name,
+                                    courses: [],
+                                    progress: []
+                                }
+                                await createStudent(studentData, async(err, student) => {
+                                    if(err){
+                                        return res.json({
+                                            error: true,
+                                            status: 401, 
+                                            message: "something went wrong!",
+                                            data: null
+                                        })
+                                    }
+                                    const enrollRequestData = {
+                                        course_id: course.id,
+                                        course_name: course.name,
+                                        student_id: student.id,
+                                        student_name: student.name
+                                    }
+                                    await createEnrollRequest(enrollRequestData, (err, enrollRequest) => {
+                                        if(err){
+                                            return res.json({
+                                                error: true,
+                                                status: 401, 
+                                                message: "something went wrong!",
+                                                data: null
+                                            })
+                                        }
+                                        return res.json({
+                                            error: false,
+                                            status: 201, 
+                                            message: "Student signed up succesfully"
+                                        })
+                                    })
+                                    
+                                })
                             })
                         })
                     })
@@ -367,6 +428,33 @@ module.exports = {
                 message: "Account is activated Succesfully",
                 data: null
             })
+        })
+    },
+    getEnrollRequests: async (req, res) => {
+        getEnrollRequests((err, enrollRequests) => {
+            if(err) {
+                return res.json({
+                    error: true,
+                    status: 401, 
+                    message: "something went wrong!",
+                    data: null
+                })
+            }
+            if(enrollRequests.length === 0){
+                return res.json({
+                    error: true,
+                    status: 401, 
+                    message: "No request found.",
+                    data: enrollRequests
+                })
+            }
+            return res.json({
+                error: false,
+                status: 200, 
+                message: "Requests fetched Succesfully",
+                data: enrollRequests
+            })
+
         })
     },
     getAccounts : async (req, res) => {

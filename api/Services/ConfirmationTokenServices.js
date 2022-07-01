@@ -6,6 +6,7 @@ module.exports = {
             const doc = await ConfirmationToken.create(data)
             return callback(false, doc)
         } catch(err){
+            console.log(err)
             return callback(true)
         }
     },

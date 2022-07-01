@@ -174,12 +174,24 @@ module.exports = {
                         data: null
                     }) 
                 }
-                return res.json({
-                    error: false,
-                    status: 200, 
-                    message: "Lesson created succesfully",
-                    data: lesson
-                })
+                try {
+                    course.lessons = [ ...course.lessons, lesson.id ]
+                    await course.save()
+                    return res.json({
+                        error: false,
+                        status: 200, 
+                        message: "Lesson created succesfully",
+                        data: lesson
+                    })
+                } catch(err) {
+                    console.log(err)
+                    return res.json({
+                        error: true,
+                        status: 401, 
+                        message: "something went wrong!",
+                        data: null
+                    })
+                }
             })
         })
     },

@@ -9,6 +9,7 @@ module.exports = {
             const doc = await account.save()
             return callBack(false, doc)
         } catch(err) {
+            console.log(err)
             return callBack(true)
         }
     },

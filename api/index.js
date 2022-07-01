@@ -5,6 +5,7 @@ const cors = require('cors')
 const authRoutes = require("./Routes/AccountRoutes")
 const courseRoutes = require("./Routes/CourseRoutes")
 const lessonRoutes = require("./Routes/LessonRoutes")
+const studentRoutes = require("./Routes/StudentRoutes")
 const mongoose = require('mongoose')
 require("dotenv").config()
 const multer = require('multer');
@@ -23,8 +24,9 @@ app.use(express.json())
 
 const MONGO_URL = process.env.MONGO_URL
 app.use('/api/v1/auth', authRoutes)
-//app.use('/api/v1/course', courseRoutes)
+app.use('/api/v1/course', courseRoutes)
 app.use('/api/v1/lesson', lessonRoutes)
+app.use('/api/v1/student', studentRoutes)
 
 const getFileStream =  async (filename, gfs, callBack) => {
   gfs.files.find({ filename }).toArray((err, files) => {
