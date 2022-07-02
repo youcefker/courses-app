@@ -1,44 +1,34 @@
 const express = require("express")
 const app = express()
-const router = require("express").Router()
 const cors = require('cors')
+const multer = require('multer');
+const mongoose = require('mongoose')
+const { GridFsStorage } = require('multer-gridfs-storage')
+
+//----- import routes -------
 const authRoutes = require("./Routes/AccountRoutes")
 const courseRoutes = require("./Routes/CourseRoutes")
 const lessonRoutes = require("./Routes/LessonRoutes")
 const studentRoutes = require("./Routes/StudentRoutes")
-const mongoose = require('mongoose')
-require("dotenv").config()
-const multer = require('multer');
-const Grid = require('gridfs-stream');
-const bodyParser = require('body-parser');
-const port = process.env.PORT || 4000
-app.use(cors());
-const { GridFsStorage } = require('multer-gridfs-storage')
+
+//----- controllers if needed -----
 const { addLessonToCourse } = require("./Controllers/CourseControllers")
 const crypto = require("crypto");
 
+
+
+//----- middlewares -----
+require("dotenv").config()
+app.use(cors());
 app.use(express.json())
-
-
-
-
-const MONGO_URL = process.env.MONGO_URL
 app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/course', courseRoutes)
 app.use('/api/v1/lesson', lessonRoutes)
 app.use('/api/v1/student', studentRoutes)
 
-const getFileStream =  async (filename, gfs, callBack) => {
-  gfs.files.find({ filename }).toArray((err, files) => {
-      if(!files || files.length === 0){
-        return callBack(true)
-      }
-      var readstream = gfs.createReadStream({
-        filename: files[0].filename
-      })
-      return callBack(false, readstream)
-})
-}
+//----- env -----
+const port = process.env.PORT || 4000
+const MONGO_URL = process.env.MONGO_URL
 
 mongoose.connect(MONGO_URL)
     .then(result => {
@@ -54,7 +44,10 @@ mongoose.connect(MONGO_URL)
                   if (err) {
                     return reject(err);
                   }
-                  const filename = Date.now() + "lesson.mov";
+                  if (file.mimetype != 'video/mp4') {
+                    console.log("extension false");
+                  }
+                  const filename = Date.now() + "lesson.mp4";
                   const fileInfo = {
                     filename: filename,
                     bucketName: "uploads"

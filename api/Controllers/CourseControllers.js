@@ -1,4 +1,4 @@
-const { createCourse, createLesson, getCourse, getAllCourses, updateCourse, deleteCourse, getLesson, getAllLessons, updateLesson, deleteLesson, getCourseLessons } = require("../Services/CourseServices")
+const { createCourse, createLesson, getCourse, getAllCourses, updateCourse, deleteCourse, getLesson, getAllLessons, updateLesson, deleteLesson, getCourseLessons, getCourseByName } = require("../Services/CourseServices")
 
 module.exports = {
     createCourse : async (req, res) => {
@@ -77,6 +77,37 @@ module.exports = {
                 message: "Course fetched succesfully",
                 data: course
             })
+        })
+    },
+    getCourseStudents: async (req, res) => {
+        getCourseByName(req.params.name, async (err, course) => {
+            if(err) {
+                return res.json({
+                    error: true,
+                    status: 401, 
+                    message: "something went wrong!",
+                    data: null
+                })
+            }
+            if(!course){
+                return res.json({
+                    error: true,
+                    status: 401, 
+                    message: "Course not found!",
+                    data: null
+                })
+            }
+            try {
+                const courseWithStudents = await course.populate("students")
+                return res.json({
+                    error: false,
+                    status: 200, 
+                    message: "Course students fetched succesfully",
+                    data: courseWithStudents.students
+                })
+            } catch(error){
+                console.log(err)
+            }
         })
     },
     updateCourse : async (req, res) => {
@@ -224,7 +255,7 @@ module.exports = {
     },
     getCourseLessons: async (req, res) => {
         const course_id = req.params.course_id
-        getCourseLessons(course_id, async (err, lessons) => {
+        getCourse(course_id, async(err, course) => {
             if(err) {
                 return res.json({
                     error: true,
@@ -232,21 +263,31 @@ module.exports = {
                     message: "something went wrong!",
                     data: null
                 })
-            }
-            if(lessons.length === 0){
+            } 
+            if(!course){
                 return res.json({
                     error: true,
                     status: 401, 
-                    message: "course does not contain any lesson yet.",
+                    message: "Course not found!",
                     data: null
                 })
             }
-            return res.json({
-                error: false,
-                status: 200, 
-                message: "Lessons fetched succesfully",
-                data: lessons
-            })
+            try {
+                const courseWithLessons = await course.populate("lessons")
+                return res.json({
+                    error: false,
+                    status: 200, 
+                    message: "Course Lessons fetched succesfully",
+                    data: courseWithLessons.lessons
+                })
+            } catch(error){
+                return res.json({
+                    error: true,
+                    status: 401, 
+                    message: "something went wrong!",
+                    data: null
+                })
+            }
         })
     },
     getLesson: async (req, res) => {

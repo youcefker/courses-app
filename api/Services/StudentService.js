@@ -37,5 +37,14 @@ module.exports = {
             console.log(err)
             return callBack(true)
         }
+    },
+    deleteStudent: async(id, callBack) => {
+        try {
+            const doc = await Student.deleteOne({ id })
+            return callBack(false, doc)
+        } catch(err){
+            console.log(err)
+            return callBack(true)
+        }
     }
 }

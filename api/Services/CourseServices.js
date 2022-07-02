@@ -38,20 +38,6 @@ module.exports = {
             return(true)
         }
     },
-    getCourseLessons: async (course_id, callBack) => {
-        try {
-            await Course.findById(course_id).populate("lessons").exec(function (err, course) {
-                if (err){
-                    conbsole.log(err)
-                    callBack(true)
-                }
-                console.log("lessons------", course.lessons);
-                callBack(false, course.lessons)
-            })
-        } catch(err) {
-            return callBack(true)
-        }
-    },
     getCourse: async (id, callBack) => {
         try {
             const doc = await Course.findById(id)
@@ -66,6 +52,7 @@ module.exports = {
             const doc = await Course.findOne({name})
             return callBack(false, doc)
         } catch(err){
+            console.log(err)
             return callBack(true)
         }
     },
