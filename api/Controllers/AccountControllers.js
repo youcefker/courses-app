@@ -180,6 +180,14 @@ module.exports = {
                     data: null
                 })
             }
+            if(account.role != "student"){
+                return res.json({
+                    error: true,
+                    status: 401, 
+                    message: "invalid User.",
+                    data: null
+                })
+            }
             const validPassword = await bcrypt.compare(req.body.password, account.password)
             if(!validPassword){
                 return res.json({
@@ -198,7 +206,7 @@ module.exports = {
                 })
             }
             const access_token = jwt.sign({
-                id: account._id,
+                id: account.id,
                 email: account.email
              }, process.env.SECRET_KEY, {expiresIn: '30d'})
             account.password = undefined
@@ -231,6 +239,14 @@ module.exports = {
                     data: null
                 })
             }
+            if(account.role != "admin"){
+                return res.json({
+                    error: true,
+                    status: 401, 
+                    message: "invalid User.",
+                    data: null
+                })
+            }
             const validPassword = await bcrypt.compare(req.body.password, account.password)
             if(!validPassword){
                 return res.json({
@@ -241,7 +257,7 @@ module.exports = {
                 })
             }
             const access_token = jwt.sign({
-                id: account._id,
+                id: account.id,
                 email: account.email
              }, process.env.SECRET_KEY, {expiresIn: '30d'})
             account.password = undefined
@@ -410,25 +426,6 @@ module.exports = {
                 data: null
             })
         }
-    },
-    activateAccount: async (req, res) => {
-        const account_id = req.params.account_id
-        updateAccount(account_id, { isActive: true }, (err, account) => {
-            if(err){
-                return res.json({
-                    error: true,
-                    status: 401, 
-                    message: "something went wrong!",
-                    data: null
-                })
-            }
-            return res.json({
-                error: false,
-                status: 200, 
-                message: "Account is activated Succesfully",
-                data: null
-            })
-        })
     },
     getEnrollRequests: async (req, res) => {
         getEnrollRequests((err, enrollRequests) => {

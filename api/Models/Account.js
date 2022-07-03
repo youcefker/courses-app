@@ -14,10 +14,6 @@ const accountSchema = new Schema({
         type: Boolean,
         default: false
     },
-    isActive: {
-        type: Boolean,
-        default: false
-    },
     role: {
         type: String, 
         required: true
