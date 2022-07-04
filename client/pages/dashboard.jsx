@@ -18,7 +18,7 @@ const percentage = 65;
 
 function Dashboard() {
     const router = useRouter()
-    const [student, setStudent] = useState(false)
+    const [student, setStudent] = useState(true)
   return (
     <>
     <Sidebar active="dashboard"/>

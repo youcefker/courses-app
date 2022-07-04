@@ -9,7 +9,7 @@ router.post("/signin", signin)
 router.post("/admin/signin", signinAdmin)
 router.post("/resend", resendConfirmationLink)
 router.put("/verify", verifyAccount)
-router.get("/accounts",checkAdminToken, getAccounts)
-router.get("/requests", checkAdminToken, getEnrollRequests)
+router.get("/accounts", getAccounts)
+router.get("/requests", getEnrollRequests)
 
 module.exports = router 

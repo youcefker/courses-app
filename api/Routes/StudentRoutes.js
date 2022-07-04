@@ -4,11 +4,11 @@ const Student = require("../Models/Student")
 
 const router = require("express").Router()
 
-router.post("/addcourse", checkAdminToken, addCourseToStudent)
+router.post("/addcourse", addCourseToStudent)
 
-router.get("/", checkAdminToken, getStudents)
+router.get("/", getStudents)
 
-router.get("/courses/:student_id",checkStudentToken, getStudentCourses)
+router.get("/courses/:student_id", getStudentCourses)
 
-router.delete("/:student_id",checkAdminToken, deleteStudent)
+router.delete("/:student_id", deleteStudent)
 module.exports = router
