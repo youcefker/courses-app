@@ -35,7 +35,7 @@ module.exports = {
             const doc = await Lesson.find()
             return callBack(false, doc)
         } catch(err) {
-            return(true)
+            return callBack(true)
         }
     },
     getCourse: async (id, callBack) => {

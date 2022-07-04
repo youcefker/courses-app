@@ -1,6 +1,5 @@
 const { checkAdminToken } = require('../Auth')
-const { signup, signin, verifyAccount, resendConfirmationLink, activateAccount, getAccounts, signinAdmin } = require('../Controllers/AccountControllers')
-const { getEnrollRequests } = require('../Services/EnrollRequestService')
+const { signup, signin, verifyAccount, resendConfirmationLink, activateAccount, getAccounts, signinAdmin, getEnrollRequests } = require('../Controllers/AccountControllers')
 
 const router = require('express').Router()
 

@@ -1,4 +1,5 @@
 const { getCourse } = require("../Services/CourseServices")
+const { deleteEnrollRequest } = require("../Services/EnrollRequestService")
 const { getStudent, getStudents, deleteStudent } = require("../Services/StudentService")
 
 module.exports = {
@@ -66,11 +67,29 @@ module.exports = {
                 try {
                     await course.save()
                     await student.save()
-                    return res.json({
-                        error: false,
-                        status: 200, 
-                        message: "course not found!",
-                        data: student
+                    deleteEnrollRequest(req.body.request_id, (err, result) => {
+                        if(err) {
+                            return res.json({
+                                error: true,
+                                status: 401, 
+                                message: "something went wrong!",
+                                data: null
+                            })
+                        }
+                        if(result.deletedCount === 0){
+                            return res.json({
+                                error: true,
+                                status: 401, 
+                                message: "request not found!",
+                                data: null
+                            })
+                        }
+                        return res.json({
+                            error: false,
+                            status: 200, 
+                            message: "course added succesfully!",
+                            data: student
+                        })
                     })
                 } catch(err){
                     console.log(err)

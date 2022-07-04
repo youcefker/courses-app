@@ -9,7 +9,7 @@ const { createConfirmationToken, getConfirmationToken } = require("../Services/C
 const { getCourseByName, getCourse } = require("../Services/CourseServices")
 const { createStudent, getStudent, getStudentByName } = require("../Services/StudentService")
 const Student = require("../Models/Student")
-const { createEnrollRequest, getEnrollRequests } = require("../Services/EnrollRequestService")
+const { createEnrollRequest, getEnrollRequests, deleteEnrollRequest } = require("../Services/EnrollRequestService")
 
 module.exports = {
     signup: async (req, res) => {

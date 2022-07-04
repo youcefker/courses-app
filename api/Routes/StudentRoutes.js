@@ -1,6 +1,4 @@
-const { checkAdminToken, checkStudentToken } = require("../Auth")
 const { addCourseToStudent, getStudents, deleteStudent, getStudentCourses } = require("../Controllers/StudentControllers")
-const Student = require("../Models/Student")
 
 const router = require("express").Router()
 

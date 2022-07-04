@@ -12,9 +12,20 @@ module.exports = {
     },
     getEnrollRequests: async (callBack) => {
         try {
-            const docs = await EnrollRequest.find()
-            return callBack(false, docs)
+            const doc = await EnrollRequest.find()
+            console.log(doc)
+            return callBack(false, doc)
         } catch(err) {
+            console.log(err)
+            return callBack(true)
+        }
+    },
+    deleteEnrollRequest: async(id, callBack) => {
+        try {
+            const result = await EnrollRequest.findByIdAndDelete(id)
+            return callBack(false, result)
+        } catch(err) {
+            console.log(err)
             return callBack(true)
         }
     }
