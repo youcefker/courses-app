@@ -30,6 +30,7 @@
     "react-redux": "^8.0.2",
     "react-responsive-carousel": "^3.2.23",
     "react-simply-carousel": "^8.3.3",
+    "react-spinners": "^0.13.3",
     "url-loader": "^4.1.1",
     "video-react": "^0.15.0",
     "yup": "^0.32.11"

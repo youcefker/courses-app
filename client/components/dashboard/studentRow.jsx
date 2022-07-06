@@ -47,8 +47,8 @@ function StudentRow(props) {
 
         {props.actions &&(
              <div className='flex'>
-                <Button className='normal-case hover:bg-[#EE1D5295] rounded-[10px] text-[13px] text-[#EE1D52] bg-[#EE1D5278] mr-2 h-[30px] w-[50%]'>Refuse</Button>
-                <Button className='normal-case hover:bg-[#34A8538C] rounded-[10px] text-[13px] text-[#34A853] bg-[#34A8535C] h-[30px] w-[50%]'>Accept</Button>
+                <Button onClick={props.refuse} className='normal-case hover:bg-[#EE1D5295] rounded-[10px] text-[13px] text-[#EE1D52] bg-[#EE1D5278] mr-2 h-[30px] w-[50%]'>Refuse</Button>
+                <Button onClick={props.accept} className='normal-case hover:bg-[#34A8538C] rounded-[10px] text-[13px] text-[#34A853] bg-[#34A8535C] h-[30px] w-[50%]'>Accept</Button>
              </div>
         )}
         
