@@ -1,4 +1,4 @@
-const { createCourse, getCourse, getAllCourses, updateCourse, deleteCourse, addLessonToCourse, getAllLessons, getCourseStudents } = require('../Controllers/CourseControllers')
+const { createCourse, getCourse, getAllCourses, updateCourse, deleteCourse, addLessonToCourse, getAllLessons, getCourseStudents, getCoursesNames } = require('../Controllers/CourseControllers')
 
 const router = require('express').Router()
 
@@ -20,6 +20,7 @@ const upload = multer({
 // course routes 
 router.post('/', upload, createCourse)
 router.get('/', getAllCourses)
+router.get('/names', getCoursesNames)
 router.get('/:course_id', getCourse)
 router.put('/:course_id', updateCourse)
 router.delete('/:course_id', deleteCourse)

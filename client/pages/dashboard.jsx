@@ -45,6 +45,7 @@ function Dashboard() {
       }
     }
 
+    const auth = fetchStorageData()
     const fetchDataForStudent = async () => {
       try {
         const { data } = await axios.get("http://localhost:4000/api/v1/student/courses/}")

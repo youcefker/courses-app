@@ -26,7 +26,7 @@ export default function MainHeader(props) {
                 </div>
                 :
                 <div className="flex">
-                  <Button className="muiBtn  sign text-[#079C49] border-2 border-[#079C49] w-[170px] 2xl:w-[209px] h-[45px] 2xl:h-[52px] text-[20px] 2xl:text-[24px] rounded-[20px] font-[600] mr-6" onClick={()=> router.push({pathname: "/results",
+                  <Button className="muiBtn  sign text-[#079C49] border-2 border-[#079C49] w-[170px] 2xl:w-[209px] h-[45px] 2xl:h-[52px] text-[20px] 2xl:text-[24px] rounded-[20px] font-[600] mr-6" onClick={()=> router.push({pathname: "/profile",
                     query: {
                         storageData: props.storageData
                     }})}>Account</Button>

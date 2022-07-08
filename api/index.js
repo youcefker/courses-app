@@ -61,8 +61,8 @@ mongoose.connect(MONGO_URL)
         const singleUpload = multer({ storage }).single('file');
         console.log(`database connected successfully`)
         const port = process.env.PORT || 3000
-        app.post('/api/v1/course/:course_id/lesson', checkAdminToken, singleUpload, addLessonToCourse)
-        app.get('/api/v1/lesson/files/:filename', checkStudentToken,(req, res) => {
+        app.post('/api/v1/course/:course_id/lesson', singleUpload, addLessonToCourse)
+        app.get('/api/v1/lesson/files/:filename',(req, res) => {
           console.log(req.params.filename)
           const range = req.headers.range;
           const file = gfs
@@ -95,7 +95,7 @@ mongoose.connect(MONGO_URL)
               gfs.openDownloadStreamByName(req.params.filename).pipe(res);
             });
         })
-        app.get('/api/v1/lesson/files',checkAdminToken, (req, res) => {
+        app.get('/api/v1/lesson/files', (req, res) => {
           if(!gfs) {
             console.log("some error occured, check connection to db");
             res.send("some error occured, check connection to db");
