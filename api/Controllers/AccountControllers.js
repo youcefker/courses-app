@@ -75,8 +75,6 @@ module.exports = {
                                 data: null
                             })
                         }
-                        account.password = undefined
-                        account.role = undefined
                         const currentDate = new Date();
                         const expiresAt = new Date(currentDate.getTime() + 15 * 60000);
                         const confirmationToken = new ConfirmationToken({
@@ -128,7 +126,7 @@ module.exports = {
                                         student_id: student.id,
                                         student_name: student.name
                                     }
-                                    await createEnrollRequest(enrollRequestData, (err, enrollRequest) => {
+                                    await createEnrollRequest(enrollRequestData, async(err, enrollRequest) => {
                                         if(err){
                                             return res.json({
                                                 error: true,
@@ -137,11 +135,24 @@ module.exports = {
                                                 data: null
                                             })
                                         }
-                                        return res.json({
-                                            error: false,
-                                            status: 201, 
-                                            message: "Student signed up succesfully"
-                                        })
+                                        try {
+                                            console.log("account",account)
+                                            account.student = student._id
+                                            await account.save()
+                                            return res.json({
+                                                error: false,
+                                                status: 201, 
+                                                message: "Student signed up succesfully. please check your email"
+                                            })
+                                        } catch(err) {
+                                            console.log(err)
+                                            return res.json({
+                                                error: true,
+                                                status: 401, 
+                                                message: "something went wrong!",
+                                                data: null
+                                            })
+                                        }
                                     })
                                     
                                 })
@@ -163,14 +174,12 @@ module.exports = {
     signin: async (req, res) => {
         await getAccountByEmail(req.body.email, async (err, account) => {
             if(err){
-                if(err) {
-                    return res.json({
-                        error: true,
-                        status: 401, 
-                        message: "something went wrong!",
-                        data: null
-                    })
-                }
+                return res.json({
+                    error: true,
+                    status: 401, 
+                    message: "something went wrong!",
+                    data: null
+                })
             }
             if(!account) {
                 return res.json({
@@ -206,18 +215,27 @@ module.exports = {
                 })
             }
             const access_token = jwt.sign({
-                id: account.id,
-                email: account.email
+                id: account._id
              }, process.env.SECRET_KEY, {expiresIn: '30d'})
-            account.password = undefined
-            account.role = undefined
-            return res.json({
-                error: false,
-                status: 200, 
-                message: "Signed in succesfully.",
-                data: account,
-                access_token
-            })
+            try {
+                const accountWithStudent = await account.populate("student")
+                accountWithStudent.password = undefined
+                accountWithStudent.role = undefined
+                return res.json({
+                    error: false,
+                    status: 200, 
+                    message: "Signed in succesfully.",
+                    data: accountWithStudent,
+                    access_token
+                })
+            } catch(err) {
+                return res.json({
+                    error: true,
+                    status: 401, 
+                    message: "something went wrong!",
+                    data: null
+                })
+            }
 
         })
     },

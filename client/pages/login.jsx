@@ -40,29 +40,27 @@ function Login() {
 
 
 
-  const handleLogin =() => {
+  const handleLogin = async () => {
  
     const userObject = {
           email: formik.values.username,
           password : formik.values.password
       };
-      
-      axios.post('http://localhost:4000/api/v1/auth/signin', userObject)
-          .then((res) => {
-              console.log(res.data)
-             
-              if (!res.data.error){
-                router.push({
-                  pathname :"/profile",
-  
-               })
-              }
-             
-          }).catch((error) => {
-              console.log(error)
-          });
-  
-  
+      try {
+        const response = await axios.post('http://localhost:4000/api/v1/auth/signin', userObject)
+        console.log(response.data)
+          if (!response.data.error){
+            await localStorage.setItem("jwt", response.data.access_token)
+            await localStorage.setItem("email", response.data.data.email)
+            await localStorage.setItem("name", response.data.data.student.name)
+            await localStorage.setItem("student_id", response.data.data.student._id)
+            router.push({
+              pathname :"/profile",
+            })
+          }
+      } catch(err) {
+        console.log(err)
+      }
   }
 
   const handleHide = ()=> setHide(!hide)

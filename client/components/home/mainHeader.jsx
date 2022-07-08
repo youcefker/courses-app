@@ -6,9 +6,9 @@ import { useState } from 'react';
 import { Transition } from "@headlessui/react";
 import MenuIcon from '@mui/icons-material/Menu';
 
-export default function MainHeader() {
+export default function MainHeader(props) {
   const [isOpen, setIsOpen] = useState(false);
-
+  console.log(props.storageData)
   const [checked, setChecked] = React.useState(false);
   const router = useRouter()
   return (
@@ -18,11 +18,21 @@ export default function MainHeader() {
       <Image src="/images/home__logo.svg" layout="fill"
        objectFit="cover"/>
       </div>
-            
-            <div className="flex">
-              <Button className="muiBtn  sign text-[#079C49] border-2 border-[#079C49] w-[170px] 2xl:w-[209px] h-[45px] 2xl:h-[52px] text-[20px] 2xl:text-[24px] rounded-[20px] font-[600] mr-6" onClick={()=> router.push("/login")}>Sign in</Button>
-              <Button className='muiBtn register text-[#079C49] border-2 border-[#079C49] w-[170px] 2xl:w-[209px] h-[45px] 2xl:h-[52px] text-[20px] 2xl:text-[24px] rounded-[20px] font-[600] ' onClick={() => router.push("/signup")}>Register</Button>
-            </div>
+            {props.fetched ? 
+              !props.storageData ? 
+                <div className="flex">
+                  <Button className="muiBtn  sign text-[#079C49] border-2 border-[#079C49] w-[170px] 2xl:w-[209px] h-[45px] 2xl:h-[52px] text-[20px] 2xl:text-[24px] rounded-[20px] font-[600] mr-6" onClick={()=> router.push("/login")}>Sign in</Button>
+                  <Button className='muiBtn register text-[#079C49] border-2 border-[#079C49] w-[170px] 2xl:w-[209px] h-[45px] 2xl:h-[52px] text-[20px] 2xl:text-[24px] rounded-[20px] font-[600] ' onClick={() => router.push("/signup")}>Register</Button>
+                </div>
+                :
+                <div className="flex">
+                  <Button className="muiBtn  sign text-[#079C49] border-2 border-[#079C49] w-[170px] 2xl:w-[209px] h-[45px] 2xl:h-[52px] text-[20px] 2xl:text-[24px] rounded-[20px] font-[600] mr-6" onClick={()=> router.push({pathname: "/results",
+                    query: {
+                        storageData: props.storageData
+                    }})}>Account</Button>
+                </div>
+              : null
+          }
         
     </div>
 {/* 

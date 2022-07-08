@@ -1,4 +1,5 @@
 const { createCourse, createLesson, getCourse, getAllCourses, updateCourse, deleteCourse, getLesson, getAllLessons, updateLesson, deleteLesson, getCourseLessons, getCourseByName } = require("../Services/CourseServices")
+const { getStudent } = require("../Services/StudentService")
 
 module.exports = {
     createCourse : async (req, res) => {
@@ -71,12 +72,22 @@ module.exports = {
                     data: null
                 })
             }
-            return res.json({
-                error: false,
-                status: 200, 
-                message: "Course fetched succesfully",
-                data: course
-            })
+            try {
+                const courseWithLessons = await course.populate("lessons")
+                return res.json({
+                    error: false,
+                    status: 200, 
+                    message: "Course fetched succesfully",
+                    data: courseWithLessons
+                })
+            } catch(err) {
+                return res.json({
+                    error: true,
+                    status: 401, 
+                    message: "something went wrong!",
+                    data: null
+                })
+            }
         })
     },
     getCourseStudents: async (req, res) => {
@@ -349,6 +360,58 @@ module.exports = {
                     data: updatedlesson
                 })
             })
+        })
+    },
+    completeLesson: async (req, res) => {
+        console.log(req.body.student_id)
+        getStudent(req.body.student_id, async (err, student) => {
+            if(err){
+                return res.json({
+                    error: true,
+                    status: 401, 
+                    message: "something went wrong!",
+                    data: null
+                })
+            }
+            if(!student){
+                return res.json({
+                    error: true,
+                    status: 401, 
+                    message: "Lesson not found!",
+                    data: null
+                })
+            }
+            let course_progress_index, lesson_progress_index
+            const course_progress = student.progress.map((course, index) => {
+                if(course.course_id.toString() === req.body.course_id){
+                    course_progress_index = index
+                    return course
+                }
+            })[0]
+            const lesson_progress = course_progress.lessons_progress.map((lesson, index) => {
+                if(lesson.lesson_id.toString() === req.body.lesson_id){
+                    lesson_progress_index = index
+                    return lesson
+                }
+            })[0]
+            student.progress[course_progress_index].lessons_progress[lesson_progress_index].completed = true
+            console.log(student.progress[course_progress_index].lessons_progress[lesson_progress_index])
+            try {
+                await student.save()
+                return res.json({
+                    error: true,
+                    status: 200, 
+                    message: "Course progress",
+                    data: student 
+                })
+            } catch(err) {
+                return res.json({
+                    error: true,
+                    status: 401, 
+                    message: "something went wrong!",
+                    data: null
+                })
+            }
         })
     },
     deleteLesson: async (req, res) => {
