@@ -11,28 +11,26 @@ function Lesson() {
   return (
     <>
     <Sidebar active="courses" />
-    <div className='h-[100%] bg-[#F5F5F5] px-4 py-8' style={{
-            paddingLeft:"270px"
-        }} >
+    <IndexPage>
        <h3 className='text-[#1F1F1F] text-[20px] font-[600]  '>Course : Javascript for web</h3>
        <h3 className='text-[#1F1F1F] text-[20px] font-[600] mt-3'>Lesson 1 : Algorithms</h3>
-       <div className="grid grid-cols-6 gap-x-6 mt-8 w-full">
+       <div className="grid grid-cols-1 lg:grid-cols-6 lg:gap-x-6 mt-6 w-full">
 
 
         <div className='col-span-4'>
           <video  controls autoPlay>
-             <source src={require('../../../public/videos/course.mp4')} type="video/mp4"/>
+             <source src="http://localhost:4000/api/v1/lesson/files/1657302261280lesson.mp4" type="video/mp4"/>
           </video>
           <div className='mt-5'>
              <h3 className='text-[#1F1F1F] text-[20px] font-[600] mt-1'>About this course</h3>
              <h6 className='text-[#1F1F1F] text-[14px] font-[500] mt-3'>
-             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis tellus. Sed dignissim, metus nec fringilla accumsan, risus sem sollicitudin lacus, ut interdum tellus elit sed risus. Maecenas eget condimentum velit, sit amet feugiat lectus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent auctor purus luctus enim egestas, ac scelerisque ante pulvinar. Donec ut rhoncus ex. Suspendisse ac rhoncus nisl, eu tempor urna. Curabitur vel bibendum lorem. Morbi convallis convallis diam sit amet lacinia. Aliquam in elementum tellus.
+             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis tellus. Sed dignissim, metus nec fringilla accumsan, risus sem sollicitudin lacus, ut interdum tellus elit sed risus. Maecenas eget condimentum velit, sit amet feugiat lectus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent auctor purus luctus enim egestas, ac scelerisque ante pulvinar. Donec ut rhoncus ex. Suspendisse ac rhoncus nisl, eu tempor urna. Curabitur vel bibendum lorem.
 
              </h6>
           </div>
         </div>
 
-       <div className="col-span-2">
+       <div className="mt-5 lg:mt-0 col-span-2">
                       
        <div className=' px-5 py-5 bg-[#fff] rounded-[15px]'>
            <h3 className='text-[#1F1F1F] text-[20px] font-[600] '>Necessery docs</h3> 
@@ -68,7 +66,7 @@ function Lesson() {
           
           
           
-          <div className="bg-[#fff] p-4 rounded-[15px] mt-5">
+          <div className="bg-[#fff] p-4 rounded-[15px] mt-4">
                    <h3 className='text-[#1F1F1F] font-[600] text-[20px]'>Upcoming courses</h3>
                    <div className=" my-4">
                        
@@ -86,7 +84,7 @@ function Lesson() {
       
       </div>
        
-    </div>
+    </IndexPage>
     </>
   )
 }

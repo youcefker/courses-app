@@ -17,26 +17,23 @@ module.exports = {
         await getAccountByEmail(req.body.email, async (err, result) => {
             if(err) {
                 console.log("email exists ?", err)
-                return res.json({
+                return res.status(400).json({
                     error: true,
-                    status: 401, 
                     message: "something went wrong!",
                     data: null
                 })
             }
             if(result){
-                return res.json({
+                return res.status(400).json({
                     error: true,
-                    status: 401, 
                     message: "Email exist, go to sign in",
                     data: null
                 })
             }
             try {
                 if(!req.body.course_name) {
-                    return res.json({
-                        error: true,
-                        status: 401, 
+                    return res.status(400).json({
+                        error: true, 
                         message: "You need to choose a course.",
                         data: null
                     })
@@ -68,9 +65,8 @@ module.exports = {
                     await createAccount(account, async (err, account) => {
                         if(err){
                             console.log("create account", err)
-                            return res.json({
+                            return res.status(400).json({
                                 error: true,
-                                status: 401, 
                                 message: "something went wrong!",
                                 data: null
                             })
@@ -85,9 +81,8 @@ module.exports = {
                         await createConfirmationToken(confirmationToken, async (err, savedConfirmationToken) => {
                             if(err){
                                 console.log("create confirmation token", err)
-                                return res.json({
+                                return res.status(400).json({
                                     error: true,
-                                    status: 401, 
                                     message: "something went wrong!",
                                     data: null
                                 })
@@ -99,9 +94,8 @@ module.exports = {
                                     await Account.deleteOne({
                                         id: account.id
                                     })
-                                    return res.json({
+                                    return res.status(400).json({
                                         error: true,
-                                        status: 400, 
                                         message: "Email not sent",
                                         data: null
                                     })
@@ -113,9 +107,8 @@ module.exports = {
                                 }
                                 await createStudent(studentData, async(err, student) => {
                                     if(err){
-                                        return res.json({
+                                        return res.status(400).json({
                                             error: true,
-                                            status: 401, 
                                             message: "something went wrong!",
                                             data: null
                                         })
@@ -128,9 +121,8 @@ module.exports = {
                                     }
                                     await createEnrollRequest(enrollRequestData, async(err, enrollRequest) => {
                                         if(err){
-                                            return res.json({
-                                                error: true,
-                                                status: 401, 
+                                            return res.status(400).json({
+                                                error: true, 
                                                 message: "something went wrong!",
                                                 data: null
                                             })
@@ -139,9 +131,8 @@ module.exports = {
                                             console.log("account",account)
                                             account.student = student._id
                                             await account.save()
-                                            return res.json({
-                                                error: false,
-                                                status: 201, 
+                                            return res.status(201).json({
+                                                error: false, 
                                                 message: "Student signed up succesfully. please check your email"
                                             })
                                         } catch(err) {
@@ -174,42 +165,37 @@ module.exports = {
     signin: async (req, res) => {
         await getAccountByEmail(req.body.email, async (err, account) => {
             if(err){
-                return res.json({
+                return res.status(400).json({
                     error: true,
-                    status: 401, 
                     message: "something went wrong!",
                     data: null
                 })
             }
             if(!account) {
-                return res.json({
+                return res.status(400).json({
                     error: true,
-                    status: 401, 
                     message: "invalid Email or Password.",
                     data: null
                 })
             }
             if(account.role != "student"){
-                return res.json({
+                return res.status(400).json({
                     error: true,
-                    status: 401, 
                     message: "invalid User.",
                     data: null
                 })
             }
             const validPassword = await bcrypt.compare(req.body.password, account.password)
             if(!validPassword){
-                return res.json({
-                    error: true,
-                    status: 401, 
+                return res.status(400).json({
+                    error: true, 
                     message: "invalid Email or Password.",
                     data: null
                 })
             }
             if(!account.isVerified){
-                return res.json({
+                return res.status(400).json({
                     error: true,
-                    status: 401, 
                     message: "Please confirm your account first.",
                     data: null
                 })
@@ -221,17 +207,15 @@ module.exports = {
                 const accountWithStudent = await account.populate("student")
                 accountWithStudent.password = undefined
                 accountWithStudent.role = undefined
-                return res.json({
-                    error: false,
-                    status: 200, 
+                return res.status(200).json({
+                    error: false, 
                     message: "Signed in succesfully.",
                     data: accountWithStudent,
                     access_token
                 })
             } catch(err) {
-                return res.json({
+                return res.status(400).json({
                     error: true,
-                    status: 401, 
                     message: "something went wrong!",
                     data: null
                 })
@@ -242,47 +226,41 @@ module.exports = {
     signinAdmin: async (req, res) => {
         await getAccountByEmail(req.body.email, async (err, account) => {
             if(err){
-                    return res.json({
-                        error: true,
-                        status: 401, 
+                    return res.status(400).json({
+                        error: true, 
                         message: "something went wrong!",
                         data: null
                     })
             }
             if(!account) {
-                return res.json({
+                return res.status(400).json({
                     error: true,
-                    status: 401, 
                     message: "invalid Email or Password.",
                     data: null
                 })
             }
             if(account.role != "admin"){
-                return res.json({
-                    error: true,
-                    status: 401, 
+                return res.status(400).son({
+                    error: true, 
                     message: "invalid User.",
                     data: null
                 })
             }
             const validPassword = await bcrypt.compare(req.body.password, account.password)
             if(!validPassword){
-                return res.json({
+                return res.status(400).json({
                     error: true,
-                    status: 401, 
                     message: "invalid Email or Password.",
                     data: null
                 })
             }
             const access_token = jwt.sign({
                 id: account.id,
-                email: account.email
              }, process.env.SECRET_KEY, {expiresIn: '30d'})
             account.password = undefined
             account.role = undefined
-            return res.json({
+            return res.status(200).json({
                 error: false,
-                status: 200, 
                 message: "Signed in succesfully.",
                 data: account,
                 access_token
@@ -293,18 +271,16 @@ module.exports = {
         try {
             await getAccountByEmail(req.body.email, async (err, account) => {
                 if(err){
-                    return res.json({
+                    return res.status(400).json({
                         error: true,
-                        status: 401, 
                         message: "something went wrong!",
                         data: null
                     })
                 }
                 console.log(account)
                 if(account.isVerified){
-                    return res.json({
-                        error: true,
-                        status: 400, 
+                    return res.status(400).json({
+                        error: true, 
                         message: "Account is already verified",
                         data: null
                     })
@@ -318,9 +294,8 @@ module.exports = {
                 })
                 await createConfirmationToken(confirmationToken, async (err, savedConfirmationToken) => {
                     if(err){
-                        return res.json({
-                            error: true,
-                            status: 401, 
+                        return res.status(400).json({
+                            error: true, 
                             message: "something went wrong!",
                             data: null
                         })
@@ -332,16 +307,14 @@ module.exports = {
                             await Account.deleteOne({
                                 id: account.id
                             })
-                            return res.json({
+                            return res.status(400).json({
                                 error: true,
-                                status: 400, 
                                 message: "something went wrong!",
                                 data: null
                             })
                         }
-                        return res.json({
+                        return res.status(200).json({
                             error: false,
-                            status: 200, 
                             message: "Email sent succesfully.",
                             data: null
                         })
@@ -364,50 +337,44 @@ module.exports = {
         try {
             await getConfirmationToken(token, async (err, token) => {
                 if(err){
-                    return res.json({
-                        error: true,
-                        status: 401, 
+                    return res.status(400).json({
+                        error: true, 
                         message: "something went wrong!",
                         data: null
                     })
                 }
                 if(!token) {
-                    return res.json({
+                    return res.status(400).json({
                         error: true,
-                        status: 401, 
                         message: "token not found!",
                         data: null
                     })
                 }
                 if(Date.now() > token.expiresAt){
-                    return res.json({
-                        error: true,
-                        status: 401, 
+                    return res.status(400).json({
+                        error: true, 
                         message: "token expired.",
                         data: null
                     })
                 } 
                 await getAccount(token.account_id, async (err, account) => {
                     if(err) {
-                        return res.json({
+                        return res.status(400).json({
                             error: true,
-                            status: 401, 
                             message: "something went wrong!",
                             data: null
                         }) 
                     }
                     if(!account){
-                        return res.json({
-                            error: true,
-                            status: 401, 
+                        return res.status(400).json({
+                            error: true, 
                             message: "account might be deleted. token doesn't belong to any account!",
                             data: null
                         })
                     }
                     if(account.isVerified) {
-                        return res.json({
+                        return res.status(400).json({
                             error: true,
-                            status: 401, 
                             message: "Account is already verified",
                             data: null
                         })
@@ -417,18 +384,16 @@ module.exports = {
                     }
                     await updateAccount(account.id, updateData, async (err, updatedAccount) => {
                         if(err) {
-                            return res.json({
-                                error: true,
-                                status: 401, 
+                            return res.status(400).json({
+                                error: true, 
                                 message: "something went wrong!",
                                 data: null
                             }) 
                         }
                         updateAccount.password = undefined
                         updateAccount.role = undefined
-                        return res.json({
-                            error: false,
-                            status: 200, 
+                        return res.status(200).json({
+                            error: false, 
                             message: "Account is verified Succesfully",
                             data: null
                         })
@@ -437,9 +402,8 @@ module.exports = {
             })
         } catch(err) {
             console.log(err)
-            return res.json({
+            return res.status(400).json({
                 error: true,
-                status: 400, 
                 message: "something went wrong!",
                 data: null
             })
@@ -448,24 +412,21 @@ module.exports = {
     getEnrollRequests: async (req, res) => {
         getEnrollRequests((err, enrollRequests) => {
             if(err) {
-                return res.json({
+                return res.status(400).json({
                     error: true,
-                    status: 401, 
                     message: "something went wrong!",
                     data: null
                 })
             }
             if(enrollRequests.length === 0){
-                return res.json({
-                    error: true,
-                    status: 401, 
+                return res.status(200).json({
+                    error: false, 
                     message: "No request found.",
                     data: enrollRequests
                 })
             }
-            return res.json({
-                error: false,
-                status: 200, 
+            return res.status(200).json({
+                error: false, 
                 message: "Requests fetched Succesfully",
                 data: enrollRequests
             })
@@ -475,16 +436,21 @@ module.exports = {
     getAccounts : async (req, res) => {
         getAccounts((err, accounts) => {
             if(err) {
-                return res.json({
+                return res.status(400).json({
                     error: true,
-                    status: 401, 
                     message: "something went wrong!",
                     data: null
                 })
             }
-            return res.json({
+            if((accounts.length === 0)){
+                return res.status(200).json({
+                    error: false,
+                    message: "No account found!",
+                    data: accounts
+                })
+            }
+            return res.status(200).json({
                 error: false,
-                status: 200, 
                 message: "Accounts fetched Succesfully",
                 data: accounts
             })

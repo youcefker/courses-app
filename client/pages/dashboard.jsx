@@ -45,6 +45,7 @@ function Dashboard() {
       }
     }
 
+    const auth = fetchStorageData()
     const fetchDataForStudent = async () => {
       try {
         const { data } = await axios.get("http://localhost:4000/api/v1/student/courses/}")
@@ -149,7 +150,7 @@ function Dashboard() {
     useEffect(() => {
       
       if(student){
-        verifyStudentAuth()
+
         fetchDataForStudent()
       } else {
         fetchDataForAdmin()
@@ -257,10 +258,10 @@ function Dashboard() {
           <HashLoader color="#079C49" loading={true} size={60} />
           
         : 
-        enrollRequests && courseStudents? 
+        enrollRequests ? 
         (
           <>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <div className='px-4 py-6 bg-[#fff] rounded-[15px]'>
                   <h4 className='text-[22px] text-[#1F1F1F]'>New students <span className='text-[14px]'>(10)</span> </h4>
                   <div className='flex items-center border-[1px] border-[#9DA6BACC] p-2 rounded-[10px] mt-3 text-[#9DA6BA]'>
@@ -293,7 +294,7 @@ function Dashboard() {
                           <h5 className='text-[#1F1F1F] text-[12px] font-[600] col-span-2'>Cours</h5>
                           <h5 className='text-[#1F1F1F] text-[12px] font-[600] text-center'>Progress</h5>
                       </div>
-                      {courseStudents.map(student => <StudentRow name={student.name} cours={firstCourse.name} progress={parseInt(calculateProgress(student, firstCourse._id) * 100)}/>)}
+                      {courseStudents?.map(student => <StudentRow name={student.name} cours={firstCourse.name} progress={parseInt(calculateProgress(student, firstCourse._id) * 100)}/>)}
                   </div>
               </div>
             </div>

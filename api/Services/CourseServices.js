@@ -24,8 +24,8 @@ module.exports = {
     },
     getAllCourses: async (callBack) => {
         try {
-            const doc = await Course.find()
-            return callBack(false, doc)
+            const docs = await Course.find()
+            return callBack(false, docs)
         } catch(err) {
             return callBack(true)
         }
