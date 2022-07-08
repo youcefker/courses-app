@@ -30,7 +30,7 @@ function ImgDisplayer(props) {
 
 
     <div className='relative'>
-       <div className='w-[270px] h-[380px] sm:w-[400px] sm:h-[550px] md:w-[300px] md:h-[500px] lg:w-[450px] lg:h-[660px] xl:w-[520px] xl:h-[720px] 2xl:w-[616px] 2xl:h-[790px] ' style={{position: "relative"}}>
+       <div className='w-[270px] h-[380px] sm:w-[400px] sm:h-[550px] md:w-[350px] md:h-[480px] lg:w-[360px] lg:h-[520px] xl:w-[520px] xl:h-[720px] 2xl:w-[616px] 2xl:h-[790px] ' style={{position: "relative"}}>
        <Image src={"/images/main"+currentIndex+".png"} className='relative rounded-[30px]' layout="fill"
        objectFit="cover"/>
        </div>

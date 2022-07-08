@@ -99,7 +99,7 @@ function Dashboard() {
         const requestsRes = await axios.get("http://localhost:4000/api/v1/auth/requests")
         console.log("requests", requestsRes.data.data)
         setEnrollRequests(requestsRes.data.data)
-        const studentRes = await axios.get("http://localhost:4000/api/v1/student/courses/62c339d058c9e5ffe95a43cb")
+        const studentRes = await axios.get("http://localhost:4000/api/v1/student/courses/62c867c9e3c2f05e88bbf9aa")
         if(studentRes.data.data.courses.length > 0) {
           setFirstCourse(studentRes.data.data.courses[0])
           const firstCourse_name = studentRes.data.data.courses[0].name

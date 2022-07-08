@@ -88,7 +88,7 @@ function Login() {
       <div className="container px-4 mx-auto pt-4 md:pt-[33.32px] mb-[100px] sm:mb-[230px]">
         <Image onClick={() => router.push("/")} className="cursor-pointer" src="/images/footer_logo.svg" width={60} height={60} />
         <div className="flex justify-between items-center  md:mt-[54px]">
-            <div className='w-full md:w-[70%] xl:w-[40%]'>
+            <div className='w-full md:w-[55%] lg:w-[50%] xl:w-[40%]'>
                 <div className="login__box md:border-2 border-[#66666640] rounded-[16px] p-1 md:p-[32px] ">
                     <div className="flex flex-col items-center">
                       <div className='bg-[#079C49] rounded-full  w-[50px] h-[50px]'></div>
@@ -134,17 +134,17 @@ function Login() {
                               <div className='text-[red] text-[13px] ml-2'>{formik.errors.password}</div>
                             ) : null}
                         </div>
-                        <Button type='submit'  disableRipple={formik.values.username === '' || formik.values.password === ''} className={(formik.values.username !== '' && formik.values.password !== '') ? 'muiBt loginBtn bg-[#079C49] w-full mt-[30px] rounded-[32px] text-[#fff] h-[64px] text-[22px] hover:bg-[#078C49] normal-case' : 'muiBt loginBtn bg-[#111111] w-full mt-[30px] rounded-[32px] text-[#fff] h-[64px] text-[22px] opacity-[0.25] hover:bg-[#111111] normal-case '}>Log in</Button>
+                        <button type='submit'  disableRipple={formik.values.username === '' || formik.values.password === ''} className={(formik.values.username !== '' && formik.values.password !== '') ? 'muiBt loginBtn bg-[#079C49] w-full mt-[30px] rounded-[32px] text-[#fff] h-[60px] text-[20px] hover:bg-[#078C49] normal-case' : 'muiBt loginBtn bg-[#111111] w-full mt-[30px] rounded-[32px] text-[#fff] h-[64px] text-[22px] opacity-[0.25] hover:bg-[#111111] normal-case '}>Log in</button>
                       </form>
                         <div className="flex justify-between mt-4 sm:mt-[35px] items-center">
                             <div className='h-[1px] sm:h-[2px] w-[40%] bg-[#66666640]'></div>
                             <span className='text-[#666666]  sm:text-[24px] font-[400]'>OR</span>
                             <div className='h-[1px] sm:h-[2px] w-[40%] bg-[#66666640]'></div>
                         </div>
-                        <Button className='flex w-full mt-4 sm:mt-[30px] rounded-[32px]  h-[64px] text-[21px] normal-case  border-3 googleBtn'>
-                            <Image src="/icons/google.svg" width={34} height={34}/>
+                        <button className='flex justify-center items-center w-full mt-4 sm:mt-[30px] rounded-[32px]  h-[60px] text-[18px] normal-case  border-3 googleBtn'>
+                            <Image src="/icons/google.svg" width={25} height={25}/>
                             <span className='text-[#333333] font-[400] ml-[16px]'>Continue with Google</span>
-                        </Button>
+                        </button>
                         <h6 className='mt-[35px] text-center underline cursor-pointer'>Forget your password?</h6>
                     </div>
                    
@@ -153,7 +153,7 @@ function Login() {
                     <h6 className='text-[#333333] text-[20px] font-[400] text-center'>Don’t have an ccount? <span className='underline cursor-pointer' onClick={() => router.push("/signup")}> Sign up </span> </h6>
                 </div>
             </div>
-            <div className='hidden md:block '>
+            <div className='hidden md:block md:w-[35%] lg:w-[40%]'>
              <ImgDisplayer login/>
             </div>
          

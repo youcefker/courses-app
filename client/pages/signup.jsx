@@ -53,20 +53,22 @@ function Signup() {
  
     const userObject = {
           email: formik.values.email,
-          password : formik.values.password
+          password : formik.values.password,
+          name : "Amin",
+          course_name : "Javascript"
       };
       
       axios.post('http://localhost:4000/api/v1/auth/signup', userObject)
           .then((res) => {
               console.log(res.data)
              
-              if (!res.data.error){
+       
                 router.push({
                   pathname :"/verificationSent",
                   query : {email : formik.values.email}
   
                })
-              }
+              
              
           }).catch((error) => {
               console.log(error)
@@ -111,7 +113,7 @@ function Signup() {
       <div className="container mx-auto pt-[33.32px] mb-[230px]">
         <Image onClick={() => router.push("/")} className="cursor-pointer" src="/images/footer_logo.svg" width={60} height={60} />
         <div className="flex justify-between items-center mt-[54px]">
-            <div className='w-[35%]'>
+            <div className='w-full md:w-[55%] lg:w-[50%] xl:w-[40%] px-4 sm:px-0'>
                 <h5 className='text-[#333333] text-[32px]'>Sign up</h5>
                 <h6 className='text-[#666666CC] text-[16px] font-[400]'>Sign up for free to access to in any of our products </h6>
                 <div className="sign_inputs mt-[53px]">
@@ -185,13 +187,13 @@ function Signup() {
                            sitekey="Your client site key"
                          />
                         </div>
-                        <Button type='submit' disableRipple={formik.values.email === '' || formik.values.password === ''} className={(formik.values.email !== '' && formik.values.password !== '') ? 'muiBt loginBtn bg-[#079C49] w-[50%] mt-[30px] rounded-[32px] text-[#fff] h-[64px] text-[22px] hover:bg-[#078C49] normal-case' : 'muiBt loginBtn bg-[#111111] w-[50%] mt-[30px] rounded-[32px] text-[#fff] h-[64px] text-[22px] opacity-[0.25] hover:bg-[#111111] normal-case '}>Sign up</Button>
-                        <h6 className='text-[#333333] text-[20px] font-[400] mt-[10px]' >Already have an ccount?   <span className='underline cursor-pointer' onClick={() => router.push("/login")}> Log in </span> </h6>
+                        <button type='submit' disableRipple={formik.values.email === '' || formik.values.password === ''} className={(formik.values.email !== '' && formik.values.password !== '') ? 'muiBt loginBtn bg-[#079C49] w-[50%] mt-[30px] rounded-[32px] text-[#fff] h-[64px] text-[22px] hover:bg-[#078C49] normal-case' : 'muiBt loginBtn bg-[#111111] w-[50%] mt-[30px] rounded-[32px] text-[#fff] h-[64px] text-[22px] opacity-[0.25] hover:bg-[#111111] normal-case '}>Sign up</button>
+                        <h6 className='text-[#333333] text-[20px] font-[400] mt-[10px]' >Already have an account?   <span className='underline cursor-pointer' onClick={() => router.push("/login")}> Log in </span> </h6>
                     </form> 
                 </div>
                 
             </div>
-            <div className='w-[40%]'>
+            <div className='hidden md:block md:w-[35%] lg:w-[40%]'>
              <ImgDisplayer login/>
             </div>
          
