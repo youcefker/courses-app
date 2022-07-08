@@ -20,7 +20,7 @@ const percentage = 65;
 
 function Dashboard() {
     const router = useRouter()
-    const [student, setStudent] = useState(true)
+    const [student, setStudent] = useState(false)
     const [firstCourse, setFirstCourse] = useState(null)
     const [firstCourseProgress, setFirstCourseProgress] = useState(null)
     const [lastWatched, setLastWatched] = useState(null)
@@ -29,9 +29,25 @@ function Dashboard() {
     const [percentage, setPercentage]= useState(0)
     const [enrollRequests, setEnrollRequests] = useState(null)
     const [courseStudents, setCourseStudents] = useState(null)
+    const [storageData, setStorageData] = useState(null)
+    const [fetched, setFetched] = useState(false)
+    
+    const fetchStorageData = () => {
+      try {
+        const jwt = localStorage.getItem("jwt")
+        const email = localStorage.getItem("email")
+        const name = localStorage.getItem("name")
+        const storageData = jwt && email && name ? {jwt, name, email} : null
+        return storageData
+      } catch(err){
+        console.log(err)
+        return null
+      }
+    }
+
     const fetchDataForStudent = async () => {
       try {
-        const { data } = await axios.get("http://localhost:4000/api/v1/student/courses/62c339d058c9e5ffe95a43cb")
+        const { data } = await axios.get("http://localhost:4000/api/v1/student/courses/}")
         if(data.data.courses.length > 0) {
           const firstCourse_id = data.data.courses[0]._id
           const courseData = await axios.get(`http://localhost:4000/api/v1/course/${firstCourse_id}`)
@@ -122,8 +138,18 @@ function Dashboard() {
       console.log(num_lessons_completed / course_progress.lessons_progress.length)
       return num_lessons_completed / course_progress.lessons_progress.length
     }
+    const verifyStudentAuth = () => {
+      if(!fetchStorageData()) {
+        console.log("storageData", fetchStorageData())
+        router.replace("/login")
+      } else {
+        setStorageData(fetchStorageData())
+      }
+    }
     useEffect(() => {
+      
       if(student){
+        verifyStudentAuth()
         fetchDataForStudent()
       } else {
         fetchDataForAdmin()
@@ -134,7 +160,7 @@ function Dashboard() {
     <Sidebar active="dashboard"/>
       <IndexPage>
         {student ? 
-            firstCourse && latest && upcoming  ? (
+            firstCourse && latest && upcoming  && storageData? (
               <>
               <div className="flex justify-between">
               <div>
