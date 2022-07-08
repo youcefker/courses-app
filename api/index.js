@@ -29,8 +29,8 @@ app.use('/api/v1/student', studentRoutes)
 
 //----- env -----
 const port = process.env.PORT || 4000
-const MONGO_URL = process.env.MONGO_URL
-
+//const MONGO_URL = process.env.MONGO_URL
+const MONGO_URL = "mongodb://localhost:27017/courses"
 mongoose.connect(MONGO_URL)
     .then(result => {
         // set up connection to db for file storage
@@ -61,7 +61,7 @@ mongoose.connect(MONGO_URL)
         const singleUpload = multer({ storage }).single('file');
         console.log(`database connected successfully`)
         const port = process.env.PORT || 3000
-        app.post('/api/v1/course/:course_id/lesson', checkAdminToken, singleUpload, addLessonToCourse)
+        app.post('/api/v1/course/:course_id/lesson', singleUpload, addLessonToCourse)
         app.get('/api/v1/lesson/files/:filename', checkStudentToken,(req, res) => {
           console.log(req.params.filename)
           const range = req.headers.range;
