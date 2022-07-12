@@ -55,7 +55,7 @@ function Signup() {
           email: formik.values.email,
           password : formik.values.password,
           name : "Amin",
-          course_name : "Javascript"
+          course_name : "hello"
       };
       
       axios.post('http://localhost:4000/api/v1/auth/signup', userObject)

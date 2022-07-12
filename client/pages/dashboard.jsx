@@ -20,7 +20,7 @@ const percentage = 65;
 
 function Dashboard() {
     const router = useRouter()
-    const [student, setStudent] = useState(false)
+    const [student, setStudent] = useState(true)
     const [firstCourse, setFirstCourse] = useState(null)
     const [firstCourseProgress, setFirstCourseProgress] = useState(null)
     const [lastWatched, setLastWatched] = useState(null)
@@ -100,7 +100,7 @@ function Dashboard() {
         const requestsRes = await axios.get("http://localhost:4000/api/v1/auth/requests")
         console.log("requests", requestsRes.data.data)
         setEnrollRequests(requestsRes.data.data)
-        const studentRes = await axios.get("http://localhost:4000/api/v1/student/courses/62c867c9e3c2f05e88bbf9aa")
+        const studentRes = await axios.get("http://localhost:4000/api/v1/student/courses/62cd98e8c4e4101ba79e9649")
         if(studentRes.data.data.courses.length > 0) {
           setFirstCourse(studentRes.data.data.courses[0])
           const firstCourse_name = studentRes.data.data.courses[0].name
