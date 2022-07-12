@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Image from 'next/image'
-import React from 'react'
+import React, { useEffect } from 'react'
 import IndexPage from '../components/dashboard/indexPage'
 import Sidebar from '../components/dashboard/sidebar'
 import { useFormik } from "formik";
@@ -8,6 +8,7 @@ import * as yup from "yup";
 import { useState } from 'react';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import { Button } from '@mui/material'
+import { useRouter } from 'next/router'
 
 
 
@@ -29,6 +30,29 @@ const validationSchema = yup.object({
 });
 
 function Profile() {
+  const router = useRouter()
+  const [email, setEmail] = useState("")
+  const [name, setName] = useState("")
+  const fetchStorageData = () => {
+    const jwt = localStorage.getItem("jwt")
+    const email = localStorage.getItem("email")
+    const name =  localStorage.getItem("name")
+    const student_id =  localStorage.getItem("student_id")
+    console.log("student id ----", student_id)
+    const data = jwt && email && name && student_id  ? {jwt, name, email, student_id} : null
+    return data
+}
+
+
+useEffect(() => {
+  const auth = fetchStorageData()
+  if(!auth){
+    router.replace('/login')
+  } else {
+    setName(auth.name)
+    setEmail(auth.email)
+  }
+}, [])
 
   const [hide, setHide] = useState(true)
 
@@ -36,8 +60,8 @@ function Profile() {
 
   const formik = useFormik({
     initialValues: {
-      name: "",
-      email: "",
+      name: name,
+      email: email,
       password : ""
     
     },

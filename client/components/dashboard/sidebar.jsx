@@ -20,6 +20,24 @@ const Sidebar = ({ active }) => {
   const [activeItem, setActiveItem] = useState("");
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const [student, setStudent] = useState(true)
+    const [fetched, setFetched] = useState(false)
+    
+    const fetchStorageData = () => {
+        const role =  localStorage.getItem("role")
+        const data = role ? role : null
+        return data
+    } 
+    useEffect(() => {
+      const role = fetchStorageData()
+        if(role === "admin") {
+          setStudent(false)
+        } else if(role === "student") {
+          setStudent(true)
+        } else {
+          router.replace('login')
+        }
+    }, [])
 
   useEffect(() => {
     setActiveItem(active);
@@ -49,7 +67,7 @@ const Sidebar = ({ active }) => {
       
        
   
-        <li
+        {!student ? <li
           onClick={() => {
             setActiveItem("courses");
             router.push("/courses/list");
@@ -63,7 +81,7 @@ const Sidebar = ({ active }) => {
           {" "}
           <MenuBookIcon className="mr-2 text-[22px]" /> Courses
         
-        </li>
+        </li> : null}
       </ul>
 
      

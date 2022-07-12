@@ -3,11 +3,13 @@ import React from 'react'
 import CourseCard from '../../../components/dashboard/courseCard'
 import IndexPage from '../../../components/dashboard/indexPage'
 import Sidebar from '../../../components/dashboard/sidebar'
-
+import { useRouter } from 'next/router'
 
 
 
 function Lesson() {
+   const router = useRouter()
+   console.log(router)
   return (
     <>
     <Sidebar active="courses" />

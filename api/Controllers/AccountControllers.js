@@ -200,13 +200,15 @@ module.exports = {
                     data: null
                 })
             }
-            const access_token = jwt.sign({
-                id: account._id
-             }, process.env.SECRET_KEY, {expiresIn: '30d'})
             try {
                 const accountWithStudent = await account.populate("student")
                 accountWithStudent.password = undefined
                 accountWithStudent.role = undefined
+                accountWithStudent.isVerified = undefined
+                const access_token = jwt.sign({
+                    id: account._id,
+                    student_id: account.student._id
+                 }, process.env.SECRET_KEY, {expiresIn: '30d'})
                 return res.status(200).json({
                     error: false, 
                     message: "Signed in succesfully.",
