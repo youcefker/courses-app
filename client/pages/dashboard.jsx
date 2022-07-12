@@ -48,7 +48,7 @@ function Dashboard() {
     const auth = fetchStorageData()
     const fetchDataForStudent = async () => {
       try {
-        const { data } = await axios.get("http://localhost:4000/api/v1/student/courses/}")
+        const { data } = await axios.get("http://localhost:4000/api/v1/student/courses/62cd98eac4e4101ba79e964d")
         if(data.data.courses.length > 0) {
           const firstCourse_id = data.data.courses[0]._id
           const courseData = await axios.get(`http://localhost:4000/api/v1/course/${firstCourse_id}`)
@@ -100,7 +100,7 @@ function Dashboard() {
         const requestsRes = await axios.get("http://localhost:4000/api/v1/auth/requests")
         console.log("requests", requestsRes.data.data)
         setEnrollRequests(requestsRes.data.data)
-        const studentRes = await axios.get("http://localhost:4000/api/v1/student/courses/62cd98e8c4e4101ba79e9649")
+        const studentRes = await axios.get("http://localhost:4000/api/v1/student/courses/62cd98eac4e4101ba79e964d")
         if(studentRes.data.data.courses.length > 0) {
           setFirstCourse(studentRes.data.data.courses[0])
           const firstCourse_name = studentRes.data.data.courses[0].name
