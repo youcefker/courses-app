@@ -85,7 +85,7 @@ function AdminLogin() {
         <Image onClick={() => router.push("/")} className="cursor-pointer" src="/images/footer_logo.svg" width={60} height={60} />
      </div>
      <div className='flex flex-col items-center justify-center'>
-     <div className='w-[35%]'>
+     <div className='lg:w-[45%]'>
                 <div className="login__box md:border-2 border-[#66666640] rounded-[16px] p-1 md:p-[32px] ">
                     <div className="flex flex-col items-center">
                       <div className='bg-[#079C49] rounded-full  w-[60px] h-[60px]'></div>

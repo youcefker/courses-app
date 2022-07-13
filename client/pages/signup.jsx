@@ -21,6 +21,10 @@ const validationSchema = yup.object({
     .string("Enter your email")
     .email("Email not valide")
     .required("Email is required"),
+  name: yup
+    .string("Enter your name")
+    .min(3)
+    .required("Name is required"),
 
   password: yup
     .string("Enter your password")
@@ -54,8 +58,8 @@ function Signup() {
     const userObject = {
           email: formik.values.email,
           password : formik.values.password,
-          name : "Amin",
-          course_name : "hello"
+          name : formik.values.name,
+          course_name : "course"
       };
       
       axios.post('http://localhost:4000/api/v1/auth/signup', userObject)
@@ -97,6 +101,7 @@ function Signup() {
   const formik = useFormik({
     initialValues: {
       email: "",
+      name: "",
       password : ""
     
     },
@@ -120,12 +125,23 @@ function Signup() {
                   <form onSubmit={formik.handleSubmit}>
                        <div className='flex flex-col'>
                           <label htmlFor="email" className="text-[#666666] text-[16px] font-[400] mb-2">Email address</label>
-                          <input type="email" className='input border-2 border-[#66666640] h-[64px] rounded-xl outline-none px-3 text-[20px]' placeholder='Email' id='email' name='email' 
+                          <input type="email" className='input border-2 border-[#66666640] h-[55px] rounded-xl outline-none px-3 text-[20px]' placeholder='Email' id='email' name='email' 
                           value={formik.values.email}
                           onChange={formik.handleChange}
                           />
                          {formik.touched.email && formik.errors.email ? (
                              <div className='text-[red] text-[14px] ml-2'>{formik.errors.email}</div>
+                           ) : null}
+                        </div>
+
+                        <div className='flex flex-col mt-[30px]'>
+                          <label htmlFor="name" className="text-[#666666] text-[16px] font-[400] mb-2">Name</label>
+                          <input type="text" className='input border-2 border-[#66666640] h-[55px] rounded-xl outline-none px-3 text-[20px]' placeholder='Name' id='name' name='name' 
+                          value={formik.values.name}
+                          onChange={formik.handleChange}
+                          />
+                         {formik.touched.name && formik.errors.name ? (
+                             <div className='text-[red] text-[14px] ml-2'>{formik.errors.name}</div>
                            ) : null}
                         </div>
                 
@@ -147,7 +163,7 @@ function Signup() {
                                     )}
                                    
                                   </label>
-                                  <input type={hide ? "password": "text"} className='input border-2 border-[#66666640] h-[64px] rounded-xl outline-none px-3 text-[20px]' placeholder='password'  value={formik.values.password}
+                                  <input type={hide ? "password": "text"} className='input border-2 border-[#66666640] h-[55px] rounded-xl outline-none px-3 text-[20px]' placeholder='password'  value={formik.values.password}
                                      onChange={formik.handleChange}
                                      id='password'
                                      name='password' 
@@ -164,7 +180,7 @@ function Signup() {
                               onChange={handleChange}
                               displayEmpty
                               
-                              className="input  border-[#66666640] h-[64px] rounded-xl outline-none px-3 text-[20px]"
+                              className="input  border-[#66666640] h-[55px] rounded-xl outline-none px-3 text-[20px]"
                             >
                               <MenuItem value="">
                                 <em>None</em>

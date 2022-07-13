@@ -17,19 +17,22 @@ export default function Home() {
   const [storageData, setStorageData] = useState(null)
   const [fetched, setFetched] = useState(false)
   
-  const fetchStorageData = async () => {
-    try {
-      const jwt = await localStorage.getItem("jwt")
-      const email = await localStorage.getItem("email")
-      const name = await localStorage.getItem("name")
-      const storageData = jwt && email && name ? {jwt, name, email} : null
-      setStorageData(storageData)
-      setFetched(true)
-    } catch(err){
-      console.log(err)
-    }
+  const fetchStorageData = () => {
+      const jwt = localStorage.getItem("jwt")
+      const email = localStorage.getItem("email")
+      const name =  localStorage.getItem("name")
+      const data = jwt && email && name ? {jwt, name, email} : null
+      return data
   } 
   useEffect(() => {
+    const auth = fetchStorageData()
+    console.log(auth)
+    if(auth){
+      setStorageData(storageData)
+      setFetched(true)
+    } else {
+      setStorageData(true)
+    }
     fetchStorageData()
   }, [])
   

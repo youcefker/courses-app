@@ -2,14 +2,33 @@ import { Button, Collapse, Divider } from '@mui/material'
 import Image from 'next/image'
 import React from 'react'
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Transition } from "@headlessui/react";
 import MenuIcon from '@mui/icons-material/Menu';
 
 export default function MainHeader(props) {
   const [isOpen, setIsOpen] = useState(false);
-  console.log(props.storageData)
   const [checked, setChecked] = React.useState(false);
+  const [storageData, setStorageData] = useState(null)
+  const [fetched, setFetched] = useState(false)
+  
+  const fetchStorageData = () => {
+      const jwt = localStorage.getItem("jwt")
+      const email = localStorage.getItem("email")
+      const name =  localStorage.getItem("name")
+      const data = jwt && email && name ? {jwt, name, email} : null
+      return data
+  } 
+  useEffect(() => {
+    const auth = fetchStorageData()
+    console.log(auth)
+    if(auth){
+      setStorageData(auth)
+      setFetched(true)
+    } else {
+      setFetched(true)
+    }
+  }, [])
   const router = useRouter()
   return (
     <>
@@ -18,17 +37,17 @@ export default function MainHeader(props) {
       <Image src="/images/home__logo.svg" layout="fill"
        objectFit="cover"/>
       </div>
-            {props.fetched ? 
-              !props.storageData ? 
+            {fetched ? 
+              !storageData ? 
                 <div className="flex">
                   <button className="muiBtn  sign text-[#079C49] border-2 border-[#079C49] w-[170px] 2xl:w-[209px] h-[45px] 2xl:h-[52px] text-[20px] 2xl:text-[24px] rounded-[20px] font-[600] mr-6" onClick={()=> router.push("/login")}>Sign in</button>
                   <button className='muiBtn register text-[#079C49] border-2 border-[#079C49] w-[170px] 2xl:w-[209px] h-[45px] 2xl:h-[52px] text-[20px] 2xl:text-[24px] rounded-[20px] font-[600] ' onClick={() => router.push("/signup")}>Register</button>
                 </div>
                 :
                 <div className="flex">
-                  <button className="muiBtn  sign text-[#079C49] border-2 border-[#079C49] w-[170px] 2xl:w-[209px] h-[45px] 2xl:h-[52px] text-[20px] 2xl:text-[24px] rounded-[20px] font-[600] mr-6" onClick={()=> router.push({pathname: "/results",
+                  <button className="muiBtn  sign text-[#079C49] border-2 border-[#079C49] w-[170px] 2xl:w-[209px] h-[45px] 2xl:h-[52px] text-[20px] 2xl:text-[24px] rounded-[20px] font-[600] mr-6" onClick={()=> router.push({pathname: "/dashboard",
                     query: {
-                        storageData: props.storageData
+                        storageData: storageData
                     }})}>Account</button>
                 </div>
               : null
@@ -106,8 +125,8 @@ export default function MainHeader(props) {
           {(ref) => (
             <div className="md:hidden" id="mobile-menu">
               <div className="flex flex-col items-center mb-12">
-              <Button className="muiBtn  sign  text-[#079C49] border-2 border-[#079C49] w-[170px] 2xl:w-[209px] h-[45px] 2xl:h-[52px] text-[20px] 2xl:text-[24px] rounded-[20px] font-[600] mb-3" onClick={()=> router.push("/login")}>Sign in</Button>
-              <Button className='muiBtn register text-[#079C49] border-2 border-[#079C49] w-[170px] 2xl:w-[209px] h-[45px] 2xl:h-[52px] text-[20px] 2xl:text-[24px] rounded-[20px] font-[600] ' onClick={() => router.push("/signup")}>Register</Button>
+              <button className="muiBtn  sign  text-[#079C49] border-2 border-[#079C49] w-[170px] 2xl:w-[209px] h-[45px] 2xl:h-[52px] text-[20px] 2xl:text-[24px] rounded-[20px] font-[600] mb-3" onClick={()=> router.push("/login")}>Sign in</button>
+              <button className='muiBtn register text-[#079C49] border-2 border-[#079C49] w-[170px] 2xl:w-[209px] h-[45px] 2xl:h-[52px] text-[20px] 2xl:text-[24px] rounded-[20px] font-[600] ' onClick={() => router.push("/signup")}>Register</button>
             </div>
             </div>
           )}

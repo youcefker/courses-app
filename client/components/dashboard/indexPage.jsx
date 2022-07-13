@@ -6,7 +6,7 @@ const IndexPage = ({children})=>{
         }} >
             {children}
         </div>
-        <div className=" lg:hidden px-6 py-8 h-[100%] bg-[#F5F5F5]" >
+        <div className=" lg:hidden px-6 py-8 h-[100%] sm:bg-[#F5F5F5]" >
             {children}
         </div>
         </>

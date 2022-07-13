@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Image from 'next/image'
-import React from 'react'
+import React, { useEffect } from 'react'
 import IndexPage from '../components/dashboard/indexPage'
 import Sidebar from '../components/dashboard/sidebar'
 import { useFormik } from "formik";
@@ -8,6 +8,7 @@ import * as yup from "yup";
 import { useState } from 'react';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import { Button } from '@mui/material'
+import { useRouter } from 'next/router'
 
 
 
@@ -29,6 +30,29 @@ const validationSchema = yup.object({
 });
 
 function Profile() {
+  const router = useRouter()
+  const [email, setEmail] = useState("")
+  const [name, setName] = useState("")
+  const fetchStorageData = () => {
+    const jwt = localStorage.getItem("jwt")
+    const email = localStorage.getItem("email")
+    const name =  localStorage.getItem("name")
+    const student_id =  localStorage.getItem("student_id")
+    console.log("student id ----", student_id)
+    const data = jwt && email && name && student_id  ? {jwt, name, email, student_id} : null
+    return data
+}
+
+
+useEffect(() => {
+  const auth = fetchStorageData()
+  if(!auth){
+    router.replace('/login')
+  } else {
+    setName(auth.name)
+    setEmail(auth.email)
+  }
+}, [])
 
   const [hide, setHide] = useState(true)
 
@@ -36,8 +60,8 @@ function Profile() {
 
   const formik = useFormik({
     initialValues: {
-      name: "",
-      email: "",
+      name: name,
+      email: email,
       password : ""
     
     },
@@ -52,12 +76,12 @@ function Profile() {
     <>
       <Sidebar />
       <IndexPage>
-        <div className="flex justify-center pt-4">
-          <div className='bg-white border-2 border-[#079C49] rounded-[15px] w-[500px] px-16 pt-4 pb-20'>
+        <div className="flex justify-center sm:pt-4">
+          <div className='bg-white border-2 border-[#079C49] rounded-[15px] w-[500px] px-5 sm:px-16 pt-3 sm:pt-4 pb-10 sm:pb-20'>
             <div className="flex flex-col items-center">
-               <h5 className='text-[#1F1F1F] text-[22px] font-[600]  text-center'>My profile</h5>
+               <h5 className='text-[#1F1F1F] ext-[18px] sm:text-[22px] font-[600]  text-center'>My profile</h5>
                <div className="relative">
-                    <div  className='mt-8 border-2 border-[#079C49] rounded-full w-[100px] h-[100px] overflow-hidden cursor-pointer z-0' style={{position: "relative"}} >
+                    <div  className='mt-5 sm:mt-8 border-2 border-[#079C49] rounded-full w-[100px] h-[100px] overflow-hidden cursor-pointer z-0' style={{position: "relative"}} >
                         <Image src="/images/main1.png" className='z-1' layout="fill"
                          objectFit="cover"/>
                        
@@ -70,7 +94,7 @@ function Profile() {
               
                <h5 className='text-[#1F1F1F] text-[16px] font-[600]  text-center mt-3'>Hamza Ahmed</h5>
             </div>
-            <div className='mt-12'>
+            <div className='mt-5 sm:mt-12'>
                <form onSubmit={formik.handleSubmit}>
                         <div className='flex flex-col'>
                           <label htmlFor="name" className="text-[#666666] text-[13px]  font-[400] mb-2">Full name</label>

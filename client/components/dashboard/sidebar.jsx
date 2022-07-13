@@ -20,6 +20,24 @@ const Sidebar = ({ active }) => {
   const [activeItem, setActiveItem] = useState("");
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const [student, setStudent] = useState(true)
+    const [fetched, setFetched] = useState(false)
+    
+    const fetchStorageData = () => {
+        const role =  localStorage.getItem("role")
+        const data = role ? role : null
+        return data
+    } 
+    useEffect(() => {
+      const role = fetchStorageData()
+        if(role === "admin") {
+          setStudent(false)
+        } else if(role === "student") {
+          setStudent(true)
+        } else {
+          router.replace('login')
+        }
+    }, [])
 
   useEffect(() => {
     setActiveItem(active);
@@ -49,7 +67,7 @@ const Sidebar = ({ active }) => {
       
        
   
-        <li
+        {!student ? <li
           onClick={() => {
             setActiveItem("courses");
             router.push("/courses/list");
@@ -63,7 +81,7 @@ const Sidebar = ({ active }) => {
           {" "}
           <MenuBookIcon className="mr-2 text-[22px]" /> Courses
         
-        </li>
+        </li> : null}
       </ul>
 
      
@@ -80,7 +98,7 @@ const Sidebar = ({ active }) => {
 
 
 
-    <div className="lg:hidden mb-8 flex justify-between p-3">
+    <div className="lg:hidden pb-5 flex justify-between p-3 sm:bg-[#F5F5F5]">
 <div className='w-[62px] h-[62px] cursor-pointer ' style={{position: "relative"}}>
             <Image src="/images/footer_logo.svg" onClick={() => router.push("/")}  layout="fill"
              objectFit="cover"/>
@@ -141,8 +159,13 @@ const Sidebar = ({ active }) => {
           leaveTo="opacity-0 scale-95"
         >
           {(ref) => (
-            <div className="lg:hidden" id="mobile-menu">
-            <ul className="flex flex-col justify-center items-center w-full my-8">
+            <div className="lg:hidden sm:bg-[#F5F5F5]" id="mobile-menu">
+              
+            <ul className="flex flex-col justify-center items-center w-full mb-5">
+                <div  className='sm:hidden mb-8 border-2 border-[#079C49] rounded-full w-[50px] h-[50px] overflow-hidden cursor-pointer' style={{position: "relative"}} onClick={() => router.push("/profile")}>
+                    <Image src="/images/main1.png"  layout="fill"
+                 objectFit="cover"/>
+                </div>
                 <li
                   onClick={() => {
                     setActiveItem("dashboard");
