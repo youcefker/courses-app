@@ -24,6 +24,7 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { withStyles } from '@mui/styles'
+import { config } from '@fortawesome/fontawesome-svg-core'
 
 
 function TabPanel(props) {
@@ -122,10 +123,14 @@ function Dashboard() {
     }, [])
     const fetchDataForStudent = async () => {
       try {
-        const { data } = await axios.get("http://localhost:4000/api/v1/student/courses/62cc20ad3a5c15bab7dad3ec")
+        const { data } = await axios.get("http://localhost:4000/api/v1/student/courses/62cc20ad3a5c15bab7dad3ec", {
+          headers: {authorization: "Bearer " + storageData.jwt}
+        })
         if(data.data.courses.length > 0) {
           const firstCourse_id = data.data.courses[0]._id
-          const courseData = await axios.get(`http://localhost:4000/api/v1/course/${firstCourse_id}`)
+          const courseData = await axios.get(`http://localhost:4000/api/v1/course/${firstCourse_id}`, {
+            headers: {authorization: "Bearer " + storageData.jwt}
+          })
           console.log("course response ---", courseData.data)
           setFirstCourse(courseData.data.data)
           const firstCourse_progress = data.data.progress.filter(courseProgress => courseProgress.course_id === data.data.courses[0]._id)
@@ -172,14 +177,21 @@ function Dashboard() {
 
     const fetchDataForAdmin = async () => {
       try {
-        const requestsRes = await axios.get("http://localhost:4000/api/v1/auth/requests")
+        const requestsRes = await axios.get("http://localhost:4000/api/v1/auth/requests", {
+          headers: {authorization: "Bearer " + storageData.jwt}
+        })
         console.log("requests", requestsRes.data.data)
         setEnrollRequests(requestsRes.data.data)
-        const studentRes = await axios.get("http://localhost:4000/api/v1/student/courses/62cc20ad3a5c15bab7dad3ec")
+        const studentRes = await axios.get("http://localhost:4000/api/v1/student/courses/62cc20ad3a5c15bab7dad3ec", {
+          headers: {authorization: "Bearer " + storageData.jwt}
+        })
         if(studentRes.data.data.courses.length > 0) {
           setFirstCourse(studentRes.data.data.courses[0])
           const firstCourse_name = studentRes.data.data.courses[0].name
-          const courseStudentsRes = await axios.get(`http://localhost:4000/api/v1/course/students/${firstCourse_name}`)
+          const courseStudentsRes = await axios.get(`http://localhost:4000/api/v1/course/students/${firstCourse_name}`, {
+            headers: {authorization: "Bearer " + storageData.jwt}
+          })
+          console.log(courseStudentsRes.data.data)
           setCourseStudents(courseStudentsRes.data.data)
         }
       } catch(err) {
@@ -188,13 +200,16 @@ function Dashboard() {
     }
 
     const acceptEnrollRequest = async (request) => { 
+      
       try {
         const body = {
           request_id: request._id,
           student_id: request.student_id,
           course_id: request.course_id
         }
-        const response = await axios.post("http://localhost:4000/api/v1/student/addcourse", body)
+        const response = await axios.post("http://localhost:4000/api/v1/student/addcourse", body, {
+          headers: {authorization: "Bearer " + storageData.jwt}
+        })
         console.log("response", response)
         fetchDataForAdmin()
       } catch(err) {
@@ -204,7 +219,9 @@ function Dashboard() {
 
     const refuseEnrollRequest = async (request_id) => {
       try {
-        const response = await axios.delete(`http://localhost:4000/api/v1/student/request/${request_id}`)
+        const response = await axios.delete(`http://localhost:4000/api/v1/student/request/${request_id}`, {
+          headers: {authorization: "Bearer " + storageData.jwt}
+        })
         console.log("response", response)
         fetchDataForAdmin()
       } catch(err){

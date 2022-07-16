@@ -126,7 +126,7 @@ function Signup() {
   useEffect(() => {
     fetchCoursesNames()
   }, [])
-  
+  console.log("cours----", cours)
   return (
     <>
       <div className="container mx-auto pt-[33.32px] mb-[230px]">
@@ -197,7 +197,7 @@ function Signup() {
                               
                               className="input  border-[#66666640] h-[55px] rounded-xl outline-none px-3 text-[20px]"
                             >
-                              {cours.map(course => <MenuItem value={course.name}>{course.name}</MenuItem>)}
+                              {cours?.map(course => <MenuItem value={course.name}>{course.name}</MenuItem>)}
                             </Select>
                         
                           </FormControl>

@@ -205,6 +205,7 @@ module.exports = {
             try {
                 const accountWithStudent = await account.populate("student")
                 accountWithStudent.role = undefined
+                accountWithStudent.password = undefined
                 accountWithStudent.isVerified = undefined
                 const access_token = jwt.sign({
                     id: account._id,
@@ -360,7 +361,7 @@ module.exports = {
                         data: null
                     })
                 } 
-                await getAccount(token.account_id, async (err, account) => {
+                await getAccount(confirmationToken.account_id, async (err, account) => {
                     if(err) {
                         return res.status(400).json({
                             error: true,

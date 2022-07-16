@@ -11,6 +11,7 @@ import { useState } from 'react'
 
 import axios from 'axios'
 import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 
 
 function AddCourse() {
@@ -21,12 +22,18 @@ function AddCourse() {
    const [courseName, setCourseName] = useState('')
    const [courseDescrip, setCourseDescrip] = useState('')
    const [file, setFile] = useState(null)
+   const [storageData, setStorageData] = useState(null)
 
    const handleName = (e) => setCourseName(e.target.value)
    const handleDescription = (e) => setCourseDescrip(e.target.value)
 
    console.log(courseName);
-
+   const fetchStorageData = () => {
+    const jwt = localStorage.getItem("jwt")
+    const role =  localStorage.getItem("role")
+    const data = jwt && role ? {jwt, role}: null
+    return data
+}
     const handleChange = (event) => {
         setCours(event.target.value);
       };
@@ -42,7 +49,10 @@ function AddCourse() {
           method: "post",
             url: 'http://localhost:4000/api/v1/course',
             data: bodyFormData,
-            headers: { "Content-Type": "multipart/form-data" },
+            headers: { 
+              authorization: "Bearer " + storageData.jwt,
+              "Content-Type": "multipart/form-data" 
+            },
           })
           .then((res) => {
               console.log(res.data)
@@ -60,6 +70,15 @@ function AddCourse() {
           });
      
       }
+      useEffect(() => {
+        const auth = fetchStorageData()
+        if(auth) {
+          setStorageData(auth)
+        } else {
+          router.replace("/adminLogin")
+        }
+      }, [])
+      
     
   return (
     <>

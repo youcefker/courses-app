@@ -25,6 +25,25 @@ function Lesson() {
          console.log(err)
       }
    }
+   const fetchStorageData = () => {
+      const jwt = localStorage.getItem("jwt")
+      const role =  localStorage.getItem("role")
+      if(role === "student") {
+        const email = localStorage.getItem("email")
+        const name =  localStorage.getItem("name")
+        const student_id =  localStorage.getItem("student_id")
+        const data = jwt && email && name && student_id && role ? {jwt, name, email, role, student_id} : null
+        return data
+      } 
+  }
+  useEffect(() => {
+   const auth = fetchStorageData()
+   if(auth) {
+     setStorageData(auth)
+   } else {
+     router.replace("/adminLogin")
+   }
+ }, [])
   return (
     <>
     <Sidebar active="courses" />

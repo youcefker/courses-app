@@ -3,10 +3,11 @@ const { getAllLessons, getLesson, updateLesson, deleteLesson, getLessonFileStrea
 
 const router = require("express").Router()
 
-router.get("/", checkAdminToken, getAllLessons)
-router.get("/course/:course_id", checkStudentToken, getCourseLessons)
-router.get("/:lesson_id", checkStudentToken, getLesson)
-router.put("/:lesson_id", checkStudentToken, updateLesson)
-router.delete("/:lesson_id", checkAdminToken, deleteLesson)
-router.post("/complete", checkStudentToken, completeLesson)
+router.get("/",  getAllLessons)
+router.get("/course/:course_id", getCourseLessons)
+router.get("/:lesson_id", getLesson)
+router.put("/:lesson_id", updateLesson)
+router.delete("/:lesson_id",  deleteLesson)
+router.post("/complete", completeLesson)
+
 module.exports = router

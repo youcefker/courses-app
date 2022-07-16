@@ -56,7 +56,6 @@ function Login() {
             await localStorage.setItem("email", response.data.data.email)
             await localStorage.setItem("name", response.data.data.student.name)
             await localStorage.setItem("student_id", response.data.data.student._id)
-            axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.access_token
             router.push({
               pathname :"/profile",
             })

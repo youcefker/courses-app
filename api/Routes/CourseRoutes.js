@@ -18,12 +18,12 @@ const upload = multer({
 }).single("course_file");
 
 // course routes 
-router.post('/', checkAdminToken, upload, createCourse)
-router.get('/', checkAdminToken, getAllCourses)
+router.post('/',  upload, createCourse)
+router.get('/',  getAllCourses)
 router.get('/names', getCoursesNames)
-router.get('/:course_id', checkAdminToken, getCourse)
-router.put('/:course_id', checkAdminToken, updateCourse)
-router.delete('/:course_id', checkAdminToken, deleteCourse)
-router.get("/students/:name", checkAdminToken, getCourseStudents)
+router.get('/:course_id',  getCourse)
+router.put('/:course_id',  updateCourse)
+router.delete('/:course_id',  deleteCourse)
+router.get("/students/:name",  getCourseStudents)
 
 module.exports = router
