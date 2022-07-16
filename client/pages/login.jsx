@@ -51,12 +51,12 @@ function Login() {
         const response = await axios.post('http://localhost:4000/api/v1/auth/signin', userObject)
         console.log(response.data)
           if (!response.data.error){
-            await localStorage.setItem("student_id",response.data.data.student._id)
             await localStorage.setItem("role","student")
             await localStorage.setItem("jwt", response.data.access_token)
             await localStorage.setItem("email", response.data.data.email)
             await localStorage.setItem("name", response.data.data.student.name)
             await localStorage.setItem("student_id", response.data.data.student._id)
+            axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.access_token
             router.push({
               pathname :"/profile",
             })
@@ -144,10 +144,10 @@ function Login() {
                             <span className='text-[#666666]  sm:text-[24px] font-[400]'>OR</span>
                             <div className='h-[1px] sm:h-[2px] w-[40%] bg-[#66666640]'></div>
                         </div>
-                        <button className='flex justify-center items-center w-full mt-4 sm:mt-[30px] rounded-[32px]  h-[60px] text-[18px] normal-case  border-3 googleBtn'>
+                        {/*<button className='flex justify-center items-center w-full mt-4 sm:mt-[30px] rounded-[32px]  h-[60px] text-[18px] normal-case  border-3 googleBtn'>
                             <Image src="/icons/google.svg" width={25} height={25}/>
                             <span className='text-[#333333] font-[400] ml-[16px]'>Continue with Google</span>
-                        </button>
+                          </button>*/}
                         <h6 className='mt-[35px] text-center underline cursor-pointer'>Forget your password?</h6>
                     </div>
                    

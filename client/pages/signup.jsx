@@ -11,6 +11,7 @@ import  axios  from "axios";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { useEffect } from 'react'
 
 
 
@@ -40,7 +41,7 @@ function Signup() {
   const [email, setEmail] = useState('')
 
   const [password, setPassword] = useState('')
-  const [cours, setCours] = React.useState('');
+  const [cours, setCours] = React.useState([])
 
 
   // const handleSignup = () => {
@@ -52,14 +53,14 @@ function Signup() {
   //   axios.post("http://localhost:4000/api/v1/auth/signup", requestOptions)
   //     .then(response => response.json()).catch((err) => {console.log(err);})
   // };
-
+  
   const handleSignup =() => {
  
     const userObject = {
           email: formik.values.email,
           password : formik.values.password,
           name : formik.values.name,
-          course_name : "course"
+          course_name : formik.values.course
       };
       
       axios.post('http://localhost:4000/api/v1/auth/signup', userObject)
@@ -102,7 +103,8 @@ function Signup() {
     initialValues: {
       email: "",
       name: "",
-      password : ""
+      password : "",
+      course: ""
     
     },
     validationSchema: validationSchema,
@@ -112,7 +114,19 @@ function Signup() {
    
     },
   });
-
+  const fetchCoursesNames = async () => {
+    try {
+      const response = await axios.get("http://localhost:4000/api/v1/course/names")
+      console.log(response.data)
+      setCours(response.data.data)
+    } catch(err){
+      console.log(err)
+    }
+  }
+  useEffect(() => {
+    fetchCoursesNames()
+  }, [])
+  
   return (
     <>
       <div className="container mx-auto pt-[33.32px] mb-[230px]">
@@ -176,18 +190,14 @@ function Signup() {
                           <FormControl>
                             <label className="text-[#666666] text-[16px] font-[400] mb-2">Choose the cours</label>
                             <Select
+                              name='course'
                               value={cours}
                               onChange={handleChange}
                               displayEmpty
                               
                               className="input  border-[#66666640] h-[55px] rounded-xl outline-none px-3 text-[20px]"
                             >
-                              <MenuItem value="">
-                                <em>None</em>
-                              </MenuItem>
-                              <MenuItem value={10}>Ten</MenuItem>
-                              <MenuItem value={20}>Twenty</MenuItem>
-                              <MenuItem value={30}>Thirty</MenuItem>
+                              {cours.map(course => <MenuItem value={course.name}>{course.name}</MenuItem>)}
                             </Select>
                         
                           </FormControl>

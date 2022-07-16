@@ -9,6 +9,7 @@ import { useState } from 'react';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import { Button } from '@mui/material'
 import { useRouter } from 'next/router'
+import axios from 'axios'
 
 
 
@@ -31,37 +32,16 @@ const validationSchema = yup.object({
 
 function Profile() {
   const router = useRouter()
-  const [email, setEmail] = useState("")
-  const [name, setName] = useState("")
-  const fetchStorageData = () => {
-    const jwt = localStorage.getItem("jwt")
-    const email = localStorage.getItem("email")
-    const name =  localStorage.getItem("name")
-    const student_id =  localStorage.getItem("student_id")
-    console.log("student id ----", student_id)
-    const data = jwt && email && name && student_id  ? {jwt, name, email, student_id} : null
-    return data
-}
-
-
-useEffect(() => {
-  const auth = fetchStorageData()
-  if(!auth){
-    router.replace('/login')
-  } else {
-    setName(auth.name)
-    setEmail(auth.email)
-  }
-}, [])
+  const [emailChanged, setEmailChanged] = useState(false)
+  const [nameChanged, setNameChanged] = useState(false)
 
   const [hide, setHide] = useState(true)
 
   const handleHide = ()=> setHide(!hide)
-
   const formik = useFormik({
     initialValues: {
-      name: name,
-      email: email,
+      name: localStorage.getItem("name"),
+      email: localStorage.getItem("email"),
       password : ""
     
     },
@@ -72,6 +52,32 @@ useEffect(() => {
    
     },
   });
+  console.log(formik.values.name)
+  console.log(formik.values.email)
+  const handleUpdateProfile = async () => {
+    try {
+      if(nameChanged){
+        const studentUpdate = {
+          name: formik.values.name
+        }
+        const studentResponse =  await axios.put("http://localhost:4000/api/v1/student/62c0559cf50b90bbca671473", studentUpdate)
+        console.log(studentResponse)
+      }
+      const accountUpdate = {}
+      if(emailChanged){
+        accountUpdate.email = formik.values.email
+      }
+      if(formik.values.password.length > 8) {
+        accountUpdate.password = formik.values.password
+      }
+      if(emailChanged || formik.values.password.length) {
+        const accountResponse =  await axios.put("http://localhost:4000/api/v1/auth/account/62c0559cf50b90bbca671473", accountUpdate)
+        console.log(accountResponse)
+      }
+    } catch(err) {
+      console.log(err)
+    }
+  }
   return (
     <>
       <Sidebar />
@@ -100,7 +106,10 @@ useEffect(() => {
                           <label htmlFor="name" className="text-[#666666] text-[13px]  font-[400] mb-2">Full name</label>
                           <input type="text" className='input border-[1px] border-[#079C49] h-[45px]  rounded-lg outline-none px-3 w-full' placeholder='Full name' id='name' name='name' 
                            value={formik.values.name}
-                           onChange={formik.handleChange}
+                           onChange={(e) => {
+                            setNameChanged(true)
+                            formik.handleChange(e)
+                           }}
                            />
                           {formik.touched.name && formik.errors.name ? (
                               <div className='text-[red] text-[13px] ml-2'>{formik.errors.name}</div>
@@ -110,7 +119,10 @@ useEffect(() => {
                           <label htmlFor="email" className="text-[#666666] text-[13px] font-[400] mb-2">Email address</label>
                           <input type="text" className='input border-[1px] border-[#079C49] h-[45px]  rounded-lg  outline-none px-3 ' placeholder='Mail address' id='email' name='email' 
                            value={formik.values.email}
-                           onChange={formik.handleChange}
+                           onChange={(e) => {
+                            setEmailChanged(true)
+                            formik.handleChange(e)
+                          }}
                            />
                           {formik.touched.email && formik.errors.email ? (
                               <div className='text-[red] text-[13px] ml-2'>{formik.errors.email}</div>
@@ -136,7 +148,9 @@ useEffect(() => {
                           </label>
                           <input type={hide ? "password": "text"} className='input border-[1px] border-[#079C49] h-[45px]  rounded-lg  outline-none px-3 ' placeholder='password' 
                             value={formik.values.password}
-                            onChange={formik.handleChange}
+                            onChange={(e) => {
+                              formik.handleChange(e)
+                            }}
                             id='password'
                             name='password' 
                           />   

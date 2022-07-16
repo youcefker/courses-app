@@ -38,6 +38,7 @@ function Courses() {
   const [lessonVideo, setLessonVideo] = React.useState(null);
   const [open, setOpen] = React.useState(false);
   const [data, setData] = React.useState(false);
+  const [firstCourse, setFirstCourse] = React.useState(null)
 const handleOpen = () => setOpen(true);
 const handleClose = () => setOpen(false);
 
@@ -72,7 +73,17 @@ useEffect(  ()  => {
     
   }
 
-
+  const fetchFirstCourse = async () => {
+    try {
+      const response = await axios.get("http://localhost:4000/api/v1/course")
+      console.log(response.data)
+      if(response.data.data.length != 0){
+        setFirstCourse(response.data.data[0])
+      }
+    } catch(err) {
+      console.log(err)
+    }
+  }
 
   const getCourse = async () =>{
     await axios.get('http://localhost:4000/api/v1/course/62c386bf96ee0605999f194f')
@@ -98,7 +109,7 @@ useEffect(  ()  => {
   
     axios({
       method: "post",
-      url: "http://localhost:4000/api/v1/course/62c386bf96ee0605999f194f/lesson",
+      url: `http://localhost:4000/api/v1/course/${firstCourse._id}/lesson`,
       data: bodyFormData,
       headers: { "Content-Type": "multipart/form-data" },
     }).then(function (response) {
@@ -116,13 +127,18 @@ useEffect(  ()  => {
   console.log(lessons);
 
   const createdCourse = router.query.course
+
+  useEffect(() => {
+    fetchFirstCourse()
+  }, [])
+  
   return (
     <>
     <Sidebar active="courses" />
     <IndexPage>
 
       <div className="flex">
-         <Button className='normal-case bg-[#079C49] text-[#fff] font-bold mr-4 text-[20px]' onClick={()=> router.push("/courses/add")}>Add Course</Button>
+      {!firstCourse ?<Button className='normal-case bg-[#079C49] text-[#fff] font-bold mr-4 text-[20px]' onClick={()=> router.push("/courses/add")}>Add Course</Button>: null}
 
         
 
@@ -132,7 +148,7 @@ useEffect(  ()  => {
                 </div> */}
 
              
-       <Button onClick={handleOpen} className='normal-case bg-[#079C49] text-[#fff] font-bold  text-[20px]'>Add lesson</Button>
+      {firstCourse? <Button onClick={handleOpen} className='normal-case bg-[#079C49] text-[#fff] font-bold  text-[20px]'>Add lesson</Button>: null}
   
        
        </div>
@@ -155,7 +171,7 @@ useEffect(  ()  => {
                        <textarea value={lessonDescription} onChange={(e)=> setLessonDescription(e.target.value)} type="text" className='w-full border border-2 border-[#1F1F1F]  px-3 py-3 rounded-xl mt-2 focus:outline-none h-[30vh]' placeholder="Lorem Ipsum is simply dummy..."/>
                     </div>
                     <div className='mt-4'>
-                      <Input accept="image/*" id="contained-button-file" multiple type="file" onChange={(e) => setLessonVideo(e.target.value)} />
+                      <Input accept=".mp4" id="contained-button-file" single type="file" onChange={(e) => setLessonVideo(e.target.files[0])} />
                        <Button variant="contained" component="span">
                        Click to upload
                        </Button>

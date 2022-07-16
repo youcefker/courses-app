@@ -15,6 +15,7 @@ const studentRoutes = require("./Routes/StudentRoutes")
 const { addLessonToCourse } = require("./Controllers/CourseControllers")
 const crypto = require("crypto");
 const { checkAdminToken, checkStudentToken } = require("./Auth");
+const { createAccount } = require("./Services/AccountService");
 
 
 
@@ -29,8 +30,8 @@ app.use('/api/v1/student', studentRoutes)
 
 //----- env -----
 const port = process.env.PORT || 4000
-//const MONGO_URL = process.env.MONGO_URL
-const MONGO_URL = "mongodb://localhost:27017/courses"
+const MONGO_URL = process.env.MONGO_URL
+//MONGO_URL = "mongodb://localhost:27017/courses"
 mongoose.connect(MONGO_URL)
     .then(result => {
         // set up connection to db for file storage
@@ -115,6 +116,17 @@ mongoose.connect(MONGO_URL)
           });
         })
         app.listen(port, () => {
+          const admin = {
+            email: "admin@admin.com",
+            password: "$2a$10$q9fLVhmOEBOWHKizLnYbSOBp6.14P.oLrWbIDsko1rrcgQXcdFY5u",
+            role: "admin"
+          }
+            /*createAccount(admin, (err, account) => {
+              if(err) {
+                console.log(err)
+              }
+              console.log("admin created successfully")
+            })*/
             console.log(`server is listening at port ${port}`)
         })
     })

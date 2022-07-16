@@ -7,9 +7,11 @@ const Account = require("../Models/Account")
 const ConfirmationToken = require("../Models/ConfirmationToken")
 const { createConfirmationToken, getConfirmationToken } = require("../Services/ConfirmationTokenServices")
 const { getCourseByName, getCourse } = require("../Services/CourseServices")
-const { createStudent, getStudent, getStudentByName } = require("../Services/StudentService")
+const { createStudent, getStudent, getStudentByName, updateStudent } = require("../Services/StudentService")
 const Student = require("../Models/Student")
 const { createEnrollRequest, getEnrollRequests, deleteEnrollRequest } = require("../Services/EnrollRequestService")
+const { createResetToken, getResetToken } = require("../Services/ResetTokenService")
+const ResetToken = require("../Models/ResetToken")
 
 module.exports = {
     signup: async (req, res) => {
@@ -202,7 +204,6 @@ module.exports = {
             }
             try {
                 const accountWithStudent = await account.populate("student")
-                accountWithStudent.password = undefined
                 accountWithStudent.role = undefined
                 accountWithStudent.isVerified = undefined
                 const access_token = jwt.sign({
@@ -337,7 +338,7 @@ module.exports = {
     verifyAccount: async (req, res) => {
         const token = req.body.token
         try {
-            await getConfirmationToken(token, async (err, token) => {
+            await getConfirmationToken(token, async (err, confirmationToken) => {
                 if(err){
                     return res.status(400).json({
                         error: true, 
@@ -345,14 +346,14 @@ module.exports = {
                         data: null
                     })
                 }
-                if(!token) {
+                if(!confirmationToken) {
                     return res.status(400).json({
                         error: true,
-                        message: "token not found!",
+                        message: "Confirmation token not found!",
                         data: null
                     })
                 }
-                if(Date.now() > token.expiresAt){
+                if(Date.now() > confirmationToken.expiresAt){
                     return res.status(400).json({
                         error: true, 
                         message: "token expired.",
@@ -455,6 +456,273 @@ module.exports = {
                 error: false,
                 message: "Accounts fetched Succesfully",
                 data: accounts
+            })
+        })
+    }, 
+    /*updateProfile: async (req, res) => {
+        if(req.body.name){
+            const updatedStudent = {
+                name: req.body.name,
+            }
+            updatedStudent(req.params.student_id, (err, resu) => {
+                if(err) {
+                    return res.status(400).json({
+                        error: true,
+                        message: "something went wrong!",
+                        data: null
+                    })
+                }
+            })
+        }
+        let updatedAccount
+        if(req.body.password){
+            const salt = await bcrypt.genSalt(10)
+            const hashedPassword = await bcrypt.hash(req.body.password, salt)
+            updateAccount.password = hashedPassword
+        } 
+        if(req.body.email){
+            updateAccount.email = req.body.email
+            updatedAccount.isVerified = false
+        }
+        updateAccount(req.decoded._id, updatedAccount, (err, result) => {
+            if(err) {
+                return res.status(400).json({
+                    error: true,
+                    message: "something went wrong!",
+                    data: null
+                })
+            }
+            if(req.body.email){
+                const currentDate = new Date();
+                        const expiresAt = new Date(currentDate.getTime() + 15 * 60000);
+                        const confirmationToken = new ConfirmationToken({
+                            account_id: account.id,
+                            token: crypto.randomBytes(16).toString('hex'),
+                            expiresAt
+                        })
+                        await createConfirmationToken(confirmationToken, async (err, savedConfirmationToken) => {
+                            if(err){
+                                console.log("create confirmation token", err)
+                                return res.status(400).json({
+                                    error: true,
+                                    message: "something went wrong!",
+                                    data: null
+                                })
+                            }
+                            const body = `<a href="http://localhost:3000/verify/${savedConfirmationToken.token}">verify</a>`
+                            await sendMail(account.email, "hello@gmail.com", body, async (err, result) => {
+                                if(err) {
+                                    console.log(err)
+                                    await Account.deleteOne({
+                                        id: account.id
+                                    })
+                                    return res.status(400).json({
+                                        error: true,
+                                        message: "Email not sent",
+                                        data: null
+                                    })
+                                }
+                            })
+                        })
+            }
+        })
+    }*/
+    updateAccount: async (req, res) => {
+        try {
+            console.log(req.params.account_id)
+            let updateData = {}
+            if(req.body.email){
+                updateData.email = req.body.email
+                updateData.isVerified = false
+            }
+            if(req.body.password){
+                const salt = await bcrypt.genSalt(10)
+                const hashedPassword = await bcrypt.hash(req.body.password, salt)
+                updateData.password = hashedPassword
+            }
+            updateAccount(req.params.account_id, updateData, async (err, account) => {
+                if(err) {
+                    return res.status(400).json({
+                        error: true,
+                        message: "something went wrong!",
+                        data: null
+                    })
+                }
+                if(!account) {
+                    return res.status(400).json({
+                        error: true,
+                        message: "Account not found!",
+                        data: null
+                    })
+                }
+                if(updateData.email) {
+                    const currentDate = new Date();
+                        const expiresAt = new Date(currentDate.getTime() + 15 * 60000);
+                        const confirmationToken = new ConfirmationToken({
+                            account_id: account.id,
+                            token: crypto.randomBytes(16).toString('hex'),
+                            expiresAt
+                        })
+                        createConfirmationToken(confirmationToken, async (err, savedConfirmationToken) => {
+                            if(err){
+                                console.log("create confirmation token", err)
+                                return res.status(400).json({
+                                    error: true,
+                                    message: "something went wrong!",
+                                    data: null
+                                })
+                            }
+                            const body = `<a href="http://localhost:3000/verify/${savedConfirmationToken.token}">verify</a>`
+                                sendMail(account.email, "hello@gmail.com", body, async (err, result) => {
+                                    if(err) {
+                                        console.log(err)
+                                        return res.status(400).json({
+                                            error: true,
+                                            message: "Email not sent",
+                                            data: null
+                                        })
+                                    }
+                                    account.password = undefined
+                                    return res.status(200).json({
+                                        error: false,
+                                        message: "Account updated Succesfully",
+                                        data: account
+                                    })    
+                    })
+                        })
+                }
+                account.password = undefined
+                account.role = undefined
+                return res.status(200).json({
+                    error: false,
+                    message: "Account updated Succesfully",
+                    data: account
+                })
+            })
+        } catch(err) {
+            console.log(err)
+            return res.status(400).json({
+                error: true,
+                message: "something went wrong!",
+                data: null
+            })
+        }
+    },
+    forgetPassword: async (req, res) => {
+        getAccountByEmail(req.body.email, async (err, account) => {
+            if(err) {
+                return res.status(400).json({
+                    error: true,
+                    message: "something went wrong!",
+                    data: null
+                })
+            }
+            if(!account){
+                return res.status(400).json({
+                    error: true,
+                    message: "no account found!",
+                    data: null
+                })
+            }
+            const currentDate = new Date();
+            const expiresAt = new Date(currentDate.getTime() + 5 * 60000);
+            const resetToken = new ResetToken({
+                account_id: account.id,
+                token: crypto.randomBytes(16).toString('hex'),
+                expiresAt
+            })
+            createResetToken(resetToken, (err, savedResetToken) => {
+                if(err) {
+                    return res.status(400).json({
+                        error: true,
+                        message: "something went wrong!",
+                        data: null
+                    })
+                }
+                const body = `<a href="http://localhost:3000/forget/${savedResetToken.token}">verify</a>`
+                sendMail(account.email, "hello@gmail.com", body, async (err, result) => {
+                    if(err) {
+                        console.log(err)
+                        return res.status(400).json({
+                            error: true,
+                            message: "Email not sent",
+                            data: null
+                        })
+                    }
+                    return res.status(400).json({
+                        error: false,
+                        message: "Reset token sent to your email.",
+                        data: null
+                    })
+            })
+        })
+    })
+    },
+    resetPassword : async (req, res) => {
+        const token = req.body.token 
+        getResetToken(token, (err, resetToken) => {
+            if(err) {
+                return res.status(400).json({
+                    error: true,
+                    message: "something went wrong!",
+                    data: null
+                })
+            }
+            if(!resetToken) {
+                return res.status(400).json({
+                    error: true,
+                    message: "resetToken not found!",
+                    data: null
+                })
+            }
+            if(Date.now() > resetToken.expiresAt){
+                return res.status(400).json({
+                    error: true, 
+                    message: "token expired.",
+                    data: null
+                })
+            }
+            getAccount(resetToken.account_id, async (err, account) => {
+                if(err) {
+                    return res.status(400).json({
+                        error: true,
+                        message: "something went wrong!",
+                        data: null
+                    })
+                }
+                if(!account){
+                    return res.status(400).json({
+                        error: true,
+                        message: "no account found!",
+                        data: null
+                    })
+                }
+                const salt = await bcrypt.genSalt(10)
+                const hashedPassword = await bcrypt.hash(req.body.password, salt)
+                const updateData = {
+                    password : hashedPassword
+                }
+                updateAccount(account._id, updateData, (err, result) => {
+                    if(err) {
+                        return res.status(400).json({
+                            error: true,
+                            message: "something went wrong!",
+                            data: null
+                        })
+                    }
+                    if(!result) {
+                        return res.status(400).json({
+                            error: true,
+                            message: "account not found!",
+                            data: null
+                        })
+                    }
+                    return res.status(400).json({
+                        error: true,
+                        message: "Password updated succesfully",
+                        data: null
+                    })
+                })
             })
         })
     }

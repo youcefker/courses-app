@@ -39,9 +39,15 @@ const Sidebar = ({ active }) => {
         }
     }, [])
 
+  const handleLogout =  () => {
+    localStorage.clear()
+    router.replace("/")
+  }
   useEffect(() => {
     setActiveItem(active);
   }, [active]);
+
+  
 
   return (
     <>
@@ -90,7 +96,7 @@ const Sidebar = ({ active }) => {
       
     
 
-      <div className="mt-auto py-3 flex flex-col justify-center ">
+      <div className="mt-auto py-3 flex flex-col justify-center " onClick={handleLogout}>
      
          <span className="my-3 hover:text-[#079C49] font-semibold flex items-center pl-10  cursor-pointer text-[14px] text-[#9DA6BA] relative"><LogoutIcon className="mr-2 text-[24px]" />Log out</span>
       </div>
@@ -200,7 +206,7 @@ const Sidebar = ({ active }) => {
                 
                 </li>
                </ul>
-               <div className=" flex flex-col justify-center items-center">
+               <div className=" flex flex-col justify-center items-center" onClick={handleLogout}>
                   
                   <span className="my-3 hover:text-[#079C49] font-semibold flex items-center   cursor-pointer text-[14px] text-[#9DA6BA] relative"><LogoutIcon className="mr-2 text-[24px]" />Log out</span>
                </div>

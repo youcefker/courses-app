@@ -4,7 +4,7 @@ import { CircularProgressbar, buildStyles} from 'react-circular-progressbar';
 
 function ProgressCard(props) {
   return (
-    <div className='flex items-center justify-between bg-[#FAFAFA] rounded-[15px] py-4 px-6 cursor-pointer hover:bg-[#e1e1e1] courseCard mb-3'>
+    <div onClick={props.goToLesson} className='flex items-center justify-between bg-[#FAFAFA] rounded-[15px] py-4 px-6 cursor-pointer hover:bg-[#e1e1e1] courseCard mb-3'>
                     <div className="flex items-center">
                           <div className='w-[40px] mr-3'>
                           <CircularProgressbar

@@ -91,13 +91,17 @@ function Dashboard() {
 
     const fetchStorageData = () => {
         const jwt = localStorage.getItem("jwt")
-        const email = localStorage.getItem("email")
-        const name =  localStorage.getItem("name")
         const role =  localStorage.getItem("role")
-        const student_id =  localStorage.getItem("student_id")
-        console.log("student id ----", student_id)
-        const data = jwt && email && name && student_id && role ? {jwt, name, email, role, student_id} : null
-        return data
+        if(role === "student") {
+          const email = localStorage.getItem("email")
+          const name =  localStorage.getItem("name")
+          const student_id =  localStorage.getItem("student_id")
+          const data = jwt && email && name && student_id && role ? {jwt, name, email, role, student_id} : null
+          return data
+        } else if( role === "admin") {
+          const data = jwt && role ? {jwt, role}: null
+          return data
+        } 
     } 
     useEffect(() => {
       const auth = fetchStorageData()
@@ -118,7 +122,7 @@ function Dashboard() {
     }, [])
     const fetchDataForStudent = async () => {
       try {
-        const { data } = await axios.get("http://localhost:4000/api/v1/student/courses/62cdf3debbe3a4109fccaf6d")
+        const { data } = await axios.get("http://localhost:4000/api/v1/student/courses/62cc20ad3a5c15bab7dad3ec")
         if(data.data.courses.length > 0) {
           const firstCourse_id = data.data.courses[0]._id
           const courseData = await axios.get(`http://localhost:4000/api/v1/course/${firstCourse_id}`)
@@ -171,7 +175,7 @@ function Dashboard() {
         const requestsRes = await axios.get("http://localhost:4000/api/v1/auth/requests")
         console.log("requests", requestsRes.data.data)
         setEnrollRequests(requestsRes.data.data)
-        const studentRes = await axios.get("http://localhost:4000/api/v1/student/courses/62cdf3debbe3a4109fccaf6d")
+        const studentRes = await axios.get("http://localhost:4000/api/v1/student/courses/62cc20ad3a5c15bab7dad3ec")
         if(studentRes.data.data.courses.length > 0) {
           setFirstCourse(studentRes.data.data.courses[0])
           const firstCourse_name = studentRes.data.data.courses[0].name
@@ -198,6 +202,16 @@ function Dashboard() {
       }
     }
 
+    const refuseEnrollRequest = async (request_id) => {
+      try {
+        const response = await axios.delete(`http://localhost:4000/api/v1/student/request/${request_id}`)
+        console.log("response", response)
+        fetchDataForAdmin()
+      } catch(err){
+        console.log(err)
+      }
+    }
+
     const calculateProgress = (student, course_id) => {
       console.log("studnet to calculate", student)
       const course_progress = student.progress.filter(course => course.course_id === course_id)[0]
@@ -216,7 +230,7 @@ function Dashboard() {
 
         fetchDataForStudent()
         console.log("storage data" ,storageData)
-        console.log(latest, upcoming);
+        console.log("upcoming ", latest, upcoming);
       } else {
         fetchDataForAdmin()
       }
@@ -314,19 +328,21 @@ function Dashboard() {
                      {upcoming[0]? <CourseCard goToLesson={() => {
                              router.push({
                              pathname: "/courses/lessons/"+upcoming[0]._id,
-                               query : {lessonData: upcoming[0]}
+                               query : {course_id: firstCourse._id, lesson_id: upcoming[0]._id, filename: upcoming[0].filename, name: upcoming[0].name, description: upcoming[0].description}
                              })
                            }} name ={upcoming[0].name} descrip="Lesson 6" icon="/icons/courseIcon.svg" />: null}
                            {upcoming[1]? <CourseCard goToLesson={() => {
+                             console.log("upcoming", upcoming[1])
                              router.push({
                               pathname: "/courses/lessons/"+upcoming[1]._id,
-                                query : {lessonData: upcoming[1]}
+                                query : {course_id: firstCourse._id, lesson_id: upcoming[1]._id, filename: upcoming[1].filename, name: upcoming[1].name, description: upcoming[1].description}
                               })
                            }} name ={upcoming[1].name} descrip="Lesson 6" icon="/icons/courseIcon.svg" />: null}
                            {upcoming[2]? <CourseCard goToLesson={() => {
+                             console.log("upcoming",upcoming[2])
                             router.push({
                               pathname: "/courses/lessons/"+upcoming[2]._id,
-                              query : {lessonData: upcoming[2]}
+                              query : {course_id: firstCourse._id, lesson_id: upcoming[2]._id, filename: upcoming[2].filename, name: upcoming[2].name, description: upcoming[2].description}
                               })
                            }} name ={upcoming[2].name} descrip="Lesson 6" icon="/icons/courseIcon.svg" />: null}
     
@@ -346,7 +362,12 @@ function Dashboard() {
                      </TabPanel>
                      <TabPanel value={value} index={2} dir={theme.direction}>
                      <div className='mt-3'>
-                     {latest.map(lesson => <ProgressCard progress="25" course={lesson.name} descrip="Lesson 4" />)}
+                     {latest.map(lesson => <ProgressCard progress="25" goToLesson={() => {
+                             router.push({
+                             pathname: "/courses/lessons/"+upcoming[0]._id,
+                               query : {course_id: firstCourse._id, lesson_id: lesson._id, filename: lesson.filename, name: lesson.name, description: lesson.description}
+                             })
+                           }} course={lesson.name} descrip="Lesson 4" />)}
                    </div>
                      </TabPanel>
                    </SwipeableViews>
@@ -365,19 +386,19 @@ function Dashboard() {
                            {upcoming[0]? <CourseCard goToLesson={() => {
                              router.push({
                              pathname: "/courses/lessons/"+upcoming[0]._id,
-                             query : {lessonData: upcoming[0]}
+                             query : {course_id: firstCourse._id, lesson_id: upcoming[0]._id, filename: upcoming[0].filename, name: upcoming[0].name, description: upcoming[0].description}
                              })
                            }} name ={upcoming[0].name} descrip="Lesson 6" icon="/icons/courseIcon.svg" />: null}
                            {upcoming[1]? <CourseCard goToLesson={() => {
                              router.push({
                               pathname: "/courses/lessons/"+upcoming[1]._id,
-                              query : {lessonData: upcoming[1]}
+                              query : {course_id: firstCourse._id, lesson_id: upcoming[1]._id, filename: upcoming[1].filename, name: upcoming[1].name, description: upcoming[1].description}
                               })
                            }} name ={upcoming[1].name} descrip="Lesson 6" icon="/icons/courseIcon.svg" />: null}
                            {upcoming[2]? <CourseCard goToLesson={() => {
                             router.push({
                               pathname: "/courses/lessons/"+upcoming[2]._id,
-                              query : {lessonData: upcoming[2]}
+                              query : {course_id: firstCourse._id, lesson_id: upcoming[2]._id, filename: upcoming[2].filename, name: upcoming[2].name, description: upcoming[2].description}
                               })
                            }} name ={upcoming[2].name} descrip="Lesson 6" icon="/icons/courseIcon.svg" />: null}
     
@@ -444,7 +465,12 @@ function Dashboard() {
                 <div className='bg-[white] p-4 rounded-[15px] col-span-3 xl:col-span-1'>
                    <h3 className='text-[#1F1F1F] font-[600] text-[22px]'>Latest lessons</h3>
                    <div className='mt-3'>
-                     {latest.map(lesson => <ProgressCard progress="25" course={lesson.name} descrip="Lesson 4" />)}
+                     {latest.map(lesson => <ProgressCard progress="25" goToLesson={() => {
+                             router.push({
+                             pathname: "/courses/lessons/"+upcoming[0]._id,
+                               query : {course_id: firstCourse._id, lesson_id: lesson._id, filename: lesson.filename, name: lesson.name, description: lesson.description}
+                             })
+                           }} course={lesson.name} descrip="Lesson 4" />)}
                    </div>
                 </div>
             </div>
@@ -470,7 +496,7 @@ function Dashboard() {
                          <h5 className='text-[#1F1F1F] text-[12px] font-[600] col-span-2'>Cours</h5>
                          <h5 className='text-[#1F1F1F] text-[12px] font-[600]'>Admission</h5>
                       </div>
-                      {enrollRequests.map(request => <StudentRow name={request.student_name} actions cours={request.course_name} accept={() => acceptEnrollRequest(request)}/>)}
+                      {enrollRequests.map(request => <StudentRow name={request.student_name} actions cours={request.course_name} accept={() => acceptEnrollRequest(request)} refuse={() => refuseEnrollRequest(request._id)}/>)}
                     </div>
                 </div>
   
