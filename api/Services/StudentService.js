@@ -46,5 +46,14 @@ module.exports = {
             console.log(err)
             return callBack(true)
         }
+    },
+    updateStudent: async(id, data, callBack) => {
+        try {
+            const result = await Student.findByIdAndUpdate(id, data)
+            return callBack(false, result)
+        } catch(err) {
+            console.log(err)
+            return callBack(true)
+        }
     }
 }

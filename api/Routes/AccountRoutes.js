@@ -1,5 +1,5 @@
-const { checkAdminToken } = require('../Auth')
-const { signup, signin, verifyAccount, resendConfirmationLink, activateAccount, getAccounts, signinAdmin, getEnrollRequests } = require('../Controllers/AccountControllers')
+const { checkAdminToken, checkStudentToken } = require('../Auth')
+const { signup, signin, verifyAccount, resendConfirmationLink, activateAccount, getAccounts, signinAdmin, getEnrollRequests, updateAccount, forgetPassword, resetPassword } = require('../Controllers/AccountControllers')
 
 const router = require('express').Router()
 
@@ -10,5 +10,8 @@ router.post("/resend", resendConfirmationLink)
 router.put("/verify", verifyAccount)
 router.get("/accounts", getAccounts)
 router.get("/requests", getEnrollRequests)
+router.put("/account/:account_id", updateAccount)
+router.post("/forget", forgetPassword)
+router.put("/reset", resetPassword)
 
 module.exports = router 

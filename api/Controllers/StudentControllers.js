@@ -1,6 +1,6 @@
 const { getCourse } = require("../Services/CourseServices")
 const { deleteEnrollRequest } = require("../Services/EnrollRequestService")
-const { getStudent, getStudents, deleteStudent } = require("../Services/StudentService")
+const { getStudent, getStudents, deleteStudent, updateStudent } = require("../Services/StudentService")
 
 module.exports = {
     addCourseToStudent: async (req, res) => {
@@ -97,6 +97,23 @@ module.exports = {
             })
         })
     },
+    deleteEnrollRequest: async (req, res) => {
+        deleteEnrollRequest(req.params.request_id, (err, result) => {
+            if(err) {
+                return res.status(400).json({
+                    error: true,
+                    message: "something went wrong!",
+                    data: null
+                })
+            }
+            console.log(result)
+            return res.status(200).json({
+                error: false,
+                message: "something went wrong!",
+                data: result
+            })
+        })
+    },
     getStudents: async (req, res) => {
         getStudents((err, students) => {
             if(err) {
@@ -184,6 +201,56 @@ module.exports = {
                 message: "Student deleted succesfully",
                 data: null
             })
+        })
+    }, 
+    updateStudent : async (req, res) => {
+        console.log(req.params.student_id)
+        if(!req.body.name){
+            return res.status(400).json({
+                error: true,
+                message: "You must provide name to update!",
+                data: null
+            })
+        }
+        const updateData = {
+            name: req.body.name
+        }
+        updateStudent(req.params.student_id, updateData, (err, student) => {
+            if(err) {
+                return res.status(400).json({
+                    error: true,
+                    message: "something went wrong!",
+                    data: null
+                })
+            }
+            if(!student) {
+                return res.status(400).json({
+                    error: true,
+                    message: "student not found!",
+                    data: null
+                })
+            }
+            getStudent(student._id, (err, updatedStudent) => {
+                if(err) {
+                    return res.status(400).json({
+                        error: true,
+                        message: "something went wrong!",
+                        data: null
+                    })
+                }
+                if(!updatedStudent) {
+                    return res.status(400).json({
+                        error: true,
+                        message: "student not found!",
+                        data: null
+                    })
+                }
+                return res.status(200).json({
+                    error: false,
+                    message: "Enroll request deleted succesfully",
+                })
+            })
+
         })
     }
 }

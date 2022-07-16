@@ -20,6 +20,7 @@ function AddCourse() {
 
    const [courseName, setCourseName] = useState('')
    const [courseDescrip, setCourseDescrip] = useState('')
+   const [file, setFile] = useState(null)
 
    const handleName = (e) => setCourseName(e.target.value)
    const handleDescription = (e) => setCourseDescrip(e.target.value)
@@ -31,19 +32,25 @@ function AddCourse() {
       };
     
       const createCourse = () =>{
-        const courseObject = {
-          name: courseName,
-          description : courseDescrip
-      };
+        var bodyFormData = new FormData();
+        bodyFormData.append("name", courseName)
+        bodyFormData.append("description", courseDescrip)
+        bodyFormData.append("course_file", file)
+
       
-      axios.post('http://localhost:4000/api/v1/course', courseObject)
+          axios({
+          method: "post",
+            url: 'http://localhost:4000/api/v1/course',
+            data: bodyFormData,
+            headers: { "Content-Type": "multipart/form-data" },
+          })
           .then((res) => {
               console.log(res.data)
              
            
               router.push({
                 pathname :"/courses/list",
-                query : {course : courseObject.name}
+                query : {course : res.name}
 
              })
               
@@ -76,22 +83,7 @@ function AddCourse() {
 
 
             
-                    <FormControl className='mt-4'>
-                            <label className='text-[16px] font-[600] text-[#1F1F1F] mb-3'>Course’s number</label>
-                            <Select
-                              value={cours}
-                              onChange={handleChange}
-                              displayEmpty
-                              
-                              className="inpu px-2 rounded-xl outline-none  text-[16px] h-[40px] "
-                            >
-                        
-                              <MenuItem value={10}>10</MenuItem>
-                              <MenuItem value={20}>11</MenuItem>
-                              <MenuItem value={30}>12</MenuItem>
-                            </Select>
-                        
-                    </FormControl>
+                    
                     <div className='mt-6'>
                        <label className='text-[16px] font-[600] text-[#1F1F1F] mt-4'>About this course</label>
                        <textarea value={courseDescrip} onChange={(e)=>handleDescription(e)}  type="text" className='w-full border border-2 border-[#1F1F1F]  px-3 py-3 rounded-xl mt-3 focus:outline-none h-[30vh]' placeholder="Lorem Ipsum is simply dummy..."/>
@@ -112,7 +104,7 @@ function AddCourse() {
                 <h5 className='text-[16px] font-[600] text-[#1F1F1F] mt-[30px] mb-3'>Course’s necessery docs</h5>
 
              
-                  <Input accept="image/*" id="contained-button-file" multiple type="file" />
+                  <Input id="contained-button-file" single type="file" onChange={(e) => setFile(e.target.files[0])}/>
                   <Button variant="contained" component="span">
                   Click to upload
                   </Button>

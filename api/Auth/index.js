@@ -1,5 +1,6 @@
 const { getAccount } = require("../Services/AccountService");
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const { getStudentCourses } = require("../Controllers/StudentControllers");
 module.exports = {
     checkStudentToken : (req, res, next) => {
         let token;
@@ -10,12 +11,6 @@ module.exports = {
     ) {
       console.log(req.headers.authorization);
       token = req.headers.authorization.split(' ')[1];
-    } else if (req.headers.authorization) {
-      token = req.headers.authorization;
-    } else if (req.cookies && req.cookies.jwt) {
-      token = req.cookies.jwt;
-    } else {
-      token = req.body.token;
     }
 
 
@@ -72,18 +67,7 @@ module.exports = {
     if (
       req.headers.authorization &&
       req.headers.authorization.startsWith('Bearer')
-    ) {
-      console.log(req.headers.authorization);
-      token = req.headers.authorization.split(' ')[1];
-    } else if (req.headers.authorization) {
-      token = req.headers.authorization;
-    } else if (req.cookies && req.cookies.jwt) {
-      token = req.cookies.jwt;
-    } else {
-      token = req.body.token;
-    }
-
-
+    )
     if (token) {
       jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
         console.log(decoded)
@@ -131,4 +115,23 @@ module.exports = {
       });
     }
     },
+    verifyStudentAccess : (req, res, next) => {
+      getStudentCourses(req.decoded.student_id, (err, student) => {
+        if(err) {
+          return res.status(400).json({
+              error: true,
+              message: "Something went wrong",
+              data: null
+            });
+        }
+        if(!student){
+            return res.status(400).json({
+                error: true,
+                message: "Invalid Token...",
+                data: null
+            });
+        }
+        const filteredCourses = student.courses.filter(course => course._id === req.student_id)
+      })
+    }
 }
