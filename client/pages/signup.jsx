@@ -43,7 +43,7 @@ function Signup() {
   const [password, setPassword] = useState('')
   const [cours, setCours] = React.useState([])
 
-
+  const [choosed, setChoosed] = useState('')
   // const handleSignup = () => {
   //   const requestOptions = {
   //     method: "POST",
@@ -60,7 +60,7 @@ function Signup() {
           email: formik.values.email,
           password : formik.values.password,
           name : formik.values.name,
-          course_name : formik.values.course
+          course_name : choosed
       };
       
       axios.post('http://localhost:4000/api/v1/auth/signup', userObject)
@@ -83,7 +83,7 @@ function Signup() {
   }
 
   const handleChange = (event) => {
-    setCours(event.target.value);
+    setChoosed(event.target.value);
   };
 
   const handleHide = ()=> setHide(!hide)
@@ -191,7 +191,7 @@ function Signup() {
                             <label className="text-[#666666] text-[16px] font-[400] mb-2">Choose the cours</label>
                             <Select
                               name='course'
-                              value={cours}
+                              value={choosed}
                               onChange={handleChange}
                               displayEmpty
                               

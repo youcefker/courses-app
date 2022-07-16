@@ -143,11 +143,11 @@ function Login() {
                             <span className='text-[#666666]  sm:text-[24px] font-[400]'>OR</span>
                             <div className='h-[1px] sm:h-[2px] w-[40%] bg-[#66666640]'></div>
                         </div>
-                        {/*<button className='flex justify-center items-center w-full mt-4 sm:mt-[30px] rounded-[32px]  h-[60px] text-[18px] normal-case  border-3 googleBtn'>
+                        <button className='flex justify-center items-center w-full mt-4 sm:mt-[30px] rounded-[32px]  h-[60px] text-[18px] normal-case  border-3 googleBtn'>
                             <Image src="/icons/google.svg" width={25} height={25}/>
                             <span className='text-[#333333] font-[400] ml-[16px]'>Continue with Google</span>
-                          </button>*/}
-                        <h6 className='mt-[35px] text-center underline cursor-pointer'>Forget your password?</h6>
+                        </button>
+                        <h6 onClick={()=> router.push("/forget/forgetPass")} className='mt-[35px] text-center underline cursor-pointer'>Forget your password?</h6>
                     </div>
                    
                 </div>
