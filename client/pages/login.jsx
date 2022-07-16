@@ -148,7 +148,7 @@ function Login() {
                             <Image src="/icons/google.svg" width={25} height={25}/>
                             <span className='text-[#333333] font-[400] ml-[16px]'>Continue with Google</span>
                         </button>
-                        <h6 className='mt-[35px] text-center underline cursor-pointer'>Forget your password?</h6>
+                        <h6 onClick={()=> router.push("/forget/forgetPass")} className='mt-[35px] text-center underline cursor-pointer'>Forget your password?</h6>
                     </div>
                    
                 </div>
