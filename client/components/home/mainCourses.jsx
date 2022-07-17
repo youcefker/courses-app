@@ -11,9 +11,9 @@ function MainCourses() {
         <h1 className='text-[30px]  sm:text-[50px] md:text-[72px] font-bold text-[#079C49] text-center'>Our courses</h1>
         <h6 className='text-[18px] sm:text-[20px] md:text-[28px] text-[#1F1F1F] text-center'>Let’s learn something new</h6>
         <div className="hidden md:flex flex-col md:flex-row justify-around mt-[30px] md:mt-[75px]">
-            <MainCourseCard />
-            <MainCourseCard />
-            <MainCourseCard />
+            <MainCourseCard title = "Investissement en bourse"/>
+            <MainCourseCard  title = "الاستثمار في البورصة"/>
+            <MainCourseCard title="Pack assisté Investissement en bourse Coaching one-to-one" />
         </div>
         <div className='mt-6  md:hidden'>
         
@@ -63,9 +63,9 @@ function MainCourses() {
      >
        {/* here you can also pass any other element attributes. Also, you can use your custom components as slides */}
 
-       <MainCourseCard />
-            <MainCourseCard />
-            <MainCourseCard />
+       <MainCourseCard title = "Investissement en bourse"/>
+            <MainCourseCard  title = "الاستثمار في البورصة"/>
+            <MainCourseCard title="Pack assisté Investissement en bourse Coaching one-to-one" />
 
      </ReactSimplyCarousel>
       </div>

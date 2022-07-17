@@ -11,23 +11,21 @@ const MainOffers = () => {
 
   return (
     <div className='mt-[90px] xl:mt-[206.7px]'>
-        <h6 className='text-[#079C49]'>WHAT WE GIVE</h6>
+        <h6 className='text-[#079C49] lg:px-10'>WHAT WE GIVE</h6>
         <div className="offers__desc  lg:hidden mb-10">
                 <h1 className='text-[#141E32] text-[35px] 2xl:text-[41.62px] font-bold leading-[50.74px] mt-[16.54px]'>What do You Get From Us</h1>
-                <h6 className='text-[#969696] text-[20.73px] leading-[22.83px] mt-[20px]'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam dignissim, sem non convallis molestie.</h6>
+
             </div>
-        <div className="hidden sm:grid  sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-x-12 gap-y-4  md:gap-[1.25%]">
+        <div className="hidden lg:px-10 md:grid  sm:grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-x-12 gap-y-4  md:gap-[1.25%]">
             <div className="offers__desc hidden lg:block">
                 <h1 className='text-[#141E32] text-[25px] leading-[40px] xl:text-[35px] 2xl:text-[41.62px] font-bold 2xl:leading-[50.74px] mt-[16.54px]'>What do You <br></br> Get From Us</h1>
-                <h6 className='text-[#969696] text-[14px] mt-[20px]  xl:text-[18.73px] leading-[22.83px] xl:mt-[39.52px]'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam dignissim, sem non convallis molestie.</h6>
             </div>
-            <OfferCard title="Professional Teacher" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam dignissim, sem non convallis molestie." icon="person"/>
-            <OfferCard title="Course Certificate" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam dignissim, sem non convallis molestie." icon="grad"/>
-            <OfferCard title="interesting learning" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam dignissim, sem non convallis molestie." icon="troffy"/>
-            <OfferCard title="120 Videos Course" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam dignissim, sem non convallis molestie." icon="video"/>
+            <OfferCard title="Professional Teaching" desc="Be mentored by skilled masters" icon="person"/>
+            <OfferCard title="Explore our suite of financial education offering" desc="Gain the skills for wealthier investments.." icon="troffy"/>
+            <OfferCard title="Video Courses" desc="Learn at your own space any time and any where." icon="video"/>
         </div>  
 
-        <div className='mt-6  sm:hidden'>
+        <div className='mt-6  md:hidden'>
         
          <ReactSimplyCarousel
         activeSlideIndex={activeSlideIndex}
@@ -74,10 +72,9 @@ const MainOffers = () => {
         }}
       >
         {/* here you can also pass any other element attributes. Also, you can use your custom components as slides */}
-        <OfferCard title="Professional Teacher" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam dignissim, sem non convallis molestie." icon="person"/>
-            <OfferCard title="Course Certificate" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam dignissim, sem non convallis molestie." icon="grad"/>
-            <OfferCard title="interesting learning" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam dignissim, sem non convallis molestie." icon="troffy"/>
-            <OfferCard title="120 Videos Course" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam dignissim, sem non convallis molestie." icon="video"/>
+        <OfferCard title="Professional Teaching" desc="Be mentored by skilled masters" icon="person"/>
+            <OfferCard title="Explore our suite of financial education offering" desc="Gain the skills for wealthier investments." icon="troffy"/>
+            <OfferCard title="Video Courses" desc="Learn at your own space any time and any where." icon="video"/>
         
  
       </ReactSimplyCarousel>
