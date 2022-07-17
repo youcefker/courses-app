@@ -10,7 +10,7 @@ router.post("/resend", resendConfirmationLink)
 router.put("/verify", verifyAccount)
 router.get("/accounts", getAccounts)
 router.get("/requests", getEnrollRequests)
-router.put("/account/:account_id", updateAccount)
+router.put("/account/:account_id",  updateAccount)
 router.post("/forget", forgetPassword)
 router.put("/reset", resetPassword)
 

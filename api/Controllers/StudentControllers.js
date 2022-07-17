@@ -143,37 +143,28 @@ module.exports = {
     getStudentCourses: async(req, res) => {
         getStudent(req.params.student_id, async (err, student) => {
             if(err) {
-                return res.json({
-                    error: true,
-                    status: 401, 
+                return res.status(400).json({
+                    error: true, 
                     message: "something went wrong!",
                     data: null
                 })
             }
             if(!student) {
-                return res.json({
-                    error: true,
-                    status: 401, 
+                return res.status(400).json({
+                    error: true, 
                     message: "student not found!",
                     data: null
                 })
             }
             try {
                 const studentWithCourses = await student.populate("courses")
-                return res.json({
+                return res.status(200).json({
                     error: false,
-                    status: 200, 
                     message: "Student courses fetched succesfully.",
                     data: studentWithCourses
                 })
             } catch(error) {
                 console.log(error)
-                return res.json({
-                    error: true,
-                    status: 401, 
-                    message: "something went wrong!",
-                    data: null
-                })
             }
         })
     },

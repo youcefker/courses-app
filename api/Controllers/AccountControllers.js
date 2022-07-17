@@ -205,6 +205,7 @@ module.exports = {
             try {
                 const accountWithStudent = await account.populate("student")
                 accountWithStudent.role = undefined
+                accountWithStudent.password = undefined
                 accountWithStudent.isVerified = undefined
                 const access_token = jwt.sign({
                     id: account._id,

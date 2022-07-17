@@ -3,12 +3,12 @@ const { addCourseToStudent, getStudents, deleteStudent, getStudentCourses, updat
 
 const router = require("express").Router()
 
-router.post("/addcourse", addCourseToStudent)
+router.post("/addcourse",  addCourseToStudent)
 
-router.get("/", getStudents)
+router.get("/",  getStudents)
 
-router.get("/courses/:student_id", getStudentCourses)
-router.put("/:student_id", updateStudent)
-router.delete("/request/:request_id", deleteEnrollRequest)
-router.delete("/:student_id", deleteStudent)
+router.get("/courses/:student_id",  getStudentCourses)
+router.put("/:student_id",  updateStudent)
+router.delete("/request/:request_id",  deleteEnrollRequest)
+router.delete("/:student_id",  deleteStudent)
 module.exports = router

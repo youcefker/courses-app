@@ -24,6 +24,7 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { withStyles } from '@mui/styles'
+import { config } from '@fortawesome/fontawesome-svg-core'
 
 
 function TabPanel(props) {
@@ -122,10 +123,15 @@ function Dashboard() {
     }, [])
     const fetchDataForStudent = async () => {
       try {
-        const { data } = await axios.get(`http://localhost:4000/api/v1/student/courses/${storageData.student_id}`)
+        const { data } = await axios.get(`http://localhost:4000/api/v1/student/courses/${storageData.student_id}`, {
+          headers: {authorization: "Bearer " + storageData.jwt}
+        })
+        console.log("student", data);
         if(data.data.courses.length > 0) {
           const firstCourse_id = data.data.courses[0]._id
-          const courseData = await axios.get(`http://localhost:4000/api/v1/course/${firstCourse_id}`)
+          const courseData = await axios.get(`http://localhost:4000/api/v1/course/${firstCourse_id}`, {
+            headers: {authorization: "Bearer " + storageData.jwt}
+          })
           console.log("course response ---", courseData.data)
           setFirstCourse(courseData.data.data)
           const firstCourse_progress = data.data.progress.filter(courseProgress => courseProgress.course_id === data.data.courses[0]._id)
@@ -136,6 +142,7 @@ function Dashboard() {
               numLessonCompleted++
             }
           })
+          console.log("completed -----", numLessonCompleted)
           setPercentage(numLessonCompleted / firstCourse_progress[0].lessons_progress.length * 100)
           for (var i = 0; i < firstCourse_progress[0].lessons_progress.length; i++) {
             console.log(!firstCourse_progress[0].lessons_progress[i].completed)
@@ -172,14 +179,21 @@ function Dashboard() {
 
     const fetchDataForAdmin = async () => {
       try {
-        const requestsRes = await axios.get("http://localhost:4000/api/v1/auth/requests")
+        const requestsRes = await axios.get("http://localhost:4000/api/v1/auth/requests", {
+          headers: {authorization: "Bearer " + storageData.jwt}
+        })
         console.log("requests", requestsRes.data.data)
         setEnrollRequests(requestsRes.data.data)
-        const studentRes = await axios.get("http://localhost:4000/api/v1/student/courses/62cc20ad3a5c15bab7dad3ec")
-        if(studentRes.data.data.courses.length > 0) {
-          setFirstCourse(studentRes.data.data.courses[0])
-          const firstCourse_name = studentRes.data.data.courses[0].name
-          const courseStudentsRes = await axios.get(`http://localhost:4000/api/v1/course/students/${firstCourse_name}`)
+        const studentRes = await axios.get("http://localhost:4000/api/v1/course", {
+          headers: {authorization: "Bearer " + storageData.jwt}
+        })
+        if(studentRes.data.data.length > 0) {
+          setFirstCourse(studentRes.data.data[0])
+          const firstCourse_name = studentRes.data.data[0].name
+          const courseStudentsRes = await axios.get(`http://localhost:4000/api/v1/course/students/${firstCourse_name}`, {
+            headers: {authorization: "Bearer " + storageData.jwt}
+          })
+          console.log(courseStudentsRes.data.data)
           setCourseStudents(courseStudentsRes.data.data)
         }
       } catch(err) {
@@ -188,13 +202,16 @@ function Dashboard() {
     }
 
     const acceptEnrollRequest = async (request) => { 
+      
       try {
         const body = {
           request_id: request._id,
           student_id: request.student_id,
           course_id: request.course_id
         }
-        const response = await axios.post("http://localhost:4000/api/v1/student/addcourse", body)
+        const response = await axios.post("http://localhost:4000/api/v1/student/addcourse", body, {
+          headers: {authorization: "Bearer " + storageData.jwt}
+        })
         console.log("response", response)
         fetchDataForAdmin()
       } catch(err) {
@@ -204,7 +221,9 @@ function Dashboard() {
 
     const refuseEnrollRequest = async (request_id) => {
       try {
-        const response = await axios.delete(`http://localhost:4000/api/v1/student/request/${request_id}`)
+        const response = await axios.delete(`http://localhost:4000/api/v1/student/request/${request_id}`, {
+          headers: {authorization: "Bearer " + storageData.jwt}
+        })
         console.log("response", response)
         fetchDataForAdmin()
       } catch(err){
@@ -261,10 +280,10 @@ function Dashboard() {
                            <h5 className='text-[#1F1F1F] text-[14px]'>{firstCourse.name}</h5>
 
                            <div className="flex justify-center mt-3">
-                                <div className='bg-[#48DA6F] w-[200px] h-[200px] rounded-full p-8'>
+                                <div className='bg-[#48DA6F] w-[200px] h-[200px] rounded-full p-8 relative'>
                                  <CircularProgressbar
                                    value={percentage}
-                                   text={`${percentage}%`}
+                              
                                    
                                    backgroundColor="#48DA6F"
                                    
@@ -292,6 +311,8 @@ function Dashboard() {
                                      backgroundColor: '#3e98c7',
                                    })}
                                  />
+                                 {percentage == 100 && (<div className="absolute top-[45%] left-[35%] text-white font-bold text-[22px]">{percentage}%</div>)}
+                                 {percentage != 100  && (<div className="absolute top-[45%] left-[40%] text-white font-bold text-[22px]">{percentage}%</div>)}
                                  </div>
                             </div>
                           
@@ -324,7 +345,7 @@ function Dashboard() {
                      <TabPanel value={value} index={0} dir={theme.direction}>
                      <div className="grid grid-cols-1 gap-y-2 my-4">
                            
-                              
+                      {upcoming.length == 0 && ( <h3 className='text-center'>No upcoming courses found</h3>)}        
                      {upcoming[0]? <CourseCard goToLesson={() => {
                              router.push({
                              pathname: "/courses/lessons/"+upcoming[0]._id,
@@ -362,6 +383,7 @@ function Dashboard() {
                      </TabPanel>
                      <TabPanel value={value} index={2} dir={theme.direction}>
                      <div className='mt-3'>
+                     {latest.length == 0 && ( <h3 className='text-center'>No latest courses found</h3>)}   
                      {latest.map(lesson => <ProgressCard progress="25" goToLesson={() => {
                              router.push({
                              pathname: "/courses/lessons/"+upcoming[0]._id,
@@ -381,8 +403,9 @@ function Dashboard() {
     
                     <div className="bg-[#fff] p-4 rounded-[15px] ">
                        <h3 className='text-[#1F1F1F] font-[600] text-[22px]'>Upcoming courses</h3>
+                       {upcoming.length == 0 && ( <h3 className='text-center'>No upcoming courses found</h3>)}   
                        <div className="grid grid-cols-3 gap-4 my-4">
-                           
+                      
                            {upcoming[0]? <CourseCard goToLesson={() => {
                              router.push({
                              pathname: "/courses/lessons/"+upcoming[0]._id,
@@ -415,10 +438,10 @@ function Dashboard() {
                            <h3 className='text-[#1F1F1F] font-[600] text-[22px]'>Total progress</h3>
                            <h5 className='text-[#1F1F1F] text-[16px] mt-2'>{firstCourse.name}</h5>
                            <div className="flex justify-center mt-5">
-                                <div className='bg-[#48DA6F] w-[200px] h-[200px] rounded-full p-8'>
+                                <div className='bg-[#48DA6F] w-[200px] h-[200px] rounded-full p-8 relative'>
                                  <CircularProgressbar
                                    value={percentage}
-                                   text={`${percentage}%`}
+                         
                                    
                                    backgroundColor="#48DA6F"
                                    
@@ -446,6 +469,8 @@ function Dashboard() {
                                      backgroundColor: '#3e98c7',
                                    })}
                                  />
+                                                    {percentage == 100 && (<div className="absolute top-[45%] left-[35%] text-white font-bold text-[22px]">{percentage}%</div>)}
+                                 {percentage != 100  && (<div className="absolute top-[45%] left-[40%] text-white font-bold text-[22px]">{percentage}%</div>)}
                                  </div>
                             </div>
                           
@@ -464,6 +489,7 @@ function Dashboard() {
                 </div>
                 <div className='bg-[white] p-4 rounded-[15px] col-span-3 xl:col-span-1'>
                    <h3 className='text-[#1F1F1F] font-[600] text-[22px]'>Latest lessons</h3>
+                   {latest.length == 0 && ( <h3 className='text-center mt-5'>No latest courses found</h3>)}   
                    <div className='mt-3'>
                      {latest.map(lesson => <ProgressCard progress="25" goToLesson={() => {
                              router.push({
@@ -477,23 +503,26 @@ function Dashboard() {
             </div>
             </>
             ) : 
-            <HashLoader color="#079C49" loading={true} size={60} />
+            <div className='flex justify-center items-center'>
+               <HashLoader color="#079C49" loading={true} size={60} />
+            </div>
+           
             
           : 
           enrollRequests ? 
           (
             <>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div className='px-4 py-6 bg-[#fff] rounded-[15px]'>
-                    <h4 className='text-[22px] text-[#1F1F1F]'>New students <span className='text-[14px]'>{enrollRequests.length}</span> </h4>
+                <div className='sm:px-4 py-6 bg-[#fff] rounded-[15px]'>
+                    <h4 className='text-[22px] text-[#1F1F1F]'>New students <span className='text-[14px]'>({enrollRequests.length})</span> </h4>
                     <div className='flex items-center border-[1px] border-[#9DA6BACC] p-2 rounded-[10px] mt-3 text-[#9DA6BA]'>
                         <SearchIcon />
                         <input type="search" className='w-full outline-none pl-2 text-[#000]' placeholder='Search a student’s name ...'/>
                     </div>
                     <div className='mt-5'>
-                      <div className="grid grid-cols-4">
+                      <div className="grid grid-cols-3 sm:grid-cols-4">
                          <h5 className='text-[#1F1F1F] text-[12px] font-[600] '>Name</h5>
-                         <h5 className='text-[#1F1F1F] text-[12px] font-[600] col-span-2'>Cours</h5>
+                         <h5 className='text-[#1F1F1F] text-[12px] font-[600] sm:col-span-2'>Cours</h5>
                          <h5 className='text-[#1F1F1F] text-[12px] font-[600]'>Admission</h5>
                       </div>
                       {enrollRequests.map(request => <StudentRow name={request.student_name} actions cours={request.course_name} accept={() => acceptEnrollRequest(request)} refuse={() => refuseEnrollRequest(request._id)}/>)}
@@ -504,8 +533,8 @@ function Dashboard() {
   
   
   
-                <div className='px-4 py-6 bg-[#fff] rounded-[15px]'>
-                    <h4 className='text-[22px] text-[#1F1F1F]'>My students <span className='text-[14px]'>{courseStudents?.length}</span> </h4>
+                <div className='sm:px-4 py-6 bg-[#fff] rounded-[15px]'>
+                    <h4 className='text-[22px] text-[#1F1F1F]'>My students <span className='text-[14px]'>({courseStudents?.length})</span> </h4>
                     <div className='flex items-center border-[1px] border-[#9DA6BACC] p-2 rounded-[10px] mt-3 text-[#9DA6BA]'>
                         <SearchIcon />
                         <input type="search" className='w-full outline-none pl-2 text-[#000]' placeholder='Search a student’s name ...'/>
@@ -516,8 +545,9 @@ function Dashboard() {
                             <h5 className='text-[#1F1F1F] text-[12px] font-[600] col-span-2'>Cours</h5>
                             <h5 className='text-[#1F1F1F] text-[12px] font-[600] text-center'>Progress</h5>
                         </div>
-                        {courseStudents?.map(student => <StudentRow name={student.name} cours={firstCourse.name} progress={parseInt(calculateProgress(student, firstCourse._id) * 100)}/>)}
+                        {courseStudents?.map(student => <StudentRow name={student.name} cours={firstCourse.name} progress={parseInt(calculateProgress(student, firstCourse._id) * 100) == 0 ? -1 :parseInt(calculateProgress(student, firstCourse._id) * 100) }/>)}
                     </div>
+              
                 </div>
               </div>
             </>

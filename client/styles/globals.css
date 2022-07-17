@@ -84,7 +84,7 @@ border-radius: 10px;
 
 
 .CircularProgressbar-text{
-  transform: translate(-20%, 5px);
+  transform: translate(-24%, 5px);
 }
 .circleProgress{
   background: linear-gradient(180deg, rgba(1, 131, 255, 0.036) 0%, rgba(1, 131, 255, 0.132) 100%);

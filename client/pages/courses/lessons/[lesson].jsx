@@ -12,6 +12,7 @@ import axios from 'axios'
 function Lesson() {
    const router = useRouter()
    const [lesson, setLesson] = useState({ name: router.query.name, desription: router.query.desription, filename: router.query.filename })
+   const [storageData, setStorageData] = useState(null)
    const handleEndedVideo = async() => {
       try {
          const body = {
@@ -25,6 +26,25 @@ function Lesson() {
          console.log(err)
       }
    }
+   const fetchStorageData = () => {
+      const jwt = localStorage.getItem("jwt")
+      const role =  localStorage.getItem("role")
+      if(role === "student") {
+        const email = localStorage.getItem("email")
+        const name =  localStorage.getItem("name")
+        const student_id =  localStorage.getItem("student_id")
+        const data = jwt && email && name && student_id && role ? {jwt, name, email, role, student_id} : null
+        return data
+      } 
+  }
+  useEffect(() => {
+   const auth = fetchStorageData()
+   if(auth) {
+     setStorageData(auth)
+   } else {
+     router.replace("/adminLogin")
+   }
+ }, [])
   return (
     <>
     <Sidebar active="courses" />

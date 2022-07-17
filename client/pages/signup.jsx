@@ -12,6 +12,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { useEffect } from 'react'
+import toast, { Toaster } from 'react-hot-toast';
 
 
 
@@ -31,6 +32,10 @@ const validationSchema = yup.object({
     .string("Enter your password")
     .min(8, "Password is too short - should be 8 chars minimum")
     .required("Password is required"),
+
+    choosed: yup
+    .string("choose a course")
+    .required("Course is required"),
 
 });
 
@@ -60,7 +65,7 @@ function Signup() {
           email: formik.values.email,
           password : formik.values.password,
           name : formik.values.name,
-          course_name : choosed
+          course_name : formik.values.choosed
       };
       
       axios.post('http://localhost:4000/api/v1/auth/signup', userObject)
@@ -77,6 +82,7 @@ function Signup() {
              
           }).catch((error) => {
               console.log(error)
+              toast.error('Name or email already exist !');
           });
   
   
@@ -104,7 +110,7 @@ function Signup() {
       email: "",
       name: "",
       password : "",
-      course: ""
+      choosed: ""
     
     },
     validationSchema: validationSchema,
@@ -126,9 +132,10 @@ function Signup() {
   useEffect(() => {
     fetchCoursesNames()
   }, [])
-  
+  console.log("cours----", cours)
   return (
     <>
+    <Toaster />
       <div className="container mx-auto pt-[33.32px] mb-[230px]">
         <Image onClick={() => router.push("/")} className="cursor-pointer" src="/images/footer_logo.svg" width={60} height={60} />
         <div className="flex justify-between items-center mt-[54px]">
@@ -190,16 +197,19 @@ function Signup() {
                           <FormControl>
                             <label className="text-[#666666] text-[16px] font-[400] mb-2">Choose the cours</label>
                             <Select
-                              name='course'
-                              value={choosed}
-                              onChange={handleChange}
+                              name='choosed'
+                              id='choosed'
+                              value={formik.values.choosed}
+                              onChange={formik.handleChange}
                               displayEmpty
                               
                               className="input  border-[#66666640] h-[55px] rounded-xl outline-none px-3 text-[20px]"
                             >
-                              {cours.map(course => <MenuItem value={course.name}>{course.name}</MenuItem>)}
+                              {cours?.map(course => <MenuItem value={course.name}>{course.name}</MenuItem>)}
                             </Select>
-                        
+                            {formik.touched.choosed && formik.errors.choosed ? (
+                                       <div className='text-[red] text-[14px] ml-2'>{formik.errors.choosed}</div>
+                                     ) : null}  
                           </FormControl>
                         </div>
                         <div className='flex flex-col mt-[30px]'>

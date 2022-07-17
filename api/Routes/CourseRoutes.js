@@ -21,8 +21,8 @@ const upload = multer({
 router.post('/',  upload, createCourse)
 router.get('/',  getAllCourses)
 router.get('/names', getCoursesNames)
-router.get('/:course_id', getCourse)
-router.put('/:course_id', updateCourse)
+router.get('/:course_id',  getCourse)
+router.put('/:course_id',  updateCourse)
 router.delete('/:course_id',  deleteCourse)
 router.get("/students/:name",  getCourseStudents)
 

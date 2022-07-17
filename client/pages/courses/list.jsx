@@ -1,7 +1,7 @@
 import { Button, Input, Modal } from '@mui/material'
 import { Box } from '@mui/system'
 import { useRouter } from 'next/router'
-import React from 'react'
+import React, { useState } from 'react'
 import IndexPage from '../../components/dashboard/indexPage'
 import Sidebar from '../../components/dashboard/sidebar'
 import { useEffect } from 'react'
@@ -39,6 +39,7 @@ function Courses() {
   const [open, setOpen] = React.useState(false);
   const [data, setData] = React.useState(false);
   const [firstCourse, setFirstCourse] = React.useState(null)
+  const [storageData, setStorageData] = useState(null)
 const handleOpen = () => setOpen(true);
 const handleClose = () => setOpen(false);
 
@@ -99,13 +100,19 @@ useEffect(  ()  => {
         console.log(error)
     });
   }
+  const fetchStorageData = () => {
+    const jwt = localStorage.getItem("jwt")
+    const role =  localStorage.getItem("role")
+    const data = jwt && role ? {jwt, role}: null
+    return data
+}
   const handleAddLesson =() =>{
     console.log(lessonDescription);
     var bodyFormData = new FormData();
     bodyFormData.append('file', lessonVideo);
     bodyFormData.append('name', lessonTitle);
     bodyFormData.append('description', lessonDescription);
-   
+    
   
     axios({
       method: "post",
@@ -130,6 +137,15 @@ useEffect(  ()  => {
 
   useEffect(() => {
     fetchFirstCourse()
+  }, [])
+
+  useEffect(() => {
+    const auth = fetchStorageData()
+    if(auth) {
+      setStorageData(auth)
+    } else {
+      router.replace("/adminLogin")
+    }
   }, [])
   
   return (
