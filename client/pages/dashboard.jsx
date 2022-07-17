@@ -123,7 +123,7 @@ function Dashboard() {
     }, [])
     const fetchDataForStudent = async () => {
       try {
-        const { data } = await axios.get("http://localhost:4000/api/v1/student/courses/62cc20ad3a5c15bab7dad3ec", {
+        const { data } = await axios.get(`http://localhost:4000/api/v1/student/courses/${storageData.student_id}`, {
           headers: {authorization: "Bearer " + storageData.jwt}
         })
         if(data.data.courses.length > 0) {
@@ -141,6 +141,7 @@ function Dashboard() {
               numLessonCompleted++
             }
           })
+          console.log("completed -----", numLessonCompleted)
           setPercentage(numLessonCompleted / firstCourse_progress[0].lessons_progress.length * 100)
           for (var i = 0; i < firstCourse_progress[0].lessons_progress.length; i++) {
             console.log(!firstCourse_progress[0].lessons_progress[i].completed)
@@ -182,11 +183,11 @@ function Dashboard() {
         })
         console.log("requests", requestsRes.data.data)
         setEnrollRequests(requestsRes.data.data)
-        const studentRes = await axios.get("http://localhost:4000/api/v1/student/courses/62cc20ad3a5c15bab7dad3ec", {
+        const studentRes = await axios.get("http://localhost:4000/api/v1/course", {
           headers: {authorization: "Bearer " + storageData.jwt}
         })
-        if(studentRes.data.data.courses.length > 0) {
-          setFirstCourse(studentRes.data.data.courses[0])
+        if(studentRes.data.data.length > 0) {
+          setFirstCourse(studentRes.data.data[0])
           const firstCourse_name = studentRes.data.data.courses[0].name
           const courseStudentsRes = await axios.get(`http://localhost:4000/api/v1/course/students/${firstCourse_name}`, {
             headers: {authorization: "Bearer " + storageData.jwt}
