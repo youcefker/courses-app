@@ -12,7 +12,7 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import decode from 'jwt-decode'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-
+import toast, { Toaster } from 'react-hot-toast';
 
 
 
@@ -58,13 +58,28 @@ function Forget() {
     validationSchema: validationSchema,
     onSubmit: (values) => {
       // alert(JSON.stringify(values, null, 2));
-      handleSend()
+      handleForgetPassword()
    
     },
   });
 
+  const handleForgetPassword = async () => {
+    const data = {
+      email: formik.values.username
+    }
+    try {
+      const response = await axios.post("http://localhost:4000/api/v1/auth/forget", data)
+      setSent(true)
+      console.log(response)
+    } catch(err) {
+      console.log(err)
+      toast.error('Wrong email or password !');
+    }
+  }
+
   return (
     <>
+    <Toaster />
       <div className="container px-4 mx-auto pt-4 md:pt-[33.32px] mb-[100px] sm:mb-[230px]">
         <Image onClick={() => router.push("/")} className="cursor-pointer" src="/images/footer_logo.svg" width={60} height={60} />
         <div className="flex justify-between items-center  md:mt-[54px]">

@@ -63,7 +63,7 @@ function Login() {
           }
       } catch(err) {
         console.log(err)
-        toast.error('Wrong email or password !');
+        toast.error(err.response.data.message);
 
       }
   }
@@ -169,5 +169,6 @@ function Login() {
     </>
   )
 }
+
 
 export default Login

@@ -144,7 +144,21 @@ function Dashboard() {
           })
           console.log("completed -----", numLessonCompleted)
           setPercentage(numLessonCompleted / firstCourse_progress[0].lessons_progress.length * 100)
-          for (var i = 0; i < firstCourse_progress[0].lessons_progress.length; i++) {
+          let latestLessons = []
+          let upcomingLessons = []
+          firstCourse_progress[0].lessons_progress.map((lesson_progress, index) => {
+            console.log("lesson----", courseData.data.data.lessons[index])
+            if(lesson_progress.completed){
+            
+              latestLessons.push({...courseData.data.data.lessons[index], classement: index + 1})
+            } else {
+              upcomingLessons.push({...courseData.data.data.lessons[index], classement: index + 1})
+            }
+          })
+
+          setLatest(latestLessons)
+          setUpcoming(upcomingLessons)
+          /*for (var i = 0; i < firstCourse_progress[0].lessons_progress.length; i++) {
             console.log(!firstCourse_progress[0].lessons_progress[i].completed)
             if(!firstCourse_progress[0].lessons_progress[i].completed){
               if(i === 0){
@@ -170,7 +184,7 @@ function Dashboard() {
           } else {
             setLatest(courseData.data.data.lessons.slice(0, lastWatched + 1))
             setUpcoming(courseData.data.data.lessons.slice(lastWatched + 1))
-          }
+          }*/
         }
       } catch(err){
         console.log(err)
@@ -347,20 +361,20 @@ function Dashboard() {
                      <div className="grid grid-cols-1 gap-y-2 my-4">
                            
                       {upcoming.length == 0 && ( <h3 className='text-center'>No upcoming courses found</h3>)}        
-                     {upcoming[0]? <CourseCard goToLesson={() => {
+                     {upcoming[0]? <CourseCard lessonIndex={"lesson " + parseInt(lastWatched + 1)} goToLesson={() => {
                              router.push({
                              pathname: "/courses/lessons/"+upcoming[0]._id,
                                query : {course_id: firstCourse._id, lesson_id: upcoming[0]._id, filename: upcoming[0].filename, name: upcoming[0].name, description: upcoming[0].description}
                              })
                            }} name ={upcoming[0].name} descrip="Lesson 6" icon="/icons/courseIcon.svg" />: null}
-                           {upcoming[1]? <CourseCard goToLesson={() => {
+                           {upcoming[1]? <CourseCard lessonIndex={"lesson " + parseInt(lastWatched + 2)} goToLesson={() => {
                              console.log("upcoming", upcoming[1])
                              router.push({
                               pathname: "/courses/lessons/"+upcoming[1]._id,
                                 query : {course_id: firstCourse._id, lesson_id: upcoming[1]._id, filename: upcoming[1].filename, name: upcoming[1].name, description: upcoming[1].description}
                               })
                            }} name ={upcoming[1].name} descrip="Lesson 6" icon="/icons/courseIcon.svg" />: null}
-                           {upcoming[2]? <CourseCard goToLesson={() => {
+                           {upcoming[2]? <CourseCard lessonIndex={"lesson " + parseInt(lastWatched + 3)} goToLesson={() => {
                              console.log("upcoming",upcoming[2])
                             router.push({
                               pathname: "/courses/lessons/"+upcoming[2]._id,
@@ -387,7 +401,7 @@ function Dashboard() {
                      {latest.length == 0 && ( <h3 className='text-center'>No latest courses found</h3>)}   
                      {latest.map(lesson => <ProgressCard progress="25" goToLesson={() => {
                              router.push({
-                             pathname: "/courses/lessons/"+upcoming[0]._id,
+                             pathname: "/courses/lessons/"+lesson._id,
                                query : {course_id: firstCourse._id, lesson_id: lesson._id, filename: lesson.filename, name: lesson.name, description: lesson.description}
                              })
                            }} course={lesson.name} descrip="Lesson 4" />)}
@@ -407,19 +421,19 @@ function Dashboard() {
                        {upcoming.length == 0 && ( <h3 className='text-center'>No upcoming courses found</h3>)}   
                        <div className="grid grid-cols-3 gap-4 my-4">
                       
-                           {upcoming[0]? <CourseCard goToLesson={() => {
+                           {upcoming[0]? <CourseCard lessonIndex={"lesson " + parseInt(lastWatched + 1)} goToLesson={() => {
                              router.push({
                              pathname: "/courses/lessons/"+upcoming[0]._id,
                              query : {course_id: firstCourse._id, lesson_id: upcoming[0]._id, filename: upcoming[0].filename, name: upcoming[0].name, description: upcoming[0].description}
                              })
                            }} name ={upcoming[0].name} descrip="Lesson 6" icon="/icons/courseIcon.svg" />: null}
-                           {upcoming[1]? <CourseCard goToLesson={() => {
+                           {upcoming[1]? <CourseCard lessonIndex={"lesson " + parseInt(lastWatched + 2)} goToLesson={() => {
                              router.push({
                               pathname: "/courses/lessons/"+upcoming[1]._id,
                               query : {course_id: firstCourse._id, lesson_id: upcoming[1]._id, filename: upcoming[1].filename, name: upcoming[1].name, description: upcoming[1].description}
                               })
                            }} name ={upcoming[1].name} descrip="Lesson 6" icon="/icons/courseIcon.svg" />: null}
-                           {upcoming[2]? <CourseCard goToLesson={() => {
+                           {upcoming[2]? <CourseCard lessonIndex={"lesson " + parseInt(lastWatched + 3)} goToLesson={() => {
                             router.push({
                               pathname: "/courses/lessons/"+upcoming[2]._id,
                               query : {course_id: firstCourse._id, lesson_id: upcoming[2]._id, filename: upcoming[2].filename, name: upcoming[2].name, description: upcoming[2].description}
@@ -494,7 +508,7 @@ function Dashboard() {
                    <div className='mt-3'>
                      {latest.map(lesson => <ProgressCard progress="25" goToLesson={() => {
                              router.push({
-                             pathname: "/courses/lessons/"+upcoming[0]._id,
+                             pathname: "/courses/lessons/"+lesson._id,
                                query : {course_id: firstCourse._id, lesson_id: lesson._id, filename: lesson.filename, name: lesson.name, description: lesson.description}
                              })
                            }} course={lesson.name} descrip="Lesson 4" />)}
