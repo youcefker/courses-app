@@ -20,7 +20,7 @@ const { createAccount } = require("./Services/AccountService");
 
 
 //----- middlewares -----
-require("dotenv").config()
+require('dotenv').config({silent: true});
 app.use(cors());
 app.use(express.json())
 app.use('/api/v1/auth', authRoutes)

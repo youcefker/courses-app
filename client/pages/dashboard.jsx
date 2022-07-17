@@ -186,9 +186,10 @@ function Dashboard() {
         const studentRes = await axios.get("http://localhost:4000/api/v1/course", {
           headers: {authorization: "Bearer " + storageData.jwt}
         })
+        console.log(studentRes.data.data)
         if(studentRes.data.data.length > 0) {
           setFirstCourse(studentRes.data.data[0])
-          const firstCourse_name = studentRes.data.data.courses[0].name
+          const firstCourse_name = studentRes.data.data[0].name
           const courseStudentsRes = await axios.get(`http://localhost:4000/api/v1/course/students/${firstCourse_name}`, {
             headers: {authorization: "Bearer " + storageData.jwt}
           })
