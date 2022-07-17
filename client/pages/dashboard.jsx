@@ -122,7 +122,7 @@ function Dashboard() {
     }, [])
     const fetchDataForStudent = async () => {
       try {
-        const { data } = await axios.get("http://localhost:4000/api/v1/student/courses/62cc20ad3a5c15bab7dad3ec")
+        const { data } = await axios.get(`http://localhost:4000/api/v1/student/courses/${storageData.student_id}`)
         if(data.data.courses.length > 0) {
           const firstCourse_id = data.data.courses[0]._id
           const courseData = await axios.get(`http://localhost:4000/api/v1/course/${firstCourse_id}`)
@@ -485,7 +485,7 @@ function Dashboard() {
             <>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div className='px-4 py-6 bg-[#fff] rounded-[15px]'>
-                    <h4 className='text-[22px] text-[#1F1F1F]'>New students <span className='text-[14px]'>(10)</span> </h4>
+                    <h4 className='text-[22px] text-[#1F1F1F]'>New students <span className='text-[14px]'>{enrollRequests.length}</span> </h4>
                     <div className='flex items-center border-[1px] border-[#9DA6BACC] p-2 rounded-[10px] mt-3 text-[#9DA6BA]'>
                         <SearchIcon />
                         <input type="search" className='w-full outline-none pl-2 text-[#000]' placeholder='Search a student’s name ...'/>
@@ -505,7 +505,7 @@ function Dashboard() {
   
   
                 <div className='px-4 py-6 bg-[#fff] rounded-[15px]'>
-                    <h4 className='text-[22px] text-[#1F1F1F]'>My students <span className='text-[14px]'>(100)</span> </h4>
+                    <h4 className='text-[22px] text-[#1F1F1F]'>My students <span className='text-[14px]'>{courseStudents?.length}</span> </h4>
                     <div className='flex items-center border-[1px] border-[#9DA6BACC] p-2 rounded-[10px] mt-3 text-[#9DA6BA]'>
                         <SearchIcon />
                         <input type="search" className='w-full outline-none pl-2 text-[#000]' placeholder='Search a student’s name ...'/>
