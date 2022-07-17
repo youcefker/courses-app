@@ -12,6 +12,7 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import decode from 'jwt-decode'
 
+import toast, { Toaster } from 'react-hot-toast';
 
 
 
@@ -62,6 +63,8 @@ function Login() {
           }
       } catch(err) {
         console.log(err)
+        toast.error('Wrong email or password !');
+
       }
   }
 
@@ -87,6 +90,7 @@ function Login() {
 
   return (
     <>
+    <Toaster />
       <div className="container px-4 mx-auto pt-4 md:pt-[33.32px] mb-[100px] sm:mb-[230px]">
         <Image onClick={() => router.push("/")} className="cursor-pointer" src="/images/footer_logo.svg" width={60} height={60} />
         <div className="flex justify-between items-center  md:mt-[54px]">
