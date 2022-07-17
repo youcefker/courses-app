@@ -9,7 +9,7 @@ const OfferCard = (props) => {
         </div>
         <div>
             <h3 className='text-white font-bold text-[24px] sm:text-[20px] md:text-[9px] lg:text-[12px] xl:text-[16px] 2xl:text-[18.73px] mt-[8.32px] '>{props.title}</h3>
-            <h6 className='text-[#DDDDDD] text-[20px] sm:text-[18px] md:text-[7px] lg:text-[10px] xl:text-[12px] mt-4'>{props.desc}</h6>
+            <h6 className='text-[#DDDDDD] text-[20px] sm:text-[18px] md:text-[7px] lg:text-[10px] xl:text-[14px] mt-4'>{props.desc}</h6>
         </div>
     </div>
   )

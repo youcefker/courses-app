@@ -250,6 +250,7 @@ function Dashboard() {
         fetchDataForStudent()
         console.log("storage data" ,storageData)
         console.log("upcoming ", latest, upcoming);
+        console.log("first", firstCourse);
       } else {
         fetchDataForAdmin()
       }

@@ -51,7 +51,9 @@ function Login() {
       try {
         const response = await axios.post('http://localhost:4000/api/v1/auth/signin', userObject)
         console.log(response.data)
+        await toast.success(response.data.message);
           if (!response.data.error){
+        
             await localStorage.setItem("role","student")
             await localStorage.setItem("jwt", response.data.access_token)
             await localStorage.setItem("email", response.data.data.email)
@@ -63,7 +65,7 @@ function Login() {
           }
       } catch(err) {
         console.log(err)
-        toast.error('Wrong email or password !');
+        toast.error(err.response.data.message);
 
       }
   }

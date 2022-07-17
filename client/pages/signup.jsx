@@ -71,7 +71,7 @@ function Signup() {
       axios.post('http://localhost:4000/api/v1/auth/signup', userObject)
           .then((res) => {
               console.log(res.data)
-             
+               toast.success(res.data.message);
        
                 router.push({
                   pathname :"/verificationSent",
