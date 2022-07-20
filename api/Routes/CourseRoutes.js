@@ -4,7 +4,7 @@ const router = require('express').Router()
 
 const multer = require('multer');
 const path = require("path");
-const { } = require('../Auth');
+const { checkAdminToken, checkStudentToken } = require('../Auth');
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads/')
@@ -18,12 +18,12 @@ const upload = multer({
 }).single("course_file");
 
 // course routes 
-router.post('/',  upload, createCourse)
-router.get('/',  getAllCourses)
+router.post('/', checkAdminToken, upload, createCourse)
+router.get('/',  checkAdminToken, getAllCourses)
 router.get('/names', getCoursesNames)
-router.get('/:course_id',  getCourse)
-router.put('/:course_id',  updateCourse)
-router.delete('/:course_id',  deleteCourse)
-router.get("/students/:name",  getCourseStudents)
+router.get('/:course_id',  checkStudentToken, getCourse)
+router.put('/:course_id',  checkAdminToken, updateCourse)
+router.delete('/:course_id', checkAdminToken, deleteCourse)
+router.get("/students/:name",  checkAdminToken, getCourseStudents)
 
 module.exports = router
