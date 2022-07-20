@@ -6,13 +6,73 @@ import Sidebar from '../../../components/dashboard/sidebar'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
+import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 
-
+import List from '@mui/material/List';
+import Divider from '@mui/material/Divider';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import InboxIcon from '@mui/icons-material/MoveToInbox';
+import MailIcon from '@mui/icons-material/Mail';
+import { Box } from '@mui/material'
+import PlayLessonIcon from '@mui/icons-material/PlayLesson';
 
 function Lesson() {
    const router = useRouter()
    const [lesson, setLesson] = useState({ name: router.query.name, desription: router.query.desription, filename: router.query.filename })
    const [storageData, setStorageData] = useState(null)
+
+
+   const [lessons, setLessons] = useState(['Intro to Javascript', 'Programing with javascript', 'Dom manipulation'])
+
+  const [state, setState] = React.useState({
+    top: false,
+    left: false,
+    bottom: false,
+    right: false,
+  });
+
+  const toggleDrawer = (anchor, open) => (event) => {
+    if (
+      event &&
+      event.type === 'keydown' &&
+      (event.key === 'Tab' || event.key === 'Shift')
+    ) {
+      return;
+    }
+
+    setState({ ...state, [anchor]: open });
+  };
+
+  const list = (anchor) => (
+    <Box
+      sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 320 }}
+      role="presentation"
+      onClick={toggleDrawer(anchor, false)}
+      onKeyDown={toggleDrawer(anchor, false)}
+    >
+      <h5 className='text-center mt-3 mb-2 font-bold text-lg text-[#079C49]'>Your lessons</h5>
+      <List>
+      <Divider />
+        {lessons.map((lesson,index) =>  
+       
+        <ListItem  disablePadding className='my-2'>
+            <ListItemButton>
+              <span className='mr-2 font-bold'>{index +1}-</span>
+          
+              {lesson}
+            </ListItemButton>
+          </ListItem>)}
+      
+
+  
+
+      </List>
+  
+    </Box>
+  );
    const handleEndedVideo = async() => {
       try {
          const body = {
@@ -49,8 +109,30 @@ function Lesson() {
     <>
     <Sidebar active="courses" />
     <IndexPage>
-       <h3 className='text-[#1F1F1F] text-[20px] font-[600]  '>Course : Javascript for web</h3>
-       <h3 className='text-[#1F1F1F] text-[20px] font-[600] mt-3'>Lesson 1 : {lesson.name}</h3>
+      <div className="flex justify-between items-center">
+         <div>
+            <h3 className='text-[#1F1F1F] text-[20px] font-[600]  '>Course : Javascript for web</h3>
+          <h3 className='text-[#1F1F1F] text-[20px] font-[600] mt-3'>Lesson 1 : {lesson.name}</h3>
+         </div>
+         <div>
+                      {['right'].map((anchor) => (
+                        <React.Fragment key={anchor}>
+                          <button className='bg-[#079C49] text-white py-2 px-2  rounded-xl sm:mr-5 font-bold text-[14px]' onClick={toggleDrawer(anchor, true)}>
+                            <PlayLessonIcon />
+                            <span className='ml-2 hidden sm:inline-block'>Lessons</span>
+                            </button>
+                          <SwipeableDrawer
+                            anchor={anchor}
+                            open={state[anchor]}
+                            onClose={toggleDrawer(anchor, false)}
+                            onOpen={toggleDrawer(anchor, true)}
+                          >
+                            {list(anchor)}
+                          </SwipeableDrawer>
+                        </React.Fragment>
+                      ))}
+                    </div> 
+      </div>
        <div className="grid grid-cols-1 lg:grid-cols-6 lg:gap-x-6 mt-6 w-full">
 
 
