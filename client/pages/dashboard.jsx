@@ -26,6 +26,18 @@ import Box from '@mui/material/Box';
 import { withStyles } from '@mui/styles'
 import { config } from '@fortawesome/fontawesome-svg-core'
 
+import SwipeableDrawer from '@mui/material/SwipeableDrawer';
+
+import List from '@mui/material/List';
+import Divider from '@mui/material/Divider';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import InboxIcon from '@mui/icons-material/MoveToInbox';
+import MailIcon from '@mui/icons-material/Mail';
+import PlayLessonIcon from '@mui/icons-material/PlayLesson';
+
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -81,6 +93,61 @@ function Dashboard() {
     const [fetched, setFetched] = useState(false)
     const theme = useTheme();
   const [value, setValue] = React.useState(0);
+
+
+const [lessons, setLessons] = useState(['Intro to Javascript', 'Programing with javascript', 'Dom manipulation'])
+
+  const [state, setState] = React.useState({
+    top: false,
+    left: false,
+    bottom: false,
+    right: false,
+  });
+
+  const toggleDrawer = (anchor, open) => (event) => {
+    if (
+      event &&
+      event.type === 'keydown' &&
+      (event.key === 'Tab' || event.key === 'Shift')
+    ) {
+      return;
+    }
+
+    setState({ ...state, [anchor]: open });
+  };
+
+  const list = (anchor) => (
+    <Box
+      sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 320 }}
+      role="presentation"
+      onClick={toggleDrawer(anchor, false)}
+      onKeyDown={toggleDrawer(anchor, false)}
+    >
+      <h5 className='text-center mt-3 mb-2 font-bold text-lg text-[#079C49]'>Your lessons</h5>
+      <List>
+      <Divider />
+        {lessons.map((lesson,index) =>  
+       
+        <ListItem  disablePadding className='my-2'>
+            <ListItemButton>
+              <span className='mr-2 font-bold'>{index +1}-</span>
+          
+              {lesson}
+            </ListItemButton>
+          </ListItem>)}
+      
+
+  
+
+      </List>
+  
+    </Box>
+  );
+
+
+
+
+
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -269,13 +336,35 @@ function Dashboard() {
                    <h3 className='text-[#1F1F1F] text-[18px] font-[600]'>Home</h3>
                    <h5 className='text-[#1F1F1F] text-[14px]'>Hello and welcome back! Let’s keep learning</h5>
                 </div>
-                <div  className='hidden sm:block border-2 border-[#079C49] rounded-full w-[50px] h-[50px] overflow-hidden cursor-pointer' style={{position: "relative"}} onClick={() => router.push("/profile")}>
-                    <Image src="/images/main1.png"  layout="fill"
-                 objectFit="cover"/>
+                <div className='flex items-center'>
+                    <div>
+                      {['right'].map((anchor) => (
+                        <React.Fragment key={anchor}>
+                          <button className='bg-[#079C49] text-white py-2 px-2  rounded-xl sm:mr-5 font-bold text-[14px]' onClick={toggleDrawer(anchor, true)}>
+                            <PlayLessonIcon />
+                            <span className='ml-2 hidden sm:inline-block'>Lessons</span>
+                            </button>
+                          <SwipeableDrawer
+                            anchor={anchor}
+                            open={state[anchor]}
+                            onClose={toggleDrawer(anchor, false)}
+                            onOpen={toggleDrawer(anchor, true)}
+                          >
+                            {list(anchor)}
+                          </SwipeableDrawer>
+                        </React.Fragment>
+                      ))}
+                    </div> 
+                    <div  className='hidden sm:block border-2 border-[#079C49] rounded-full w-[50px] h-[50px] overflow-hidden cursor-pointer' style={{position: "relative"}} onClick={() => router.push("/profile")}>
+                        <Image src="/images/main1.png"  layout="fill"
+                     objectFit="cover"/>
+                    </div>
                 </div>
+              
 
-                
+                           
             </div>
+          
             <div className='sm:hidden mt-5'>
                           <h3 className='text-[#1F1F1F] font-[600] text-[18px]'>Total progress</h3>
                            <h5 className='text-[#1F1F1F] text-[14px]'>{firstCourse.name}</h5>
