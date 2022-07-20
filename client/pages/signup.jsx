@@ -82,7 +82,7 @@ function Signup() {
              
           }).catch((error) => {
               console.log(error)
-              toast.error('Name or email already exist !');
+              toast.error(error.response.data.message);
           });
   
   
