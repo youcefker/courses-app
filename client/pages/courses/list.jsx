@@ -6,6 +6,8 @@ import IndexPage from '../../components/dashboard/indexPage'
 import Sidebar from '../../components/dashboard/sidebar'
 import { useEffect } from 'react'
 import axios from 'axios'
+import toast, { Toaster } from 'react-hot-toast';
+
 
 const style = {
   position: 'absolute',
@@ -106,7 +108,7 @@ useEffect(  ()  => {
     const data = jwt && role ? {jwt, role}: null
     return data
 }
-  const handleAddLesson =() =>{
+  const handleAddLesson =async () =>{
     console.log(lessonDescription);
     var bodyFormData = new FormData();
     bodyFormData.append('file', lessonVideo);
@@ -114,7 +116,7 @@ useEffect(  ()  => {
     bodyFormData.append('description', lessonDescription);
     
   
-    axios({
+    await axios({
       method: "post",
       url: `http://localhost:4000/api/v1/course/${firstCourse._id}/lesson`,
       data: bodyFormData,
@@ -122,9 +124,11 @@ useEffect(  ()  => {
     }).then(function (response) {
         //handle success
         console.log(response);
+        toast.success(response.data.message)
       }).catch(function (response) {
         //handle error
         console.log(response);
+        toast.error(response.response.data.message)
       });
     handleClose()
 
@@ -164,7 +168,7 @@ useEffect(  ()  => {
                 </div> */}
 
              
-      {firstCourse? <Button onClick={handleOpen} className='normal-case bg-[#079C49] text-[#fff] font-bold  text-[20px]'>Add lesson</Button>: null}
+      {firstCourse? <button onClick={handleOpen} className='normal-case bg-[#079C49] text-[#fff] font-bold  text-[20px] p-2 px-3 rounded-xl'>Add lesson</button>: null}
   
        
        </div>
@@ -194,8 +198,8 @@ useEffect(  ()  => {
                     </div>
 
                      <div className="flex justify-end mt-8">
-                      <Button onClick={handleClose} className="muiBtn  sign text-[#079C49] border-2 border-[#079C49] w-[120px] 2xl:w-[120px] h-[40px] 2xl:h-[40px] text-[16px] 2xl:text-[18px] rounded-[10px] font-[600] mr-3" >Cancel</Button>
-                      <Button onClick={()=>handleAddLesson()} className='muiBtn register text-[#079C49] border-2 border-[#079C49] w-[120px] 2xl:w-[120px] h-[40px] 2xl:h-[40px] text-[16px] 2xl:text-[18px] rounded-[10px] font-[600] '>Save</Button>
+                      <button onClick={handleClose} className="muiBtn  sign text-[#079C49] border-2 border-[#079C49] w-[120px] 2xl:w-[120px] h-[40px] 2xl:h-[40px] text-[16px] 2xl:text-[18px] rounded-[10px] font-[600] mr-3" >Cancel</button>
+                      <button onClick={()=>handleAddLesson()} className='muiBtn register text-[#079C49] border-2 border-[#079C49] w-[120px] 2xl:w-[120px] h-[40px] 2xl:h-[40px] text-[16px] 2xl:text-[18px] rounded-[10px] font-[600] '>Save</button>
                     </div>
                    
                    

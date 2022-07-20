@@ -12,6 +12,7 @@ import { useState } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
+import toast, { Toaster } from 'react-hot-toast';
 
 
 function AddCourse() {
@@ -56,7 +57,7 @@ function AddCourse() {
           })
           .then((res) => {
               console.log(res.data)
-             
+             toast.success(res.data.message)
            
               router.push({
                 pathname :"/courses/list",
@@ -67,6 +68,7 @@ function AddCourse() {
              
           }).catch((error) => {
               console.log(error)
+              toast.error(error.response.data.message)
           });
      
       }
