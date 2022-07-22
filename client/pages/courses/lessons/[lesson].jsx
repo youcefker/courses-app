@@ -5,7 +5,7 @@ import IndexPage from '../../../components/dashboard/indexPage'
 import Sidebar from '../../../components/dashboard/sidebar'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import axios from '../../../axiosInstance'
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 
 import List from '@mui/material/List';

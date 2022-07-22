@@ -54,30 +54,6 @@ function Profile() {
   });
   console.log(formik.values.name)
   console.log(formik.values.email)
-  const handleUpdateProfile = async () => {
-    try {
-      if(nameChanged){
-        const studentUpdate = {
-          name: formik.values.name
-        }
-        const studentResponse =  await axios.put("http://localhost:4000/api/v1/student/62c0559cf50b90bbca671473", studentUpdate)
-        console.log(studentResponse)
-      }
-      const accountUpdate = {}
-      if(emailChanged){
-        accountUpdate.email = formik.values.email
-      }
-      if(formik.values.password.length > 8) {
-        accountUpdate.password = formik.values.password
-      }
-      if(emailChanged || formik.values.password.length) {
-        const accountResponse =  await axios.put("http://localhost:4000/api/v1/auth/account/62c0559cf50b90bbca671473", accountUpdate)
-        console.log(accountResponse)
-      }
-    } catch(err) {
-      console.log(err)
-    }
-  }
   return (
     <>
       <Sidebar />

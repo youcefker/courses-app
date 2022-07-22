@@ -12,7 +12,7 @@ import { useState, useEffect } from 'react'
 import SearchIcon from '@mui/icons-material/Search';
 import { Button } from '@mui/material'
 import StudentRow from '../components/dashboard/studentRow'
-import axios from 'axios'
+import axios from '../axiosInstance'
 import HashLoader from "react-spinners/HashLoader";
 
 import PropTypes from 'prop-types';
@@ -190,15 +190,11 @@ const [lessons, setLessons] = useState(['Intro to Javascript', 'Programing with 
     }, [])
     const fetchDataForStudent = async () => {
       try {
-        const { data } = await axios.get(`http://localhost:4000/api/v1/student/courses/${storageData.student_id}`, {
-          headers: {authorization: "Bearer " + storageData.jwt}
-        })
+        const { data } = await axios.get(`/student/courses/${storageData.student_id}`)
         console.log("student", data);
         if(data.data.courses.length > 0) {
           const firstCourse_id = data.data.courses[0]._id
-          const courseData = await axios.get(`http://localhost:4000/api/v1/course/${firstCourse_id}`, {
-            headers: {authorization: "Bearer " + storageData.jwt}
-          })
+          const courseData = await axios.get(`/course/${firstCourse_id}`)
           console.log("course response ---", courseData.data)
           setFirstCourse(courseData.data.data)
           const firstCourse_progress = data.data.progress.filter(courseProgress => courseProgress.course_id === data.data.courses[0]._id)
@@ -260,21 +256,15 @@ const [lessons, setLessons] = useState(['Intro to Javascript', 'Programing with 
 
     const fetchDataForAdmin = async () => {
       try {
-        const requestsRes = await axios.get("http://localhost:4000/api/v1/auth/requests", {
-          headers: {authorization: "Bearer " + storageData.jwt}
-        })
+        const requestsRes = await axios.get("/auth/requests")
         console.log("requests", requestsRes.data.data)
         setEnrollRequests(requestsRes.data.data)
-        const studentRes = await axios.get("http://localhost:4000/api/v1/course", {
-          headers: {authorization: "Bearer " + storageData.jwt}
-        })
+        const studentRes = await axios.get("/course")
         console.log(studentRes.data.data)
         if(studentRes.data.data.length > 0) {
           setFirstCourse(studentRes.data.data[0])
           const firstCourse_name = studentRes.data.data[0].name
-          const courseStudentsRes = await axios.get(`http://localhost:4000/api/v1/course/students/${firstCourse_name}`, {
-            headers: {authorization: "Bearer " + storageData.jwt}
-          })
+          const courseStudentsRes = await axios.get(`course/students/${firstCourse_name}`)
           console.log(courseStudentsRes.data.data)
           setCourseStudents(courseStudentsRes.data.data)
         }
@@ -291,9 +281,7 @@ const [lessons, setLessons] = useState(['Intro to Javascript', 'Programing with 
           student_id: request.student_id,
           course_id: request.course_id
         }
-        const response = await axios.post("http://localhost:4000/api/v1/student/addcourse", body, {
-          headers: {authorization: "Bearer " + storageData.jwt}
-        })
+        const response = await axios.post("/student/addcourse", body)
         console.log("response", response)
         fetchDataForAdmin()
       } catch(err) {
@@ -303,9 +291,7 @@ const [lessons, setLessons] = useState(['Intro to Javascript', 'Programing with 
 
     const refuseEnrollRequest = async (request_id) => {
       try {
-        const response = await axios.delete(`http://localhost:4000/api/v1/student/request/${request_id}`, {
-          headers: {authorization: "Bearer " + storageData.jwt}
-        })
+        const response = await axios.delete(`/student/request/${request_id}`)
         console.log("response", response)
         fetchDataForAdmin()
       } catch(err){
@@ -451,20 +437,20 @@ const [lessons, setLessons] = useState(['Intro to Javascript', 'Programing with 
                      <div className="grid grid-cols-1 gap-y-2 my-4">
                            
                       {upcoming.length == 0 && ( <h3 className='text-center'>No upcoming courses found</h3>)}        
-                     {upcoming[0]? <CourseCard lessonIndex={"lesson " + parseInt(lastWatched + 1)} goToLesson={() => {
+                     {upcoming[0]? <CourseCard lessonIndex={"lesson " + upcoming[0].classement} goToLesson={() => {
                              router.push({
                              pathname: "/courses/lessons/"+upcoming[0]._id,
                                query : {course_id: firstCourse._id, lesson_id: upcoming[0]._id, filename: upcoming[0].filename, name: upcoming[0].name, description: upcoming[0].description}
                              })
                            }} name ={upcoming[0].name} descrip="Lesson 6" icon="/icons/courseIcon.svg" />: null}
-                           {upcoming[1]? <CourseCard lessonIndex={"lesson " + parseInt(lastWatched + 2)} goToLesson={() => {
+                           {upcoming[1]? <CourseCard lessonIndex={"lesson " + upcoming[1].classement} goToLesson={() => {
                              console.log("upcoming", upcoming[1])
                              router.push({
                               pathname: "/courses/lessons/"+upcoming[1]._id,
                                 query : {course_id: firstCourse._id, lesson_id: upcoming[1]._id, filename: upcoming[1].filename, name: upcoming[1].name, description: upcoming[1].description}
                               })
                            }} name ={upcoming[1].name} descrip="Lesson 6" icon="/icons/courseIcon.svg" />: null}
-                           {upcoming[2]? <CourseCard lessonIndex={"lesson " + parseInt(lastWatched + 3)} goToLesson={() => {
+                           {upcoming[2]? <CourseCard lessonIndex={"lesson " + upcoming[2].classement} goToLesson={() => {
                              console.log("upcoming",upcoming[2])
                             router.push({
                               pathname: "/courses/lessons/"+upcoming[2]._id,
@@ -494,7 +480,7 @@ const [lessons, setLessons] = useState(['Intro to Javascript', 'Programing with 
                              pathname: "/courses/lessons/"+lesson._id,
                                query : {course_id: firstCourse._id, lesson_id: lesson._id, filename: lesson.filename, name: lesson.name, description: lesson.description}
                              })
-                           }} course={lesson.name} descrip="Lesson 4" />)}
+                           }} course={lesson.name} descrip={"Lesson " + lesson.classement} />)}
                    </div>
                      </TabPanel>
                    </SwipeableViews>
@@ -511,19 +497,19 @@ const [lessons, setLessons] = useState(['Intro to Javascript', 'Programing with 
                        {upcoming.length == 0 && ( <h3 className='text-center'>No upcoming courses found</h3>)}   
                        <div className="grid grid-cols-3 gap-4 my-4">
                       
-                           {upcoming[0]? <CourseCard lessonIndex={"lesson " + parseInt(lastWatched + 1)} goToLesson={() => {
+                           {upcoming[0]? <CourseCard lessonIndex={"lesson " + upcoming[0].classement} goToLesson={() => {
                              router.push({
                              pathname: "/courses/lessons/"+upcoming[0]._id,
                              query : {course_id: firstCourse._id, lesson_id: upcoming[0]._id, filename: upcoming[0].filename, name: upcoming[0].name, description: upcoming[0].description}
                              })
                            }} name ={upcoming[0].name} descrip="Lesson 6" icon="/icons/courseIcon.svg" />: null}
-                           {upcoming[1]? <CourseCard lessonIndex={"lesson " + parseInt(lastWatched + 2)} goToLesson={() => {
+                           {upcoming[1]? <CourseCard lessonIndex={"lesson " + upcoming[1].classement} goToLesson={() => {
                              router.push({
                               pathname: "/courses/lessons/"+upcoming[1]._id,
                               query : {course_id: firstCourse._id, lesson_id: upcoming[1]._id, filename: upcoming[1].filename, name: upcoming[1].name, description: upcoming[1].description}
                               })
                            }} name ={upcoming[1].name} descrip="Lesson 6" icon="/icons/courseIcon.svg" />: null}
-                           {upcoming[2]? <CourseCard lessonIndex={"lesson " + parseInt(lastWatched + 3)} goToLesson={() => {
+                           {upcoming[2]? <CourseCard lessonIndex={"lesson " + upcoming[2].classement} goToLesson={() => {
                             router.push({
                               pathname: "/courses/lessons/"+upcoming[2]._id,
                               query : {course_id: firstCourse._id, lesson_id: upcoming[2]._id, filename: upcoming[2].filename, name: upcoming[2].name, description: upcoming[2].description}
@@ -601,7 +587,7 @@ const [lessons, setLessons] = useState(['Intro to Javascript', 'Programing with 
                              pathname: "/courses/lessons/"+lesson._id,
                                query : {course_id: firstCourse._id, lesson_id: lesson._id, filename: lesson.filename, name: lesson.name, description: lesson.description}
                              })
-                           }} course={lesson.name} descrip="Lesson 4" />)}
+                           }} course={lesson.name} descrip={"Lesson " + lesson.classement} />)}
                    </div>
                 </div>
             </div>

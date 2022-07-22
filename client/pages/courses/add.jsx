@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { useState } from 'react'
 
-import axios from 'axios'
+import axios from '../../axiosInstance'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import toast, { Toaster } from 'react-hot-toast';
@@ -46,15 +46,9 @@ function AddCourse() {
         bodyFormData.append("course_file", file)
 
       
-          axios({
-          method: "post",
-            url: 'http://localhost:4000/api/v1/course',
-            data: bodyFormData,
-            headers: { 
-              authorization: "Bearer " + storageData.jwt,
+          axios.post('/course',bodyFormData, {headers: {
               "Content-Type": "multipart/form-data" 
-            },
-          })
+            }})
           .then((res) => {
               console.log(res.data)
              toast.success(res.data.message)
