@@ -139,10 +139,6 @@ useEffect(  ()  => {
         
 
 
-        {/* <div className="grid grid-cols-2 mt-8">
-                  {lessons.map((lesson) => <h4 className='text-[16px] mb-2 text-[#079C49] font-bold'>{lesson.id+1} - {lesson.title}</h4>)}
-                </div> */}
-
              
       {firstCourse? <button onClick={handleOpen} className='normal-case bg-[#079C49] text-[#fff] font-bold  text-[20px] p-2 px-3 rounded-xl'>Add lesson</button>: null}
   

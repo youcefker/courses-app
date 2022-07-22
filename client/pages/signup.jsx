@@ -205,7 +205,7 @@ function Signup() {
                               
                               className="input  border-[#66666640] h-[55px] rounded-xl outline-none px-3 text-[20px]"
                             >
-                              {cours?.map(course => <MenuItem value={course.name}>{course.name}</MenuItem>)}
+                              {cours?.map(course => <MenuItem key={course._id} value={course.name}>{course.name}</MenuItem>)}
                             </Select>
                             {formik.touched.choosed && formik.errors.choosed ? (
                                        <div className='text-[red] text-[14px] ml-2'>{formik.errors.choosed}</div>

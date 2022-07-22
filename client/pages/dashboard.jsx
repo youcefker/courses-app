@@ -128,7 +128,7 @@ const [lessons, setLessons] = useState(['Intro to Javascript', 'Programing with 
       <Divider />
         {lessons.map((lesson,index) =>  
        
-        <ListItem  disablePadding className='my-2'>
+        <ListItem  key={lesson._id} disablePadding className='my-2'>
             <ListItemButton>
               <span className='mr-2 font-bold'>{index +1}-</span>
           
@@ -475,7 +475,7 @@ const [lessons, setLessons] = useState(['Intro to Javascript', 'Programing with 
                      <TabPanel value={value} index={2} dir={theme.direction}>
                      <div className='mt-3'>
                      {latest.length == 0 && ( <h3 className='text-center'>No latest courses found</h3>)}   
-                     {latest.map(lesson => <ProgressCard progress="25" goToLesson={() => {
+                     {latest.map(lesson => <ProgressCard key={lesson._id} progress="25" goToLesson={() => {
                              router.push({
                              pathname: "/courses/lessons/"+lesson._id,
                                query : {course_id: firstCourse._id, lesson_id: lesson._id, filename: lesson.filename, name: lesson.name, description: lesson.description}
@@ -582,7 +582,7 @@ const [lessons, setLessons] = useState(['Intro to Javascript', 'Programing with 
                    <h3 className='text-[#1F1F1F] font-[600] text-[22px]'>Latest lessons</h3>
                    {latest.length == 0 && ( <h3 className='text-center mt-5'>No latest courses found</h3>)}   
                    <div className='mt-3'>
-                     {latest.map(lesson => <ProgressCard progress="25" goToLesson={() => {
+                     {latest.map(lesson => <ProgressCard key={lesson._id} progress="25" goToLesson={() => {
                              router.push({
                              pathname: "/courses/lessons/"+lesson._id,
                                query : {course_id: firstCourse._id, lesson_id: lesson._id, filename: lesson.filename, name: lesson.name, description: lesson.description}
@@ -616,7 +616,7 @@ const [lessons, setLessons] = useState(['Intro to Javascript', 'Programing with 
                          <h5 className='text-[#1F1F1F] text-[12px] font-[600] sm:col-span-2'>Cours</h5>
                          <h5 className='text-[#1F1F1F] text-[12px] font-[600]'>Admission</h5>
                       </div>
-                      {enrollRequests.map(request => <StudentRow name={request.student_name} actions cours={request.course_name} accept={() => acceptEnrollRequest(request)} refuse={() => refuseEnrollRequest(request._id)}/>)}
+                      {enrollRequests.map(request => <StudentRow key={request._id} name={request.student_name} actions cours={request.course_name} accept={() => acceptEnrollRequest(request)} refuse={() => refuseEnrollRequest(request._id)}/>)}
                     </div>
                 </div>
   
@@ -636,7 +636,7 @@ const [lessons, setLessons] = useState(['Intro to Javascript', 'Programing with 
                             <h5 className='text-[#1F1F1F] text-[12px] font-[600] col-span-2'>Cours</h5>
                             <h5 className='text-[#1F1F1F] text-[12px] font-[600] text-center'>Progress</h5>
                         </div>
-                        {courseStudents?.map(student => <StudentRow name={student.name} cours={firstCourse.name} progress={parseInt(calculateProgress(student, firstCourse._id) * 100) == 0 ? -1 :parseInt(calculateProgress(student, firstCourse._id) * 100) }/>)}
+                        {courseStudents?.map(student => <StudentRow key={request._id} name={student.name} cours={firstCourse.name} progress={parseInt(calculateProgress(student, firstCourse._id) * 100) == 0 ? -1 :parseInt(calculateProgress(student, firstCourse._id) * 100) }/>)}
                     </div>
               
                 </div>

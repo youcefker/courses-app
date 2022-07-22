@@ -40,8 +40,10 @@ function Profile() {
   const handleHide = ()=> setHide(!hide)
   const formik = useFormik({
     initialValues: {
-      name: localStorage.getItem("name"),
-      email: localStorage.getItem("email"),
+      name: typeof window !== 'undefined' ? localStorage && localStorage.getItem('name')
+      ? localStorage.getItem('name') : "" : "",
+      email: typeof window !== 'undefined' ? localStorage && localStorage.getItem('email')
+      ? localStorage.getItem('email') : "" : "",
       password : ""
     
     },

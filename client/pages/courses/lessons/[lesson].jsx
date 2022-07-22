@@ -58,7 +58,7 @@ function Lesson() {
       <Divider />
         {lessons.map((lesson,index) =>  
        
-        <ListItem  disablePadding className='my-2'>
+        <ListItem  key={lesson._id} disablePadding className='my-2'>
             <ListItemButton>
               <span className='mr-2 font-bold'>{index +1}-</span>
           
