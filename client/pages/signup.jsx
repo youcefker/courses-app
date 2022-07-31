@@ -212,17 +212,17 @@ function Signup() {
                                      ) : null}  
                           </FormControl>
                         </div>
-                        <div className='flex flex-col mt-[30px]'>
+                        {/* <div className='flex flex-col mt-[30px]'>
                          <FormGroup>
                              <FormControlLabel control={<Checkbox  style={{color:'#000'}} />} label={privacy} color='#000' />
                              <FormControlLabel control={<Checkbox  style={{color:'#000'}} />} label={subscribe} color='#000' />
                           </FormGroup>
-                        </div>
-                        <div className="mt-[30px]">
+                        </div> */}
+                        {/* <div className="mt-[30px]">
                         <ReCAPTCHA
                            sitekey="Your client site key"
                          />
-                        </div>
+                        </div> */}
                         <button type='submit' disableRipple={formik.values.email === '' || formik.values.password === ''} className={(formik.values.email !== '' && formik.values.password !== '') ? 'muiBt loginBtn bg-[#079C49] w-[50%] mt-[30px] rounded-[32px] text-[#fff] h-[64px] text-[22px] hover:bg-[#078C49] normal-case' : 'muiBt loginBtn bg-[#111111] w-[50%] mt-[30px] rounded-[32px] text-[#fff] h-[64px] text-[22px] opacity-[0.25] hover:bg-[#111111] normal-case '}>Sign up</button>
                         <h6 className='text-[#333333] text-[20px] font-[400] mt-[10px]' >Already have an account?   <span className='underline cursor-pointer' onClick={() => router.push("/login")}> Log in </span> </h6>
                     </form> 

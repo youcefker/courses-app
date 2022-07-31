@@ -144,15 +144,15 @@ function Login() {
                         </div>
                         <button type='submit'  disableRipple={formik.values.username === '' || formik.values.password === ''} className={(formik.values.username !== '' && formik.values.password !== '') ? 'muiBt loginBtn bg-[#079C49] w-full mt-[30px] rounded-[32px] text-[#fff] h-[60px] text-[20px] hover:bg-[#078C49] normal-case' : 'muiBt loginBtn bg-[#111111] w-full mt-[30px] rounded-[32px] text-[#fff] h-[64px] text-[22px] opacity-[0.25] hover:bg-[#111111] normal-case '}>Log in</button>
                       </form>
-                        <div className="flex justify-between mt-4 sm:mt-[35px] items-center">
+                        {/* <div className="flex justify-between mt-4 sm:mt-[35px] items-center">
                             <div className='h-[1px] sm:h-[2px] w-[40%] bg-[#66666640]'></div>
                             <span className='text-[#666666]  sm:text-[24px] font-[400]'>OR</span>
                             <div className='h-[1px] sm:h-[2px] w-[40%] bg-[#66666640]'></div>
-                        </div>
-                        <button className='flex justify-center items-center w-full mt-4 sm:mt-[30px] rounded-[32px]  h-[60px] text-[18px] normal-case  border-3 googleBtn'>
+                        </div> */}
+                        {/* <button className='flex justify-center items-center w-full mt-4 sm:mt-[30px] rounded-[32px]  h-[60px] text-[18px] normal-case  border-3 googleBtn'>
                             <Image src="/icons/google.svg" width={25} height={25}/>
                             <span className='text-[#333333] font-[400] ml-[16px]'>Continue with Google</span>
-                        </button>
+                        </button> */}
                         <h6 onClick={()=> router.push("/forget/forgetPass")} className='mt-[35px] text-center underline cursor-pointer'>Forget your password?</h6>
                     </div>
                    

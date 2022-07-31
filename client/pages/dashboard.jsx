@@ -37,7 +37,7 @@ import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import PlayLessonIcon from '@mui/icons-material/PlayLesson';
-
+import axiosInstance from '../axiosInstance'
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -93,8 +93,10 @@ function Dashboard() {
     const [fetched, setFetched] = useState(false)
     const theme = useTheme();
   const [value, setValue] = React.useState(0);
-
-
+  const [searchInput, setSearchInput] = useState('');
+  const [searchStudent, setSearchStudent] = useState('');
+  const [filteredStudents, setFilteredStudents] = useState([]);
+  const [filteredResults, setFilteredResults] = useState([]);
 const [lessons, setLessons] = useState(['Intro to Javascript', 'Programing with javascript', 'Dom manipulation'])
 
   const [state, setState] = React.useState({
@@ -103,6 +105,35 @@ const [lessons, setLessons] = useState(['Intro to Javascript', 'Programing with 
     bottom: false,
     right: false,
   });
+
+
+
+  const searchItems = (searchValue) => {
+    setSearchInput(searchValue)
+    if (searchInput !== '') {
+      const filteredData = enrollRequests.filter((item) => {
+          return Object.values(item).join('').toLowerCase().includes(searchInput.toLowerCase())
+      })
+      setFilteredResults(filteredData)
+  }
+  else{
+      setFilteredResults(enrollRequests)
+  }
+}
+
+const searchStudents = (searchValue) => {
+  setSearchStudent(searchValue)
+  if (searchStudent !== '') {
+    const filteredData = courseStudents.filter((item) => {
+        return Object.values(item).join('').toLowerCase().includes(searchStudent.toLowerCase())
+    })
+    setFilteredStudents(filteredData)
+}
+else{
+    setFilteredStudents(courseStudents)
+}
+}
+
 
   const toggleDrawer = (anchor, open) => (event) => {
     if (
@@ -465,11 +496,11 @@ const [lessons, setLessons] = useState(['Intro to Javascript', 'Programing with 
                        </div>
                      </TabPanel>
                      <TabPanel value={value} index={1} dir={theme.direction}>
-                         <div className='mt-2'>
+                         {/* <div className='mt-2'>
                              <CourseCard name="Lorem ipsum dolor sit" descrip="Lorem ipsum" icon="/icons/newCourse.svg"/>
                              <CourseCard name="Lorem ipsum dolor sit" descrip="Lorem ipsum" icon="/icons/newCourse.svg"/>
                              <CourseCard name="Lorem ipsum dolor sit" descrip="Lorem ipsum" icon="/icons/newCourse.svg"/>
-                           </div>
+                           </div> */}
                      </TabPanel>
                      <TabPanel value={value} index={2} dir={theme.direction}>
                      <div className='mt-3'>
@@ -569,11 +600,11 @@ const [lessons, setLessons] = useState(['Intro to Javascript', 'Programing with 
                         <div className='bg-[#fff] p-4 rounded-[15px]'>
                            <h3 className='text-[#1F1F1F] font-[600] text-[22px]'>New courses</h3>
                            <h5 className='text-[#1F1F1F] text-[16px] mt-2'>Discover new courses</h5>
-                           <div className='mt-2'>
+                           {/* <div className='mt-2'>
                              <CourseCard name="Lorem ipsum dolor sit" descrip="Lorem ipsum" icon="/icons/newCourse.svg"/>
                              <CourseCard name="Lorem ipsum dolor sit" descrip="Lorem ipsum" icon="/icons/newCourse.svg"/>
                              <CourseCard name="Lorem ipsum dolor sit" descrip="Lorem ipsum" icon="/icons/newCourse.svg"/>
-                           </div>
+                           </div> */}
                         </div>
                     </div>
                 </div>
@@ -592,10 +623,11 @@ const [lessons, setLessons] = useState(['Intro to Javascript', 'Programing with 
             </div>
             </div>
             </>
-            ) : 
-            <div className='flex justify-center items-center'>
-               <HashLoader color="#079C49" loading={true} size={60} />
-            </div>
+            ) : (firstCourse !== null ?
+              <div className='flex justify-center items-center'>
+            <HashLoader color="#079C49" loading={true} size={60} />
+         </div> : <h1 className='text-center text-xl'>You're not accepted yet !</h1>)
+            
            
             
           : 
@@ -607,7 +639,7 @@ const [lessons, setLessons] = useState(['Intro to Javascript', 'Programing with 
                     <h4 className='text-[22px] text-[#1F1F1F]'>New students <span className='text-[14px]'>({enrollRequests.length})</span> </h4>
                     <div className='flex items-center border-[1px] border-[#9DA6BACC] p-2 rounded-[10px] mt-3 text-[#9DA6BA]'>
                         <SearchIcon />
-                        <input type="search" className='w-full outline-none pl-2 text-[#000]' placeholder='Search a student’s name ...'/>
+                        <input type="search" className='w-full outline-none pl-2 text-[#000]' placeholder='Search a student’s name ...' onChange={(e) => searchItems(e.target.value)}/>
                     </div>
                     <div className='mt-5'>
                       <div className="grid grid-cols-3 sm:grid-cols-4">
@@ -615,7 +647,9 @@ const [lessons, setLessons] = useState(['Intro to Javascript', 'Programing with 
                          <h5 className='text-[#1F1F1F] text-[12px] font-[600] sm:col-span-2'>Cours</h5>
                          <h5 className='text-[#1F1F1F] text-[12px] font-[600]'>Admission</h5>
                       </div>
-                      {enrollRequests.map(request => <StudentRow name={request.student_name} actions cours={request.course_name} accept={() => acceptEnrollRequest(request)} refuse={() => refuseEnrollRequest(request._id)}/>)}
+                      {searchInput.length > 1 ? (
+                    filteredResults.map(request => <StudentRow name={request.student_name} actions cours={request.course_name} accept={() => acceptEnrollRequest(request)} refuse={() => refuseEnrollRequest(request._id)}/>)) :
+                      enrollRequests.map(request => <StudentRow name={request.student_name} actions cours={request.course_name} accept={() => acceptEnrollRequest(request)} refuse={() => refuseEnrollRequest(request._id)}/>)}
                     </div>
                 </div>
   
@@ -627,7 +661,7 @@ const [lessons, setLessons] = useState(['Intro to Javascript', 'Programing with 
                     <h4 className='text-[22px] text-[#1F1F1F]'>My students <span className='text-[14px]'>({courseStudents?.length})</span> </h4>
                     <div className='flex items-center border-[1px] border-[#9DA6BACC] p-2 rounded-[10px] mt-3 text-[#9DA6BA]'>
                         <SearchIcon />
-                        <input type="search" className='w-full outline-none pl-2 text-[#000]' placeholder='Search a student’s name ...'/>
+                        <input type="search" className='w-full outline-none pl-2 text-[#000]' placeholder='Search a student’s name ...' onChange={(e) => searchStudents(e.target.value)}/>
                     </div>
                     <div className='mt-5'>
                         <div className="grid grid-cols-4">
@@ -635,7 +669,9 @@ const [lessons, setLessons] = useState(['Intro to Javascript', 'Programing with 
                             <h5 className='text-[#1F1F1F] text-[12px] font-[600] col-span-2'>Cours</h5>
                             <h5 className='text-[#1F1F1F] text-[12px] font-[600] text-center'>Progress</h5>
                         </div>
-                        {courseStudents?.map(student => <StudentRow name={student.name} cours={firstCourse.name} progress={parseInt(calculateProgress(student, firstCourse._id) * 100) == 0 ? -1 :parseInt(calculateProgress(student, firstCourse._id) * 100) }/>)}
+                        {searchStudent.length > 1 ? (
+                          filteredStudents?.map(student => <StudentRow name={student.name} cours={firstCourse.name} progress={parseInt(calculateProgress(student, firstCourse._id) * 100) == 0 ? -1 :parseInt(calculateProgress(student, firstCourse._id) * 100) }/>)):
+                        courseStudents?.map(student => <StudentRow name={student.name} cours={firstCourse.name} progress={parseInt(calculateProgress(student, firstCourse._id) * 100) == 0 ? -1 :parseInt(calculateProgress(student, firstCourse._id) * 100) }/>)}
                     </div>
               
                 </div>
