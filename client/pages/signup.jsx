@@ -7,7 +7,7 @@ import { Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormHelperT
 import Footer from '../components/layout/footer'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-import  axios  from "axios";
+import  axios  from "../axiosInstance";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -68,7 +68,7 @@ function Signup() {
           course_name : formik.values.choosed
       };
       
-      axios.post('http://localhost:4000/api/v1/auth/signup', userObject)
+      axios.post('/auth/signup', userObject)
           .then((res) => {
               console.log(res.data)
                toast.success(res.data.message);
@@ -122,7 +122,7 @@ function Signup() {
   });
   const fetchCoursesNames = async () => {
     try {
-      const response = await axios.get("http://localhost:4000/api/v1/course/names")
+      const response = await axios.get("/course/names")
       console.log(response.data)
       setCours(response.data.data)
     } catch(err){
@@ -205,7 +205,7 @@ function Signup() {
                               
                               className="input  border-[#66666640] h-[55px] rounded-xl outline-none px-3 text-[20px]"
                             >
-                              {cours?.map(course => <MenuItem value={course.name}>{course.name}</MenuItem>)}
+                              {cours?.map(course => <MenuItem key={course._id} value={course.name}>{course.name}</MenuItem>)}
                             </Select>
                             {formik.touched.choosed && formik.errors.choosed ? (
                                        <div className='text-[red] text-[14px] ml-2'>{formik.errors.choosed}</div>

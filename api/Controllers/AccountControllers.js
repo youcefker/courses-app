@@ -89,7 +89,7 @@ module.exports = {
                                     data: null
                                 })
                             }
-                            const body = `<p>http://localhost:3000/verify/${savedConfirmationToken.token}</p>`
+                            const body = `<a href="http://localhost:3000/verify/${savedConfirmationToken.token}">verify</a>`
                             await sendMail(account.email, "hello@gmail.com", body, async (err, result) => {
                                 if(err) {
                                     console.log(err)
@@ -304,7 +304,7 @@ module.exports = {
                             data: null
                         })
                     }
-                    const body = `<p>http://localhost:3000/verify/${savedConfirmationToken.token}</p>`
+                    const body = `<a href="http://localhost:3000/verify/${savedConfirmationToken.token}">Confirm your account</a>`
                     await sendMail(account.email, "no-reply@coursesapp.com", body, async (err, result) => {
                         if(err) {
                             console.log(err)
@@ -640,7 +640,7 @@ module.exports = {
                         data: null
                     })
                 }
-                const body = `<a href="http://localhost:3000/forget/${savedResetToken.token}">verify</a>`
+                const body = `<a href="http://localhost:3000/forget/${savedResetToken.token}">Reset your password</a>`
                 sendMail(account.email, "hello@gmail.com", body, async (err, result) => {
                     if(err) {
                         console.log(err)
@@ -650,7 +650,7 @@ module.exports = {
                             data: null
                         })
                     }
-                    return res.status(400).json({
+                    return res.status(200).json({
                         error: false,
                         message: "Reset token sent to your email.",
                         data: null
@@ -718,7 +718,7 @@ module.exports = {
                             data: null
                         })
                     }
-                    return res.status(400).json({
+                    return res.status(200).json({
                         error: true,
                         message: "Password updated succesfully",
                         data: null

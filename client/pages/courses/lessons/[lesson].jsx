@@ -5,7 +5,7 @@ import IndexPage from '../../../components/dashboard/indexPage'
 import Sidebar from '../../../components/dashboard/sidebar'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import axios from '../../../axiosInstance'
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 
 import List from '@mui/material/List';
@@ -58,7 +58,7 @@ function Lesson() {
       <Divider />
         {lessons.map((lesson,index) =>  
        
-        <ListItem  disablePadding className='my-2'>
+        <ListItem  key={lesson._id} disablePadding className='my-2'>
             <ListItemButton>
               <span className='mr-2 font-bold'>{index +1}-</span>
           

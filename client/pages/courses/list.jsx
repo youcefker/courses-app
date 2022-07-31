@@ -5,7 +5,7 @@ import React, { useState } from 'react'
 import IndexPage from '../../components/dashboard/indexPage'
 import Sidebar from '../../components/dashboard/sidebar'
 import { useEffect } from 'react'
-import axios from 'axios'
+import axios from '../../axiosInstance'
 import toast, { Toaster } from 'react-hot-toast';
 
 
@@ -34,7 +34,6 @@ const less = [
 function Courses() {
   const router = useRouter()
   const [lessons, setLessons] = React.useState([]);
-  const [course, setCourse] = React.useState(null);
   const [lessonTitle, setLessonTitle] = React.useState("");
   const [lessonDescription, setLessonDescription] = React.useState("");
   const [lessonVideo, setLessonVideo] = React.useState(null);
@@ -46,7 +45,6 @@ const handleOpen = () => setOpen(true);
 const handleClose = () => setOpen(false);
 
 useEffect(  ()  => {
-  setCourse(getCourse())
 
 }, [])
 
@@ -63,7 +61,7 @@ useEffect(  ()  => {
     console.log(lessons);
   }
   const getLesson = (id) =>{
-    axios.get(`http://localhost:4000/api/v1/lesson/${id}`)
+    axios.get(`/lesson/${id}`)
     .then((res) => {
         console.log(res.data)
        
@@ -78,7 +76,7 @@ useEffect(  ()  => {
 
   const fetchFirstCourse = async () => {
     try {
-      const response = await axios.get("http://localhost:4000/api/v1/course")
+      const response = await axios.get("/course")
       console.log(response.data)
       if(response.data.data.length != 0){
         setFirstCourse(response.data.data[0])
@@ -88,27 +86,13 @@ useEffect(  ()  => {
     }
   }
 
-  const getCourse = async () =>{
-    await axios.get('http://localhost:4000/api/v1/course/62c386bf96ee0605999f194f')
-    .then((res)  =>{
-        console.log(res.data)
-       
-        setCourse(res.data)
-        return res.data
-  
-     
-       
-    }).catch((error) => {
-        console.log(error)
-    });
-  }
   const fetchStorageData = () => {
     const jwt = localStorage.getItem("jwt")
     const role =  localStorage.getItem("role")
     const data = jwt && role ? {jwt, role}: null
     return data
 }
-  const handleAddLesson =async () =>{
+  const handleAddLesson =() =>{
     console.log(lessonDescription);
     var bodyFormData = new FormData();
     bodyFormData.append('file', lessonVideo);
@@ -116,11 +100,7 @@ useEffect(  ()  => {
     bodyFormData.append('description', lessonDescription);
     
   
-    await axios({
-      method: "post",
-      url: `http://localhost:4000/api/v1/course/${firstCourse._id}/lesson`,
-      data: bodyFormData,
-      headers: { "Content-Type": "multipart/form-data" },
+    axios.post(`/course/${firstCourse._id}/lesson`, bodyFormData, {headers: { "Content-Type": "multipart/form-data" },
     }).then(function (response) {
         //handle success
         console.log(response);
@@ -130,12 +110,8 @@ useEffect(  ()  => {
         console.log(response);
         toast.error(response.response.data.message)
       });
-    handleClose()
 
   }
-
-  console.log(lessonVideo);
-  console.log(lessons);
 
   const createdCourse = router.query.course
 
@@ -162,10 +138,6 @@ useEffect(  ()  => {
 
         
 
-
-        {/* <div className="grid grid-cols-2 mt-8">
-                  {lessons.map((lesson) => <h4 className='text-[16px] mb-2 text-[#079C49] font-bold'>{lesson.id+1} - {lesson.title}</h4>)}
-                </div> */}
 
              
       {firstCourse? <button onClick={handleOpen} className='normal-case bg-[#079C49] text-[#fff] font-bold  text-[20px] p-2 px-3 rounded-xl'>Add lesson</button>: null}

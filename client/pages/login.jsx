@@ -7,7 +7,7 @@ import { Button } from '@mui/material'
 import Footer from '../components/layout/footer'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-import axios from 'axios'
+import axios from '../axiosInstance'
 import { useFormik } from "formik";
 import * as yup from "yup";
 import decode from 'jwt-decode'
@@ -49,7 +49,7 @@ function Login() {
           password : formik.values.password
       };
       try {
-        const response = await axios.post('http://localhost:4000/api/v1/auth/signin', userObject)
+        const response = await axios.post('/auth/signin', userObject)
         console.log(response.data)
         await toast.success(response.data.message);
           if (!response.data.error){
@@ -171,5 +171,6 @@ function Login() {
     </>
   )
 }
+
 
 export default Login

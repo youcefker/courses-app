@@ -41,9 +41,8 @@ module.exports = {
                     data: courses
                 })
             }
-            return res.json({
-                error: false,
-                status: 200, 
+            return res.status(200).json({
+                error: false, 
                 message: "Courses fetched succesfully",
                 data: courses
             })
@@ -165,26 +164,23 @@ module.exports = {
     addLessonToCourse : async (req, res) => {
         console.log(req.file)
         if(!req.params.course_id) {
-            return res.json({
+            return res.status(400).json({
                 error: true,
-                status: 401, 
                 message: "you need to specify the course.",
                 data: null
             })
         }
         getCourse(req.params.course_id, async (err, course) => {
             if(err){
-                return res.json({
+                return res.status(400).json({
                     error: true,
-                    status: 401, 
                     message: "something went wrong!",
                     data: null
                 }) 
             }
             if(!course) {
-                return res.json({
+                return res.status(400).json({
                     error: true,
-                    status: 401, 
                     message: "Course not found!",
                     data: null
                 })
@@ -197,9 +193,8 @@ module.exports = {
             }
             createLesson(lesson, async (err, lesson) => {
                 if(err){
-                    return res.json({
+                    return res.status(400).json({
                         error: true,
-                        status: 401, 
                         message: "something went wrong!",
                         data: null
                     }) 
@@ -207,17 +202,15 @@ module.exports = {
                 try {
                     course.lessons = [ ...course.lessons, lesson.id ]
                     await course.save()
-                    return res.json({
+                    return res.status(200).json({
                         error: false,
-                        status: 200, 
                         message: "Lesson created succesfully",
                         data: lesson
                     })
                 } catch(err) {
                     console.log(err)
-                    return res.json({
-                        error: true,
-                        status: 401, 
+                    return res.status(400).json({
+                        error: true, 
                         message: "something went wrong!",
                         data: null
                     })
@@ -229,24 +222,21 @@ module.exports = {
         console.log("hello")
         getAllLessons(async (err, lessons) => {
             if(err) {
-                return res.json({
+                return res.status(400).json({
                     error: true,
-                    status: 401, 
                     message: "something went wrong!",
                     data: null
                 })
             } 
             if(lessons.length === 0) {
-                return res.json({
-                    error: false,
-                    status: 200, 
+                return res.status(200).json({
+                    error: false, 
                     message: "No lessons found!",
                     data: lessons
                 })
             }
-            return res.json({
+            return res.status(200).json({
                 error: false,
-                status: 200, 
                 message: "Lessons fetched succesfully",
                 data: lessons
             })
@@ -256,33 +246,29 @@ module.exports = {
         const course_id = req.params.course_id
         getCourse(course_id, async(err, course) => {
             if(err) {
-                return res.json({
+                return res.status(400).json({
                     error: true,
-                    status: 401, 
                     message: "something went wrong!",
                     data: null
                 })
             } 
             if(!course){
-                return res.json({
+                return res.status(400).json({
                     error: true,
-                    status: 401, 
                     message: "Course not found!",
                     data: null
                 })
             }
             try {
                 const courseWithLessons = await course.populate("lessons")
-                return res.json({
+                return res.status(200).json({
                     error: false,
-                    status: 200, 
                     message: "Course Lessons fetched succesfully",
                     data: courseWithLessons.lessons
                 })
             } catch(error){
-                return res.json({
+                return res.status(400).json({
                     error: true,
-                    status: 401, 
                     message: "something went wrong!",
                     data: null
                 })
@@ -293,24 +279,21 @@ module.exports = {
         const lesson_id = req.params.lesson_id
         getLesson(lesson_id, async (err, lesson) => {
             if(err) {
-                return res.json({
-                    error: true,
-                    status: 401, 
+                return res.status(400).json({
+                    error: true, 
                     message: "something went wrong!",
                     data: null
                 })
             } 
             if(!lesson){
-                return res.json({
+                return res.status(400).json({
                     error: true,
-                    status: 401, 
                     message: "Lesson not found!",
                     data: null
                 })
             }
-            return res.json({
-                error: false,
-                status: 200, 
+            return res.status(200).json({
+                error: false, 
                 message: "Lesson fetched succesfully",
                 data: lesson
             })
@@ -325,25 +308,22 @@ module.exports = {
         }
         updateLesson(lesson_id, updateData, async (err, lesson) => {
             if(err){
-                return res.json({
+                return res.status(400).json({
                     error: true,
-                    status: 401, 
                     message: "something went wrong!",
                     data: null
                 })
             }
             getLesson(lesson.id, (err, updatedlesson) => {
                 if(err){
-                    return res.json({
-                        error: true,
-                        status: 401, 
+                    return res.status(400).json({
+                        error: true, 
                         message: "something went wrong!",
                         data: null
                     })
                 }
-                return res.json({
-                    error: false,
-                    status: 200, 
+                return res.status(200).json({
+                    error: false, 
                     message: "lesson updated succesfully",
                     data: updatedlesson
                 })
@@ -354,17 +334,15 @@ module.exports = {
         console.log(req.body.student_id)
         getStudent(req.body.student_id, async (err, student) => {
             if(err){
-                return res.json({
+                return res.status(400).json({
                     error: true,
-                    status: 401, 
                     message: "something went wrong!",
                     data: null
                 })
             }
             if(!student){
-                return res.json({
-                    error: true,
-                    status: 401, 
+                return res.status(400).json({
+                    error: true, 
                     message: "Lesson not found!",
                     data: null
                 })
@@ -386,16 +364,14 @@ module.exports = {
             console.log(student.progress[course_progress_index].lessons_progress[lesson_progress_index])
             try {
                 await student.save()
-                return res.json({
-                    error: true,
-                    status: 200, 
+                return res.status(200).json({
+                    error: false, 
                     message: "Course progress",
                     data: student 
                 })
             } catch(err) {
-                return res.json({
-                    error: true,
-                    status: 401, 
+                return res.status(400).json({
+                    error: true, 
                     message: "something went wrong!",
                     data: null
                 })
@@ -406,16 +382,21 @@ module.exports = {
         const lesson_id = req.params.lesson_id
         deleteLesson(lesson_id, (err, result) => {
             if(err){
-                return res.json({
+                return res.status(400).json({
                     error: true,
-                    status: 401, 
                     message: "something went wrong!",
                     data: null
                 })
             }
-            return res.json({
-                error: false,
-                status: 200, 
+            if(!result){
+                return res.status(400).json({
+                    error: true,
+                    message: "lesson not found",
+                    data: null
+                })
+            }
+            return res.status(200).json({
+                error: false, 
                 message: "Lesson deleted succesfully",
                 data: null
             })

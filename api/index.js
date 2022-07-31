@@ -20,7 +20,7 @@ const { createAccount } = require("./Services/AccountService");
 
 
 //----- middlewares -----
-require("dotenv").config()
+require('dotenv').config({silent: true});
 app.use(cors());
 app.use(express.json())
 app.use('/api/v1/auth', authRoutes)
@@ -30,8 +30,8 @@ app.use('/api/v1/student', studentRoutes)
 
 //----- env -----
 const port = process.env.PORT || 4000
-//const MONGO_URL = process.env.MONGO_URL
-MONGO_URL = "mongodb://localhost:27017/courses"
+const MONGO_URL = process.env.MONGO_URL
+//MONGO_URL = "mongodb://localhost:27017/courses"
 mongoose.connect(MONGO_URL)
     .then(result => {
         // set up connection to db for file storage

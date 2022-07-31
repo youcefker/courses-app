@@ -12,7 +12,7 @@ import { useState, useEffect } from 'react'
 import SearchIcon from '@mui/icons-material/Search';
 import { Button } from '@mui/material'
 import StudentRow from '../components/dashboard/studentRow'
-import axios from 'axios'
+import axios from '../axiosInstance'
 import HashLoader from "react-spinners/HashLoader";
 
 import PropTypes from 'prop-types';
@@ -159,7 +159,7 @@ else{
       <Divider />
         {lessons.map((lesson,index) =>  
        
-        <ListItem  disablePadding className='my-2'>
+        <ListItem  key={lesson._id} disablePadding className='my-2'>
             <ListItemButton>
               <span className='mr-2 font-bold'>{index +1}-</span>
           
@@ -221,15 +221,11 @@ else{
     }, [])
     const fetchDataForStudent = async () => {
       try {
-        const { data } = await axios.get(`http://localhost:4000/api/v1/student/courses/${storageData.student_id}`, {
-          headers: {authorization: "Bearer " + storageData.jwt}
-        })
+        const { data } = await axios.get(`/student/courses/${storageData.student_id}`)
         console.log("student", data);
         if(data.data.courses.length > 0) {
           const firstCourse_id = data.data.courses[0]._id
-          const courseData = await axios.get(`http://localhost:4000/api/v1/course/${firstCourse_id}`, {
-            headers: {authorization: "Bearer " + storageData.jwt}
-          })
+          const courseData = await axios.get(`/course/${firstCourse_id}`)
           console.log("course response ---", courseData.data)
           setFirstCourse(courseData.data.data)
           const firstCourse_progress = data.data.progress.filter(courseProgress => courseProgress.course_id === data.data.courses[0]._id)
@@ -242,7 +238,21 @@ else{
           })
           console.log("completed -----", numLessonCompleted)
           setPercentage(numLessonCompleted / firstCourse_progress[0].lessons_progress.length * 100)
-          for (var i = 0; i < firstCourse_progress[0].lessons_progress.length; i++) {
+          let latestLessons = []
+          let upcomingLessons = []
+          firstCourse_progress[0].lessons_progress.map((lesson_progress, index) => {
+            console.log("lesson----", courseData.data.data.lessons[index])
+            if(lesson_progress.completed){
+            
+              latestLessons.push({...courseData.data.data.lessons[index], classement: index + 1})
+            } else {
+              upcomingLessons.push({...courseData.data.data.lessons[index], classement: index + 1})
+            }
+          })
+
+          setLatest(latestLessons)
+          setUpcoming(upcomingLessons)
+          /*for (var i = 0; i < firstCourse_progress[0].lessons_progress.length; i++) {
             console.log(!firstCourse_progress[0].lessons_progress[i].completed)
             if(!firstCourse_progress[0].lessons_progress[i].completed){
               if(i === 0){
@@ -268,7 +278,7 @@ else{
           } else {
             setLatest(courseData.data.data.lessons.slice(0, lastWatched + 1))
             setUpcoming(courseData.data.data.lessons.slice(lastWatched + 1))
-          }
+          }*/
         }
       } catch(err){
         console.log(err)
@@ -277,20 +287,15 @@ else{
 
     const fetchDataForAdmin = async () => {
       try {
-        const requestsRes = await axios.get("http://localhost:4000/api/v1/auth/requests", {
-          headers: {authorization: "Bearer " + storageData.jwt}
-        })
+        const requestsRes = await axios.get("/auth/requests")
         console.log("requests", requestsRes.data.data)
         setEnrollRequests(requestsRes.data.data)
-        const studentRes = await axios.get("http://localhost:4000/api/v1/course", {
-          headers: {authorization: "Bearer " + storageData.jwt}
-        })
+        const studentRes = await axios.get("/course")
+        console.log(studentRes.data.data)
         if(studentRes.data.data.length > 0) {
           setFirstCourse(studentRes.data.data[0])
           const firstCourse_name = studentRes.data.data[0].name
-          const courseStudentsRes = await axios.get(`http://localhost:4000/api/v1/course/students/${firstCourse_name}`, {
-            headers: {authorization: "Bearer " + storageData.jwt}
-          })
+          const courseStudentsRes = await axios.get(`course/students/${firstCourse_name}`)
           console.log(courseStudentsRes.data.data)
           setCourseStudents(courseStudentsRes.data.data)
         }
@@ -307,9 +312,7 @@ else{
           student_id: request.student_id,
           course_id: request.course_id
         }
-        const response = await axios.post("http://localhost:4000/api/v1/student/addcourse", body, {
-          headers: {authorization: "Bearer " + storageData.jwt}
-        })
+        const response = await axios.post("/student/addcourse", body)
         console.log("response", response)
         fetchDataForAdmin()
       } catch(err) {
@@ -319,9 +322,7 @@ else{
 
     const refuseEnrollRequest = async (request_id) => {
       try {
-        const response = await axios.delete(`http://localhost:4000/api/v1/student/request/${request_id}`, {
-          headers: {authorization: "Bearer " + storageData.jwt}
-        })
+        const response = await axios.delete(`/student/request/${request_id}`)
         console.log("response", response)
         fetchDataForAdmin()
       } catch(err){
@@ -467,20 +468,20 @@ else{
                      <div className="grid grid-cols-1 gap-y-2 my-4">
                            
                       {upcoming.length == 0 && ( <h3 className='text-center'>No upcoming courses found</h3>)}        
-                     {upcoming[0]? <CourseCard goToLesson={() => {
+                     {upcoming[0]? <CourseCard lessonIndex={"lesson " + upcoming[0].classement} goToLesson={() => {
                              router.push({
                              pathname: "/courses/lessons/"+upcoming[0]._id,
                                query : {course_id: firstCourse._id, lesson_id: upcoming[0]._id, filename: upcoming[0].filename, name: upcoming[0].name, description: upcoming[0].description}
                              })
                            }} name ={upcoming[0].name} descrip="Lesson 6" icon="/icons/courseIcon.svg" />: null}
-                           {upcoming[1]? <CourseCard goToLesson={() => {
+                           {upcoming[1]? <CourseCard lessonIndex={"lesson " + upcoming[1].classement} goToLesson={() => {
                              console.log("upcoming", upcoming[1])
                              router.push({
                               pathname: "/courses/lessons/"+upcoming[1]._id,
                                 query : {course_id: firstCourse._id, lesson_id: upcoming[1]._id, filename: upcoming[1].filename, name: upcoming[1].name, description: upcoming[1].description}
                               })
                            }} name ={upcoming[1].name} descrip="Lesson 6" icon="/icons/courseIcon.svg" />: null}
-                           {upcoming[2]? <CourseCard goToLesson={() => {
+                           {upcoming[2]? <CourseCard lessonIndex={"lesson " + upcoming[2].classement} goToLesson={() => {
                              console.log("upcoming",upcoming[2])
                             router.push({
                               pathname: "/courses/lessons/"+upcoming[2]._id,
@@ -505,12 +506,12 @@ else{
                      <TabPanel value={value} index={2} dir={theme.direction}>
                      <div className='mt-3'>
                      {latest.length == 0 && ( <h3 className='text-center'>No latest courses found</h3>)}   
-                     {latest.map(lesson => <ProgressCard progress="25" goToLesson={() => {
+                     {latest.map(lesson => <ProgressCard key={lesson._id} progress="25" goToLesson={() => {
                              router.push({
-                             pathname: "/courses/lessons/"+upcoming[0]._id,
+                             pathname: "/courses/lessons/"+lesson._id,
                                query : {course_id: firstCourse._id, lesson_id: lesson._id, filename: lesson.filename, name: lesson.name, description: lesson.description}
                              })
-                           }} course={lesson.name} descrip="Lesson 4" />)}
+                           }} course={lesson.name} descrip={"Lesson " + lesson.classement} />)}
                    </div>
                      </TabPanel>
                    </SwipeableViews>
@@ -527,19 +528,19 @@ else{
                        {upcoming.length == 0 && ( <h3 className='text-center'>No upcoming courses found</h3>)}   
                        <div className="grid grid-cols-3 gap-4 my-4">
                       
-                           {upcoming[0]? <CourseCard goToLesson={() => {
+                           {upcoming[0]? <CourseCard lessonIndex={"lesson " + upcoming[0].classement} goToLesson={() => {
                              router.push({
                              pathname: "/courses/lessons/"+upcoming[0]._id,
                              query : {course_id: firstCourse._id, lesson_id: upcoming[0]._id, filename: upcoming[0].filename, name: upcoming[0].name, description: upcoming[0].description}
                              })
                            }} name ={upcoming[0].name} descrip="Lesson 6" icon="/icons/courseIcon.svg" />: null}
-                           {upcoming[1]? <CourseCard goToLesson={() => {
+                           {upcoming[1]? <CourseCard lessonIndex={"lesson " + upcoming[1].classement} goToLesson={() => {
                              router.push({
                               pathname: "/courses/lessons/"+upcoming[1]._id,
                               query : {course_id: firstCourse._id, lesson_id: upcoming[1]._id, filename: upcoming[1].filename, name: upcoming[1].name, description: upcoming[1].description}
                               })
                            }} name ={upcoming[1].name} descrip="Lesson 6" icon="/icons/courseIcon.svg" />: null}
-                           {upcoming[2]? <CourseCard goToLesson={() => {
+                           {upcoming[2]? <CourseCard lessonIndex={"lesson " + upcoming[2].classement} goToLesson={() => {
                             router.push({
                               pathname: "/courses/lessons/"+upcoming[2]._id,
                               query : {course_id: firstCourse._id, lesson_id: upcoming[2]._id, filename: upcoming[2].filename, name: upcoming[2].name, description: upcoming[2].description}
@@ -612,12 +613,12 @@ else{
                    <h3 className='text-[#1F1F1F] font-[600] text-[22px]'>Latest lessons</h3>
                    {latest.length == 0 && ( <h3 className='text-center mt-5'>No latest courses found</h3>)}   
                    <div className='mt-3'>
-                     {latest.map(lesson => <ProgressCard progress="25" goToLesson={() => {
+                     {latest.map(lesson => <ProgressCard key={lesson._id} progress="25" goToLesson={() => {
                              router.push({
-                             pathname: "/courses/lessons/"+upcoming[0]._id,
+                             pathname: "/courses/lessons/"+lesson._id,
                                query : {course_id: firstCourse._id, lesson_id: lesson._id, filename: lesson.filename, name: lesson.name, description: lesson.description}
                              })
-                           }} course={lesson.name} descrip="Lesson 4" />)}
+                           }} course={lesson.name} descrip={"Lesson " + lesson.classement} />)}
                    </div>
                 </div>
             </div>
@@ -648,8 +649,8 @@ else{
                          <h5 className='text-[#1F1F1F] text-[12px] font-[600]'>Admission</h5>
                       </div>
                       {searchInput.length > 1 ? (
-                    filteredResults.map(request => <StudentRow name={request.student_name} actions cours={request.course_name} accept={() => acceptEnrollRequest(request)} refuse={() => refuseEnrollRequest(request._id)}/>)) :
-                      enrollRequests.map(request => <StudentRow name={request.student_name} actions cours={request.course_name} accept={() => acceptEnrollRequest(request)} refuse={() => refuseEnrollRequest(request._id)}/>)}
+                    filteredResults.map(request => <StudentRow key={request._id} name={request.student_name} actions cours={request.course_name} accept={() => acceptEnrollRequest(request)} refuse={() => refuseEnrollRequest(request._id)}/>)) :
+                      enrollRequests.map(request => <StudentRow  key={request._id}name={request.student_name} actions cours={request.course_name} accept={() => acceptEnrollRequest(request)} refuse={() => refuseEnrollRequest(request._id)}/>)}
                     </div>
                 </div>
   
@@ -670,8 +671,8 @@ else{
                             <h5 className='text-[#1F1F1F] text-[12px] font-[600] text-center'>Progress</h5>
                         </div>
                         {searchStudent.length > 1 ? (
-                          filteredStudents?.map(student => <StudentRow name={student.name} cours={firstCourse.name} progress={parseInt(calculateProgress(student, firstCourse._id) * 100) == 0 ? -1 :parseInt(calculateProgress(student, firstCourse._id) * 100) }/>)):
-                        courseStudents?.map(student => <StudentRow name={student.name} cours={firstCourse.name} progress={parseInt(calculateProgress(student, firstCourse._id) * 100) == 0 ? -1 :parseInt(calculateProgress(student, firstCourse._id) * 100) }/>)}
+                          filteredStudents?.map(student => <StudentRow key={student._id} name={student.name} cours={firstCourse.name} progress={parseInt(calculateProgress(student, firstCourse._id) * 100) == 0 ? -1 :parseInt(calculateProgress(student, firstCourse._id) * 100) }/>)):
+                        courseStudents?.map(student => <StudentRow key={student._id} name={student.name} cours={firstCourse.name} progress={parseInt(calculateProgress(student, firstCourse._id) * 100) == 0 ? -1 :parseInt(calculateProgress(student, firstCourse._id) * 100) }/>)}
                     </div>
               
                 </div>
