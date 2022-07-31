@@ -405,6 +405,7 @@ module.exports = {
     getCoursesNames : async (req, res) => {
         getAllCourses((err, courses) => {
             if(err){
+                console.log(err)
                 return res.status(400).json({
                     error: true,
                     message: "something went wrong!",

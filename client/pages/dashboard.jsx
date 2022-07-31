@@ -636,7 +636,7 @@ const [lessons, setLessons] = useState(['Intro to Javascript', 'Programing with 
                             <h5 className='text-[#1F1F1F] text-[12px] font-[600] col-span-2'>Cours</h5>
                             <h5 className='text-[#1F1F1F] text-[12px] font-[600] text-center'>Progress</h5>
                         </div>
-                        {courseStudents?.map(student => <StudentRow key={request._id} name={student.name} cours={firstCourse.name} progress={parseInt(calculateProgress(student, firstCourse._id) * 100) == 0 ? -1 :parseInt(calculateProgress(student, firstCourse._id) * 100) }/>)}
+                        {courseStudents?.map(student => <StudentRow key={student._id} name={student.name} cours={firstCourse.name} progress={parseInt(calculateProgress(student, firstCourse._id) * 100) == 0 ? -1 :parseInt(calculateProgress(student, firstCourse._id) * 100) }/>)}
                     </div>
               
                 </div>
