@@ -1,29 +1,31 @@
 const nodemailer = require('nodemailer')
+const mg = require("nodemailer-mailgun-transport")
 module.exports = {
     sendMail: async (to, from, body, callBack) => {
         try {
-            let testAccount = await nodemailer.createTestAccount();
-    
-            // create reusable transporter object using the default SMTP transport
-            let transporter = nodemailer.createTransport({
-                host: "localhost",
-                port: 1025,
-                secure: false, // true for 465, false for other ports
-                tls: {
-                    // do not fail on invalid certs
-                    rejectUnauthorized: false,
-                },
-            });
-    
-            // send mail with defined transport object
-            let info = await transporter.sendMail({
-                from: from, // sender address
-                to: to, // list of receivers
-                subject: "Hello ✔", // Subject line
-                text: "Hello world?", // plain text body
-                html: body, // html body
-            });
-            return callBack(false, info)
+            const mailgunAuth = {
+                auth: {
+                  api_key: "cc452de491c929915a10994843cf9867-18e06deb-6e302648",
+                  domain: "sandboxf03f5c1e49764f9fbeba5ebcfed76422.mailgun.org"
+                }
+              }
+              
+              const smtpTransport = nodemailer.createTransport(mg(mailgunAuth))
+              
+              const mailOptions = {
+                from,
+                to,
+                subject: "Investinsmart email verification",
+                html: body
+              }
+              
+              smtpTransport.sendMail(mailOptions, function(error, response) {
+                if (error) {
+                    return callBack(true)
+                } else {
+                    return callBack(false, response)
+                }
+              })
         } catch(err){
             console.log(err)
             return callBack(true)

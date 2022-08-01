@@ -21,7 +21,7 @@ const { createAccount } = require("./Services/AccountService");
 
 //----- middlewares -----
 require('dotenv').config({silent: true});
-app.use(cors("https://localhost:8080"));
+app.use(cors("https://investinsmart.com/"));
 app.use(express.json())
 app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/course', courseRoutes)
@@ -62,7 +62,7 @@ mongoose.connect(MONGO_URL)
         const singleUpload = multer({ storage }).single('file');
         console.log(`database connected successfully`)
         const port = process.env.PORT || 3000
-        app.post('/api/v1/course/:course_id/lesson', singleUpload, addLessonToCourse)
+        app.post('/api/v1/course/:course_id/lesson', checkAdminToken, singleUpload, addLessonToCourse)
         app.get('/api/v1/lesson/files/:filename',(req, res) => {
           console.log(req.params.filename)
           const range = req.headers.range;

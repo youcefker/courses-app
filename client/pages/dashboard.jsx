@@ -97,7 +97,7 @@ function Dashboard() {
   const [searchStudent, setSearchStudent] = useState('');
   const [filteredStudents, setFilteredStudents] = useState([]);
   const [filteredResults, setFilteredResults] = useState([]);
-const [lessons, setLessons] = useState(['Intro to Javascript', 'Programing with javascript', 'Dom manipulation'])
+const [lessons, setLessons] = useState([])
 
   const [state, setState] = React.useState({
     top: false,
@@ -159,11 +159,16 @@ else{
       <Divider />
         {lessons.map((lesson,index) =>  
        
-        <ListItem  key={lesson._id} disablePadding className='my-2'>
+        <ListItem  onClick={() => {
+          router.push({
+            pathname: "/courses/lessons/"+lesson._id,
+              query : {course_id: firstCourse._id, lesson_id: lesson._id, filename: lesson.filename, name: lesson.name, description: lesson.description}
+            })
+        }} key={lesson._id} disablePadding className='my-2'>
             <ListItemButton>
               <span className='mr-2 font-bold'>{index +1}-</span>
           
-              {lesson}
+              {lesson.name}
             </ListItemButton>
           </ListItem>)}
       
@@ -252,6 +257,8 @@ else{
 
           setLatest(latestLessons)
           setUpcoming(upcomingLessons)
+          console.log("lessons ------", courseData.data.data.lessons)
+          setLessons(courseData.data.data.lessons)
           /*for (var i = 0; i < firstCourse_progress[0].lessons_progress.length; i++) {
             console.log(!firstCourse_progress[0].lessons_progress[i].completed)
             if(!firstCourse_progress[0].lessons_progress[i].completed){

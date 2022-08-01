@@ -92,7 +92,7 @@ useEffect(  ()  => {
     const data = jwt && role ? {jwt, role}: null
     return data
 }
-  const handleAddLesson =() =>{
+  const handleAddLesson = () =>{
     console.log(lessonDescription);
     var bodyFormData = new FormData();
     bodyFormData.append('file', lessonVideo);
@@ -114,7 +114,9 @@ useEffect(  ()  => {
   }
 
   const createdCourse = router.query.course
-
+  const test = () => {
+    console.log("helloooooooo -----")
+  }
   useEffect(() => {
     fetchFirstCourse()
   }, [])
@@ -171,7 +173,7 @@ useEffect(  ()  => {
 
                      <div className="flex justify-end mt-8">
                       <button onClick={handleClose} className="muiBtn  sign text-[#079C49] border-2 border-[#079C49] w-[120px] 2xl:w-[120px] h-[40px] 2xl:h-[40px] text-[16px] 2xl:text-[18px] rounded-[10px] font-[600] mr-3" >Cancel</button>
-                      <button onClick={()=>handleAddLesson()} className='muiBtn register text-[#079C49] border-2 border-[#079C49] w-[120px] 2xl:w-[120px] h-[40px] 2xl:h-[40px] text-[16px] 2xl:text-[18px] rounded-[10px] font-[600] '>Save</button>
+                      <button onClick={test} className='muiBtn register text-[#079C49] border-2 border-[#079C49] w-[120px] 2xl:w-[120px] h-[40px] 2xl:h-[40px] text-[16px] 2xl:text-[18px] rounded-[10px] font-[600] '>Save</button>
                     </div>
                    
                    

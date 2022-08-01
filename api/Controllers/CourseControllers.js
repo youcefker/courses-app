@@ -416,7 +416,7 @@ module.exports = {
                 return res.status(200).json({
                     error: false, 
                     message: "No courses found",
-                    data: lessons
+                    data: courses
                 })
             }
             const coursesNames = courses.map(course => {

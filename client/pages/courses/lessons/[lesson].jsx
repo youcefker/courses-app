@@ -25,7 +25,7 @@ function Lesson() {
    const [storageData, setStorageData] = useState(null)
 
 
-   const [lessons, setLessons] = useState(['Intro to Javascript', 'Programing with javascript', 'Dom manipulation'])
+   const [lessons, setLessons] = useState([])
 
   const [state, setState] = React.useState({
     top: false,
@@ -33,6 +33,15 @@ function Lesson() {
     bottom: false,
     right: false,
   });
+
+  const fetchLessons = async () => {
+    try {
+      const response = await axios.get(`/lesson/course/${router.query.course_id}`)
+      setLessons(response.data.data)
+    } catch(err) {
+      console.log(err)
+    }
+  }
 
   const toggleDrawer = (anchor, open) => (event) => {
     if (
@@ -58,11 +67,16 @@ function Lesson() {
       <Divider />
         {lessons.map((lesson,index) =>  
        
-        <ListItem  key={lesson._id} disablePadding className='my-2'>
+        <ListItem  onClick={() => {
+          router.push({
+            pathname: "/courses/lessons/"+lesson._id,
+              query : {course_id: router.query.course_id, lesson_id: lesson._id, filename: lesson.filename, name: lesson.name, description: lesson.description}
+            })
+        }} key={lesson._id} disablePadding className='my-2'>
             <ListItemButton>
               <span className='mr-2 font-bold'>{index +1}-</span>
           
-              {lesson}
+              {lesson.name}
             </ListItemButton>
           </ListItem>)}
       
@@ -80,7 +94,7 @@ function Lesson() {
             student_id: localStorage.getItem("student_id"),
             lesson_id: router.query.lesson_id
          }
-         const response = await axios.post("http://localhost:4000/api/v1/lesson/complete", body)
+         const response = await axios.post("/lesson/complete", body)
          console.log(response.data)
       } catch(err) {
          console.log(err)
@@ -101,6 +115,7 @@ function Lesson() {
    const auth = fetchStorageData()
    if(auth) {
      setStorageData(auth)
+     fetchLessons()
    } else {
      router.replace("/adminLogin")
    }
@@ -138,7 +153,7 @@ function Lesson() {
 
         <div className='col-span-4'>
           <video  on controls autoPlay onEnded={handleEndedVideo} controlsList="nodownload">
-             <source src={`http://localhost:4000/api/v1/lesson/files/${lesson.filename}`} type="video/mp4"/>
+             <source src={`/lesson/files/${lesson.filename}`} type="video/mp4"/>
           </video>
           <div className='mt-5'>
              <h3 className='text-[#1F1F1F] text-[20px] font-[600] mt-1'>About this course</h3>
