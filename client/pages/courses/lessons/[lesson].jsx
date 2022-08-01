@@ -153,7 +153,7 @@ function Lesson() {
 
         <div className='col-span-4'>
           <video  on controls autoPlay onEnded={handleEndedVideo} controlsList="nodownload">
-             <source src={`/lesson/files/${lesson.filename}`} type="video/mp4"/>
+             <source src={`http://localhost:4000/api/v1/lesson/files/${lesson.filename}`} type="video/mp4"/>
           </video>
           <div className='mt-5'>
              <h3 className='text-[#1F1F1F] text-[20px] font-[600] mt-1'>About this course</h3>
