@@ -111,12 +111,12 @@ useEffect(  ()  => {
            toast.success("Lesson added successfully")
         }
 
-
        
       }).catch( (response)=> {
         //handle error
-        console.log(response.response.data.error);
+        console.log(response);
         if (response.response.data.error) {
+          
           toast.error("Can't add fill all the fields please !")
         }
        
