@@ -93,6 +93,7 @@ useEffect(  ()  => {
     return data
 }
   const handleAddLesson = () =>{
+    
     console.log(lessonDescription);
     var bodyFormData = new FormData();
     bodyFormData.append('file', lessonVideo);
@@ -101,14 +102,24 @@ useEffect(  ()  => {
     
   
     axios.post(`/course/${firstCourse._id}/lesson`, bodyFormData, {headers: { "Content-Type": "multipart/form-data" },
-    }).then(function (response) {
+    }).then( (response)=> {
         //handle success
-        console.log(response);
-        toast.success(response.data.message)
-      }).catch(function (response) {
+        console.log(response.data.error);
+        if (!response.data.error){
+          setOpen(false)
+          console.log("lesson added");
+           toast.success("Lesson added successfully")
+        }
+
+
+       
+      }).catch( (response)=> {
         //handle error
-        console.log(response);
-        toast.error(response.response.data.message)
+        console.log(response.response.data.error);
+        if (response.response.data.error) {
+          toast.error("Can't add fill all the fields please !")
+        }
+       
       });
 
   }
@@ -155,7 +166,7 @@ useEffect(  ()  => {
                       >
                         <Box sx={style}>
                         <h4 className='text-[20px] font-[600] text-[#1F1F1F] text-center'>Add a lesson to this course</h4>
-                <form action="get" className='mt-[20px]'>
+                <div  className='mt-[20px]'>
 
 
                     <label className='text-[16px] font-[600] text-[#1F1F1F]'>Lesson title</label>
@@ -172,12 +183,12 @@ useEffect(  ()  => {
                     </div>
 
                      <div className="flex justify-end mt-8">
-                      <button onClick={handleClose} className="muiBtn  sign text-[#079C49] border-2 border-[#079C49] w-[120px] 2xl:w-[120px] h-[40px] 2xl:h-[40px] text-[16px] 2xl:text-[18px] rounded-[10px] font-[600] mr-3" >Cancel</button>
-                      <button onClick={test} className='muiBtn register text-[#079C49] border-2 border-[#079C49] w-[120px] 2xl:w-[120px] h-[40px] 2xl:h-[40px] text-[16px] 2xl:text-[18px] rounded-[10px] font-[600] '>Save</button>
+                      <button onClick={()=>handleClose()} className="muiBtn  sign text-[#079C49] border-2 border-[#079C49] w-[120px] 2xl:w-[120px] h-[40px] 2xl:h-[40px] text-[16px] 2xl:text-[18px] rounded-[10px] font-[600] mr-3" >Cancel</button>
+                      <button onClick={()=>handleAddLesson()} className='muiBtn register text-[#079C49] border-2 border-[#079C49] w-[120px] 2xl:w-[120px] h-[40px] 2xl:h-[40px] text-[16px] 2xl:text-[18px] rounded-[10px] font-[600] '>Save</button>
                     </div>
                    
                    
-                </form>
+                </div>
                         </Box>
                       </Modal>
           

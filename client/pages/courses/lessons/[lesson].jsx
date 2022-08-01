@@ -18,6 +18,7 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import { Box } from '@mui/material'
 import PlayLessonIcon from '@mui/icons-material/PlayLesson';
+import HashLoader from 'react-spinners/HashLoader'
 
 function Lesson() {
    const router = useRouter()
@@ -151,10 +152,15 @@ function Lesson() {
        <div className="grid grid-cols-1 lg:grid-cols-6 lg:gap-x-6 mt-6 w-full">
 
 
-        <div className='col-span-4'>
-          <video  on controls autoPlay onEnded={handleEndedVideo} controlsList="nodownload">
-             <source src={`http://localhost:4000/api/v1/lesson/files/${lesson.filename}`} type="video/mp4"/>
-          </video>
+        <div className='col-span-12'>
+          {lesson.filename ? (
+            <video  on controls autoPlay onEnded={handleEndedVideo} controlsList="nodownload">
+               <source src={`http://localhost:4000/api/v1/lesson/files/${lesson.filename}`} type="video/mp4"/>
+            </video>
+           ): <HashLoader color="#079C49" loading={true} size={60} />
+       
+          }
+      
           <div className='mt-5'>
              <h3 className='text-[#1F1F1F] text-[20px] font-[600] mt-1'>About this course</h3>
              <h6 className='text-[#1F1F1F] text-[14px] font-[500] mt-3'>
@@ -163,7 +169,7 @@ function Lesson() {
           </div>
         </div>
 
-       <div className="mt-5 lg:mt-0 col-span-2">
+       {/* <div className="mt-5 lg:mt-0 col-span-2">
                       
        <div className=' px-5 py-5 bg-[#fff] rounded-[15px]'>
            <h3 className='text-[#1F1F1F] text-[20px] font-[600] '>Necessery docs</h3> 
@@ -208,10 +214,10 @@ function Lesson() {
                        <CourseCard name ="Lorem ipsum" descrip="Lesson 6" icon="/icons/courseIcon.svg" />
 
           </div>
-       </div>
+       </div> 
       
 
-       </div>
+       </div>*/}
 
 
       
