@@ -43,7 +43,7 @@ function AdminLogin() {
           password : formik.values.password
       };
       try {
-        const response = await axios.post('http://localhost:4000/api/v1/auth/admin/signin', userObject)
+        const response = await axios.post('/auth/admin/signin', userObject)
         console.log(response.data)
           if (!response.data.error){
             await localStorage.setItem("jwt", response.data.access_token)
