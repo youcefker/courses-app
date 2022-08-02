@@ -1,4 +1,4 @@
-import { Button, Input, Modal } from '@mui/material'
+import { Button, CircularProgress, Input, Modal } from '@mui/material'
 import { Box } from '@mui/system'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
@@ -7,6 +7,7 @@ import Sidebar from '../../components/dashboard/sidebar'
 import { useEffect } from 'react'
 import axios from '../../axiosInstance'
 import toast, { Toaster } from 'react-hot-toast';
+import { faL } from '@fortawesome/free-solid-svg-icons'
 
 
 const style = {
@@ -41,6 +42,9 @@ function Courses() {
   const [data, setData] = React.useState(false);
   const [firstCourse, setFirstCourse] = React.useState(null)
   const [storageData, setStorageData] = useState(null)
+  const [save, setSave] = React.useState(false);
+
+
 const handleOpen = () => setOpen(true);
 const handleClose = () => setOpen(false);
 
@@ -93,7 +97,7 @@ useEffect(  ()  => {
     return data
 }
   const handleAddLesson = () =>{
-    
+    setSave(true)
     console.log(lessonDescription);
     var bodyFormData = new FormData();
     bodyFormData.append('file', lessonVideo);
@@ -117,7 +121,8 @@ useEffect(  ()  => {
         //handle error
         console.log(response.response.data.error);
         if (response.response.data.error) {
-          toast.error("Can't add fill all the fields please !")
+          toast.error("Fill all the fields please !")
+          setSave(false)
         }
        
       });
@@ -184,7 +189,7 @@ useEffect(  ()  => {
 
                      <div className="flex justify-end mt-8">
                       <button onClick={()=>handleClose()} className="muiBtn  sign text-[#079C49] border-2 border-[#079C49] w-[120px] 2xl:w-[120px] h-[40px] 2xl:h-[40px] text-[16px] 2xl:text-[18px] rounded-[10px] font-[600] mr-3" >Cancel</button>
-                      <button onClick={()=>handleAddLesson()} className='muiBtn register text-[#079C49] border-2 border-[#079C49] w-[120px] 2xl:w-[120px] h-[40px] 2xl:h-[40px] text-[16px] 2xl:text-[18px] rounded-[10px] font-[600] '>Save</button>
+                      <button onClick={()=>handleAddLesson()} className='muiBtn register text-[#079C49] border-2 border-[#079C49] w-[120px] 2xl:w-[120px] h-[40px] 2xl:h-[40px] text-[16px] 2xl:text-[18px] rounded-[10px] font-[600] '>{save ?<CircularProgress style={{height: "30px",width: "30px",marginTop : "3px"}} color="inherit" />: <span>Save</span>}</button>
                     </div>
                    
                    
