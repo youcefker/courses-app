@@ -90,7 +90,7 @@ module.exports = {
                                 })
                             }
                             const body = `<a href="http://localhost:3000/verify/${savedConfirmationToken.token}">verify</a>`
-                            await sendMail(account.email, "n_salahfr@yahoo.fr", body, async (err, result) => {
+                            await sendMail(account.email, "contact@investinsmart.com", body, async (err, result) => {
                                 if(err) {
                                     console.log(err)
                                     await Account.deleteOne({

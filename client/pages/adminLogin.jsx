@@ -2,7 +2,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import React from 'react'
 import { useState } from 'react'
-import axios from 'axios'
+import axios from '../axiosInstance'
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
