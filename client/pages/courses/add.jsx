@@ -79,6 +79,7 @@ function AddCourse() {
   return (
     <>
     <Sidebar active="courses" />
+    <Toaster />
     <IndexPage>
       <form>
 
@@ -120,9 +121,7 @@ function AddCourse() {
 
              
                   <Input id="contained-button-file" single type="file" onChange={(e) => setFile(e.target.files[0])}/>
-                  <Button variant="contained" component="span">
-                  Click to upload
-                  </Button>
+             
                 
 
              

@@ -7,6 +7,7 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import toast, { Toaster } from 'react-hot-toast'
 
 const validationSchema = yup.object({
   username: yup
@@ -48,12 +49,14 @@ function AdminLogin() {
           if (!response.data.error){
             await localStorage.setItem("jwt", response.data.access_token)
             await localStorage.setItem("role","admin")
+            await toast.success(response.data.message);
             router.push({
               pathname :"/profile",
             })
-          }
+          }else  toast.error(response.data.message);
       } catch(err) {
         console.log(err)
+        toast.error(err.response.data.message);
       }
   }
 
@@ -79,6 +82,7 @@ function AdminLogin() {
 
   return (
     <>
+    <Toaster />
       <div className="container px-4 mx-auto pt-4 md:pt-[33.32px] ">
         <Image onClick={() => router.push("/")} className="cursor-pointer" src="/images/footer_logo.svg" width={60} height={60} />
      </div>

@@ -148,6 +148,7 @@ useEffect(  ()  => {
   return (
     <>
     <Sidebar active="courses" />
+    <Toaster />
     <IndexPage>
 
       <div className="flex">
@@ -181,9 +182,7 @@ useEffect(  ()  => {
                     </div>
                     <div className='mt-4'>
                       <Input accept=".mp4" id="contained-button-file" single type="file" onChange={(e) => setLessonVideo(e.target.files[0])} />
-                       <Button variant="contained" component="span">
-                       Click to upload
-                       </Button>
+                   
                     </div>
 
                      <div className="flex justify-end mt-8">

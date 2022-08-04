@@ -43,7 +43,7 @@ function Login() {
 
 
   const handleLogin = async () => {
-    console.log("login")
+
     const userObject = {
           email: formik.values.username,
           password : formik.values.password

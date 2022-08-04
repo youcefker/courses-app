@@ -106,36 +106,8 @@ function Profile() {
                               <div className='text-[red] text-[13px] ml-2'>{formik.errors.email}</div>
                             ) : null}
                         </div>
-                        <div className='flex flex-col mt-4'>
-                          <label htmlFor="password" className="text-[#666666] text-[13px]  font-[400] mb-2 flex justify-between">
-                            <span>Your password</span>
-                            {!hide && (
-                                 <span onClick={handleHide} className="cursor-pointer">
-                                 <FontAwesomeIcon  className='mr-2' icon={faEyeSlash}/>
-                                 <span>Hide</span>
-                                 </span>
-                            )}
-                           
-                            {hide && (
-                                 <span onClick={handleHide} className="cursor-pointer">
-                                 <FontAwesomeIcon  className='mr-2' icon={faEye}/>
-                                 <span>Show</span>
-                                 </span>
-                            )}
-                           
-                          </label>
-                          <input type={hide ? "password": "text"} className='input border-[1px] border-[#079C49] h-[45px]  rounded-lg  outline-none px-3 ' placeholder='password' 
-                            value={formik.values.password}
-                            onChange={(e) => {
-                              formik.handleChange(e)
-                            }}
-                            id='password'
-                            name='password' 
-                          />   
-                          {formik.touched.password && formik.errors.password ? (
-                              <div className='text-[red] text-[13px] ml-2'>{formik.errors.password}</div>
-                            ) : null}
-                        </div>
+                     
+                       
                   
                       </form>
                </div>
