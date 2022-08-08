@@ -16,13 +16,14 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
-import { Box } from '@mui/material'
+import { Box, Skeleton } from '@mui/material'
 import PlayLessonIcon from '@mui/icons-material/PlayLesson';
 import HashLoader from 'react-spinners/HashLoader'
+import toast from 'react-hot-toast'
 
 function Lesson() {
    const router = useRouter()
-   const [lesson, setLesson] = useState({ name: router.query.name, desription: router.query.desription, filename: router.query.filename })
+   const [lesson, setLesson] = useState({ name: router.query.name, desription: router.query.desription, filename: router.query.filename,courseName : router.query.course_name })
    const [storageData, setStorageData] = useState(null)
 
 
@@ -97,8 +98,10 @@ function Lesson() {
          }
          const response = await axios.post("/lesson/complete", body)
          console.log(response.data)
+         response.data.error ? toast.error(response.data.message) : toast.success(response.data.message)
       } catch(err) {
          console.log(err)
+         toast.error(err.response.data.message)
       }
    }
    const fetchStorageData = () => {
@@ -127,7 +130,7 @@ function Lesson() {
     <IndexPage>
       <div className="flex justify-between items-center">
          <div>
-            <h3 className='text-[#1F1F1F] text-[20px] font-[600]  '>Course : Javascript for web</h3>
+            <h3 className='text-[#1F1F1F] text-[20px] font-[600]  '>Course : {lesson.courseName} </h3>
           <h3 className='text-[#1F1F1F] text-[20px] font-[600] mt-3'>Lesson 1 : {lesson.name}</h3>
          </div>
          <div>
@@ -157,7 +160,7 @@ function Lesson() {
             <video  o on controls autoPlay onEnded={handleEndedVideo} controlsList="nodownload">
                <source src={`http://localhost:4000/api/v1/lesson/files/${lesson.filename}`} type="video/mp4"/>
             </video>
-           ): <HashLoader color="#079C49" loading={true} size={60} />
+           ): <Skeleton variant="rectangular" width="100%" height="70vh" />
        
           }
       

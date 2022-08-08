@@ -38,6 +38,11 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import PlayLessonIcon from '@mui/icons-material/PlayLesson';
 import axiosInstance from '../axiosInstance'
+import toast, { Toaster } from 'react-hot-toast'
+import PlayCircleIcon from '@mui/icons-material/PlayCircle';
+
+
+
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -166,7 +171,7 @@ else{
             })
         }} key={lesson._id} disablePadding className='my-2'>
             <ListItemButton>
-              <span className='mr-2 font-bold'>{index +1}-</span>
+              <span className='mr-2 font-bold'><PlayCircleIcon /></span>
           
               {lesson.name}
             </ListItemButton>
@@ -321,6 +326,7 @@ else{
         }
         const response = await axios.post("/student/addcourse", body)
         console.log("response", response)
+        response.data.error ? toast.error(response.data.message) : toast.success(response.data.message)
         fetchDataForAdmin()
       } catch(err) {
         console.log(err)
@@ -331,6 +337,7 @@ else{
       try {
         const response = await axios.delete(`/student/request/${request_id}`)
         console.log("response", response)
+        response.data.error ? toast.error(response.data.message) : toast.success(response.data.message)
         fetchDataForAdmin()
       } catch(err){
         console.log(err)
@@ -364,6 +371,7 @@ else{
     const content =  storageData ? ( 
       <>
       <Sidebar active="dashboard"/>
+      <Toaster />
         <IndexPage>
           {student ? 
               firstCourse && latest && upcoming? (
@@ -478,21 +486,21 @@ else{
                      {upcoming[0]? <CourseCard lessonIndex={"lesson " + upcoming[0].classement} goToLesson={() => {
                              router.push({
                              pathname: "/courses/lessons/"+upcoming[0]._id,
-                               query : {course_id: firstCourse._id, lesson_id: upcoming[0]._id, filename: upcoming[0].filename, name: upcoming[0].name, description: upcoming[0].description}
+                               query : {course_id: firstCourse._id, lesson_id: upcoming[0]._id, filename: upcoming[0].filename, name: upcoming[0].name, description: upcoming[0].description, course_name : firstCourse.description}
                              })
                            }} name ={upcoming[0].name} descrip="Lesson 6" icon="/icons/courseIcon.svg" />: null}
                            {upcoming[1]? <CourseCard lessonIndex={"lesson " + upcoming[1].classement} goToLesson={() => {
                              console.log("upcoming", upcoming[1])
                              router.push({
                               pathname: "/courses/lessons/"+upcoming[1]._id,
-                                query : {course_id: firstCourse._id, lesson_id: upcoming[1]._id, filename: upcoming[1].filename, name: upcoming[1].name, description: upcoming[1].description}
+                                query : {course_id: firstCourse._id, lesson_id: upcoming[1]._id, filename: upcoming[1].filename, name: upcoming[1].name, description: upcoming[1].description,course_name : firstCourse.description}
                               })
                            }} name ={upcoming[1].name} descrip="Lesson 6" icon="/icons/courseIcon.svg" />: null}
                            {upcoming[2]? <CourseCard lessonIndex={"lesson " + upcoming[2].classement} goToLesson={() => {
                              console.log("upcoming",upcoming[2])
                             router.push({
                               pathname: "/courses/lessons/"+upcoming[2]._id,
-                              query : {course_id: firstCourse._id, lesson_id: upcoming[2]._id, filename: upcoming[2].filename, name: upcoming[2].name, description: upcoming[2].description}
+                              query : {course_id: firstCourse._id, lesson_id: upcoming[2]._id, filename: upcoming[2].filename, name: upcoming[2].name, description: upcoming[2].description,course_name : firstCourse.description}
                               })
                            }} name ={upcoming[2].name} descrip="Lesson 6" icon="/icons/courseIcon.svg" />: null}
     
@@ -512,7 +520,7 @@ else{
                      </TabPanel>
                      <TabPanel value={value} index={2} dir={theme.direction}>
                      <div className='mt-3'>
-                     {latest.length == 0 && ( <h3 className='text-center'>No latest courses found</h3>)}   
+                     {latest.length == 0 && ( <h3 className='text-center'>No latest lessons found</h3>)}   
                      {latest.map(lesson => <ProgressCard key={lesson._id} progress="25" goToLesson={() => {
                              router.push({
                              pathname: "/courses/lessons/"+lesson._id,
@@ -631,10 +639,10 @@ else{
             </div>
             </div>
             </>
-            ) : (firstCourse !== null ?
+            ) : (firstCourse !== undefined ?
               <div className='flex justify-center items-center'>
-            <HashLoader color="#079C49" loading={true} size={60} />
-         </div> : <h1 className='text-center text-xl'>You're not accepted yet !</h1>)
+                <HashLoader color="#079C49" loading={true} size={60} />
+              </div> : <h1 className='text-center text-xl'>You're not accepted yet !</h1>)
             
            
             

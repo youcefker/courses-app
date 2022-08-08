@@ -1,13 +1,15 @@
 import React from 'react'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { CircularProgressbar, buildStyles} from 'react-circular-progressbar';
+import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 
 function ProgressCard(props) {
   return (
     <div onClick={props.goToLesson} className='flex items-center justify-between bg-[#FAFAFA] rounded-[15px] py-4 px-6 cursor-pointer hover:bg-[#e1e1e1] courseCard mb-3'>
                     <div className="flex items-center">
                           <div className='w-[40px] mr-3'>
-                          <CircularProgressbar
+                            <PlayCircleIcon color= "079C49"/>
+                          {/* <CircularProgressbar
                                value={props.progress}
                                text={`${props.progress}%`}
                                
@@ -37,7 +39,7 @@ function ProgressCard(props) {
                                  trailColor: '#48DA6F',
                                  backgroundColor: '#3e98c7',
                                })}
-                             />
+                             /> */}
                           </div>
                            
                         <div>
