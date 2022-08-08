@@ -167,7 +167,7 @@ else{
         <ListItem  onClick={() => {
           router.push({
             pathname: "/courses/lessons/"+lesson._id,
-              query : {course_id: firstCourse._id, lesson_id: lesson._id, filename: lesson.filename, name: lesson.name, description: lesson.description}
+              query : {course_id: firstCourse._id, lesson_id: lesson._id, filename: lesson.filename, name: lesson.name, description: lesson.description, course_name : firstCourse.name}
             })
         }} key={lesson._id} disablePadding className='my-2'>
             <ListItemButton>

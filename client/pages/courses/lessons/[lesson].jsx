@@ -19,13 +19,14 @@ import MailIcon from '@mui/icons-material/Mail';
 import { Box, Skeleton } from '@mui/material'
 import PlayLessonIcon from '@mui/icons-material/PlayLesson';
 import HashLoader from 'react-spinners/HashLoader'
-import toast from 'react-hot-toast'
+import toast, { Toaster } from 'react-hot-toast'
+import { faLeaf } from '@fortawesome/free-solid-svg-icons'
 
 function Lesson() {
    const router = useRouter()
    const [lesson, setLesson] = useState({ name: router.query.name, desription: router.query.desription, filename: router.query.filename,courseName : router.query.course_name })
    const [storageData, setStorageData] = useState(null)
-
+   const [isLoading, setIsLoading] = useState(true)
 
    const [lessons, setLessons] = useState([])
 
@@ -123,9 +124,11 @@ function Lesson() {
    } else {
      router.replace("/adminLogin")
    }
+   console.log(lesson);
  }, [])
   return (
     <>
+    <Toaster />
     <Sidebar active="courses" />
     <IndexPage>
       <div className="flex justify-between items-center">
@@ -156,13 +159,15 @@ function Lesson() {
 
 
         <div className='col-span-12'>
-          {lesson.filename ? (
-            <video  on controls autoPlay onEnded={handleEndedVideo} controlsList="nodownload">
-               <source src={`http://localhost:4000/api/v1/lesson/files/${lesson.filename}`} type="video/mp4"/>
-            </video>
-           ): <Skeleton variant="rectangular" width="100%" height="70vh" />
+   
+        {!isLoading && (<video  muted controls autoPlay onEnded={handleEndedVideo}   onLoaded={()=>{setIsLoading(false); console.log("Loaded")}} controlsList="nodownload" type="video/mp4" src={`http://localhost:4000/api/v1/lesson/files/${lesson.filename}`}>
+               
+            </video>)}
+            
+           
+           {isLoading && (<Skeleton variant="rectangular" width="100%" height="70vh" />)}
        
-          }
+          
       
           <div className='mt-5'>
              <h3 className='text-[#1F1F1F] text-[20px] font-[600] mt-1'>About this course</h3>
