@@ -1,33 +1,31 @@
 const nodemailer = require("nodemailer")
-const sgTransport = require('nodemailer-sendgrid-transport');
+const mg = require("nodemailer-mailgun-transport")
 
 module.exports = {
   sendMail : (to, from, body, callBack) => {
-    var options = {
+    const mailgunAuth = {
       auth: {
-        api_key: process.env.SENDGRID_API_KEY
+        api_key: "5e442170964c5a8bc60bf4f1710ef1b8-1b3a03f6-ed8f68f8",
+        domain: "investinsmart.com"
       }
     }
     
-    var client = nodemailer.createTransport(sgTransport(options));
+    const smtpTransport = nodemailer.createTransport(mg(mailgunAuth))
     
-    var email = {
+    const mailOptions = {
       from,
       to,
-      subject: 'Confirm your account',
-      text: 'Hello,',
+      subject: "Confirm your Investinsmart account",
       html: body
-    };
+    }
     
-    client.sendMail(email, function(err, info){
-        if (err ){
-          console.log(err)
-          return callBack(true)
-        }
-        else {
-          console.log(info)
-          return callBack(false, info)
-        }
-    });
+    smtpTransport.sendMail(mailOptions, function(error, response) {
+      if (error) {
+        console.log(error)
+        return callBack(true)
+      } else {
+        return callBack(false, response)
+      }
+    })
   }
 }

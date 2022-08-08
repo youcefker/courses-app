@@ -366,7 +366,7 @@ module.exports = {
                 await student.save()
                 return res.status(200).json({
                     error: false, 
-                    message: "Course progress",
+                    message: "Lesson completed",
                     data: student 
                 })
             } catch(err) {
