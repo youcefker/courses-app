@@ -25,6 +25,7 @@ module.exports = {
           return callBack(true)
         }
         else {
+          console.log(info)
           return callBack(false, info)
         }
     });

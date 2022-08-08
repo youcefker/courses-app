@@ -112,7 +112,7 @@ useEffect(  ()  => {
         if (!response.data.error){
           setOpen(false)
           console.log("lesson added");
-           toast.success("Lesson added successfully")
+          toast.success("Lesson added successfully")
         }
 
        

@@ -154,7 +154,7 @@ function Lesson() {
 
         <div className='col-span-12'>
           {lesson.filename ? (
-            <video  on controls autoPlay onEnded={handleEndedVideo} controlsList="nodownload">
+            <video  o on controls autoPlay onEnded={handleEndedVideo} controlsList="nodownload">
                <source src={`http://localhost:4000/api/v1/lesson/files/${lesson.filename}`} type="video/mp4"/>
             </video>
            ): <HashLoader color="#079C49" loading={true} size={60} />
