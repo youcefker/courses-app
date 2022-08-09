@@ -19,13 +19,14 @@ import MailIcon from '@mui/icons-material/Mail';
 import { Box, Skeleton } from '@mui/material'
 import PlayLessonIcon from '@mui/icons-material/PlayLesson';
 import HashLoader from 'react-spinners/HashLoader'
-import toast from 'react-hot-toast'
+import toast, { Toaster } from 'react-hot-toast'
+import { faLeaf } from '@fortawesome/free-solid-svg-icons'
 
 function Lesson() {
    const router = useRouter()
-   const [lesson, setLesson] = useState({ name: router.query.name, desription: router.query.desription, filename: router.query.filename,courseName : router.query.course_name })
+   const [lesson, setLesson] = useState({ name: router.query.name, description: router.query.description, filename: router.query.filename,courseName : router.query.courseName, classement:  router.query.classement})
    const [storageData, setStorageData] = useState(null)
-
+   const [isLoading, setIsLoading] = useState(true)
 
    const [lessons, setLessons] = useState([])
 
@@ -123,15 +124,24 @@ function Lesson() {
    } else {
      router.replace("/adminLogin")
    }
+   console.log();
  }, [])
+ console.log(isLoading)
+ const checkLoading = () => {
+ const video = document.getElementById("lesson_video")
+    if ( video.readyState === 4 ) {
+      setIsLoading(false)
+    }
+ }
   return (
     <>
+    <Toaster />
     <Sidebar active="courses" />
     <IndexPage>
       <div className="flex justify-between items-center">
          <div>
             <h3 className='text-[#1F1F1F] text-[20px] font-[600]  '>Course : {lesson.courseName} </h3>
-          <h3 className='text-[#1F1F1F] text-[20px] font-[600] mt-3'>Lesson 1 : {lesson.name}</h3>
+          <h3 className='text-[#1F1F1F] text-[20px] font-[600] mt-3'>Lesson {lesson.classement} : {lesson.name}</h3>
          </div>
          <div>
                       {['right'].map((anchor) => (
@@ -156,18 +166,20 @@ function Lesson() {
 
 
         <div className='col-span-12'>
-          {lesson.filename ? (
-            <video  o on controls autoPlay onEnded={handleEndedVideo} controlsList="nodownload">
-               <source src={`http://localhost:4000/api/v1/lesson/files/${lesson.filename}`} type="video/mp4"/>
+   
+        <video  id="lesson_video" muted controls autoPlay onEnded={handleEndedVideo} onLoadEnd={() => setIsLoading(false)} controlsList="nodownload" type="video/mp4" src={`https://investinsmart.com/api/v1/lesson/files/${lesson.filename}`}>
+               
             </video>
-           ): <Skeleton variant="rectangular" width="100%" height="70vh" />
+            
+           
+           {/*isLoading && (<Skeleton variant="rectangular" width="100%" height="70vh" />)*/}
        
-          }
+          
       
           <div className='mt-5'>
-             <h3 className='text-[#1F1F1F] text-[20px] font-[600] mt-1'>About this course</h3>
-             <h6 className='text-[#1F1F1F] text-[14px] font-[500] mt-3'>
-               {lesson.desription}
+             <h3 className='text-[#1F1F1F] text-[20px] font-[600] mt-1'>About this lesson</h3>
+             <h6 className='text-[#1F1F1F] text-[14px] font-[500] mt-2'>
+               {lesson.description}
              </h6>
           </div>
         </div>
