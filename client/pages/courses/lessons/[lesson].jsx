@@ -167,7 +167,7 @@ function Lesson() {
 
         <div className='col-span-12'>
    
-        <video  id="lesson_video" muted controls autoPlay onEnded={handleEndedVideo} onLoadEnd={() => setIsLoading(false)} controlsList="nodownload" type="video/mp4" src={`https://investinsmart.com/api/v1/lesson/files/${lesson.filename}`}>
+        <video  id="lesson_video" muted controls autoPlay onEnded={handleEndedVideo} onLoadEnd={() => setIsLoading(false)} controlsList="nodownload" type="video/mp4" src={`http://localhost:4000/api/v1/lesson/files/${lesson.filename}`}>
                
             </video>
             

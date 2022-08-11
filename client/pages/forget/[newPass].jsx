@@ -7,7 +7,7 @@ import { Button } from '@mui/material'
 import Footer from '../../components/layout/footer'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-import axios from 'axios'
+import axios from '../../axiosInstance'
 import { useFormik } from "formik";
 import * as yup from "yup";
 import decode from 'jwt-decode'
@@ -45,7 +45,7 @@ function NewPass() {
       password: formik.values.password
     }
     try {
-      const response = await axios.put("http://localhost:4000/api/v1/auth/reset", data)
+      const response = await axios.put("/auth/reset", data)
       console.log(response)
       setSent(true)
     } catch(err){

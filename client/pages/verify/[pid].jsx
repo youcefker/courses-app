@@ -2,7 +2,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import React from 'react'
 import Footer from '../../components/layout/footer'
-import axios from 'axios'
+import axios from '../../axiosInstance'
 import { useEffect,useState } from 'react'
 
 function VerificationPage() {
@@ -26,7 +26,7 @@ function VerificationPage() {
           token : pid
        } 
         
-        axios.put('http://localhost:4000/api/v1/auth/verify', tokenObj)
+        axios.put('/auth/verify', tokenObj)
             .then((res) => {
                 console.log(res.data)
                 setErr(res.data.error)

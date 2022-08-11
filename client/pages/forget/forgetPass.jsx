@@ -7,7 +7,7 @@ import { Button } from '@mui/material'
 import Footer from '../../components/layout/footer'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-import axios from 'axios'
+import axios from '../../axiosInstance'
 import { useFormik } from "formik";
 import * as yup from "yup";
 import decode from 'jwt-decode'
@@ -68,7 +68,7 @@ function Forget() {
       email: formik.values.username
     }
     try {
-      const response = await axios.post("http://localhost:4000/api/v1/auth/forget", data)
+      const response = await axios.post("/auth/forget", data)
       setSent(true)
       console.log(response)
     } catch(err) {

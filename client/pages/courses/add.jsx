@@ -67,11 +67,13 @@ function AddCourse() {
      
       }
       useEffect(() => {
-        const auth = fetchStorageData()
+        if (typeof window !== "undefined"){
+          const auth = fetchStorageData()
         if(auth) {
           setStorageData(auth)
         } else {
           router.replace("/adminLogin")
+        }
         }
       }, [])
       

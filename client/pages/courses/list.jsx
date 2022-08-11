@@ -116,7 +116,7 @@ useEffect(  ()  => {
         }
 
        
-      }).catch( (response)=> {
+      }).catch( (eroor)=> {
         //handle error
         console.log(response);
         if (response.response.data.error) {

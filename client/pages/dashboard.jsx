@@ -529,7 +529,7 @@ else{
                      {latest.map(lesson => <ProgressCard key={lesson._id} progress="25" goToLesson={() => {
                              router.push({
                              pathname: "/courses/lessons/"+lesson._id,
-                               query : {course_id: firstCourse._id, lesson_id: lesson._id, filename: lesson.filename, name: lesson.name, description: lesson.description}
+                               query : {course_id: firstCourse._id, lesson_id: lesson._id, filename: lesson.filename, name: lesson.name, description: lesson.description, courseName : firstCourse.name, classement: lesson.classement}
                              })
                            }} course={lesson.name} descrip={"Lesson " + lesson.classement} />)}
                    </div>
@@ -636,7 +636,7 @@ else{
                      {latest.map(lesson => <ProgressCard key={lesson._id} progress="25" goToLesson={() => {
                              router.push({
                              pathname: "/courses/lessons/"+lesson._id,
-                               query : {course_id: firstCourse._id, lesson_id: lesson._id, filename: lesson.filename, name: lesson.name, description: lesson.description, courseName : firstCourse.name}
+                               query : {course_id: firstCourse._id, lesson_id: lesson._id, filename: lesson.filename, name: lesson.name, description: lesson.description, courseName : firstCourse.name, classement: lesson.classement}
                              })
                            }} course={lesson.name} descrip={"Lesson " + lesson.classement} />)}
                    </div>
