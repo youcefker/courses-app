@@ -401,7 +401,7 @@ else{
       } else {
         fetchDataForAdmin()
       }
-    }, [lastWatched, storageData])
+    }, [lastWatched, storageData, student])
     const content =  storageData ? ( 
       <>
       <Sidebar active="dashboard"/>

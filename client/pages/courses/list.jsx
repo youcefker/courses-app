@@ -123,12 +123,12 @@ useEffect(  ()  => {
     setSave(true)
     console.log(lessonDescription);
     var bodyFormData = new FormData();
-    bodyFormData.append('file', lessonVideo);
+    bodyFormData.append('lesson_file', lessonVideo);
     bodyFormData.append('name', lessonTitle);
     bodyFormData.append('description', lessonDescription);
     
   
-    axios.post(`/course/${firstCourse._id}/lesson`, bodyFormData, {headers: { "Content-Type": "multipart/form-data" },
+    axios.post(`/lesson/course/${firstCourse._id}`, bodyFormData, {headers: { "Content-Type": "multipart/form-data" },
     }).then( (response)=> {
         //handle success
         console.log(response.data.error);
@@ -166,7 +166,7 @@ useEffect(  ()  => {
     } else {
       router.replace("/adminLogin")
     }
-  }, [])
+  }, [firstCourse])
   
   return (
     <>
