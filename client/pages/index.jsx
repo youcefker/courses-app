@@ -6,7 +6,7 @@ import MainHero from '../components/home/mainHero'
 import MainOffers from '../components/home/mainOffers'
 import MainCourses from '../components/home/mainCourses'
 import Footer from '../components/layout/footer'
-
+import 'tw-elements';
 
 import Head from 'next/head'
 

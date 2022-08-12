@@ -10,7 +10,7 @@ import ProgressCard from '../components/dashboard/progressCard'
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import { useState, useEffect } from 'react'
 import SearchIcon from '@mui/icons-material/Search';
-import { Button } from '@mui/material'
+import { Button, Modal } from '@mui/material'
 import StudentRow from '../components/dashboard/studentRow'
 import axios from '../axiosInstance'
 import HashLoader from "react-spinners/HashLoader";
@@ -43,6 +43,17 @@ import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 
 
 
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 550,
+  bgcolor: '#fff',
+  borderRadius : "15px",
+  boxShadow: 24,
+  p: 4,
+};
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -102,6 +113,11 @@ function Dashboard() {
   const [searchStudent, setSearchStudent] = useState('');
   const [filteredStudents, setFilteredStudents] = useState([]);
   const [filteredResults, setFilteredResults] = useState([]);
+  const [acceptModal, setAcceptModal] = useState(false)
+  const [refuseModal, setRefuseModal] = useState(false)
+  const [deleteModal, setDeleteModal] = useState(false)
+  const [accepted, setAccepted] = useState(null)
+  const [refused, setRefused] = useState(null)
 const [lessons, setLessons] = useState([])
 
   const [state, setState] = React.useState({
@@ -316,6 +332,24 @@ else{
       }
     }
 
+    const handleAcceptModal = (accepted)=>{
+      setAcceptModal(true)
+      setAccepted(accepted)
+    }
+
+    const handleCloseAccept = ()=>{
+      setAcceptModal(false)
+    }
+
+    const handleRefuseModal = (refused)=>{
+      setRefuseModal(true)
+      setRefused(refused)
+    }
+
+    const handleCloseRefuse = ()=>{
+      setRefuseModal(false)
+    }
+
     const acceptEnrollRequest = async (request) => { 
       
       try {
@@ -328,6 +362,7 @@ else{
         console.log("response", response)
         response.data.error ? toast.error(response.data.message) : toast.success(response.data.message)
         fetchDataForAdmin()
+        setAcceptModal(false)
       } catch(err) {
         console.log(err)
       }
@@ -339,6 +374,7 @@ else{
         console.log("response", response)
         response.data.error ? toast.error(response.data.message) : toast.success(response.data.message)
         fetchDataForAdmin()
+        setRefuseModal(false)
       } catch(err){
         console.log(err)
       }
@@ -369,6 +405,69 @@ else{
     const content =  storageData ? ( 
       <>
       <Sidebar active="dashboard"/>
+      <Modal
+                        open={acceptModal}
+                        onClose={handleCloseAccept}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description"
+                      >
+                        <Box sx={style}>
+                        <h4 className='text-[20px] font-[600] text-[#1F1F1F] text-center'>Wanna accept this student ?</h4>
+         
+
+
+
+                     <div className="flex justify-center mt-8">
+                      <button onClick={()=>handleCloseAccept()} className="muiBtn  sign text-[#079C49] border-2 border-[#079C49] w-[120px] 2xl:w-[120px] h-[40px] 2xl:h-[40px] text-[16px] 2xl:text-[18px] rounded-[10px] font-[600] mr-3" >Cancel</button>
+                      <button onClick={()=> acceptEnrollRequest(accepted)} className='muiBtn register text-[#079C49] border-2 border-[#079C49] w-[120px] 2xl:w-[120px] h-[40px] 2xl:h-[40px] text-[16px] 2xl:text-[18px] rounded-[10px] font-[600] '> <span>yes</span></button>
+                    </div>
+                   
+       
+                        </Box>
+      </Modal>
+
+
+      <Modal
+                        open={refuseModal}
+                        onClose={handleRefuseModal}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description"
+                      >
+                        <Box sx={style}>
+                        <h4 className='text-[20px] font-[600] text-[#1F1F1F] text-center'>Wanna refuse this student ?</h4>
+         
+
+
+
+                     <div className="flex justify-center mt-8">
+                      <button onClick={()=>handleCloseRefuse()} className="muiBtn  sign text-[#079C49] border-2 border-[#079C49] w-[120px] 2xl:w-[120px] h-[40px] 2xl:h-[40px] text-[16px] 2xl:text-[18px] rounded-[10px] font-[600] mr-3" >Cancel</button>
+                      <button onClick={()=> refuseEnrollRequest(refused)} className='muiBtn register text-[#079C49] border-2 border-[#079C49] w-[120px] 2xl:w-[120px] h-[40px] 2xl:h-[40px] text-[16px] 2xl:text-[18px] rounded-[10px] font-[600] '> <span>yes</span></button>
+                    </div>
+                   
+       
+                        </Box>
+      </Modal>
+
+      <Modal
+                        open={deleteModal}
+                        onClose={()=> setDeleteModal(false)}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description"
+                      >
+                        <Box sx={style}>
+                        <h4 className='text-[20px] font-[600] text-[#1F1F1F] text-center'>Wanna delete this student ?</h4>
+         
+
+
+
+                     <div className="flex justify-center mt-8">
+                      <button onClick={()=> setDeleteModal(false)} className="muiBtn  sign text-[#079C49] border-2 border-[#079C49] w-[120px] 2xl:w-[120px] h-[40px] 2xl:h-[40px] text-[16px] 2xl:text-[18px] rounded-[10px] font-[600] mr-3" >Cancel</button>
+                      <button  className='muiBtn register text-[#079C49] border-2 border-[#079C49] w-[120px] 2xl:w-[120px] h-[40px] 2xl:h-[40px] text-[16px] 2xl:text-[18px] rounded-[10px] font-[600] '> <span>yes</span></button>
+                    </div>
+                   
+       
+                        </Box>
+      </Modal>
       <Toaster />
         <IndexPage>
           {!fetched ?
@@ -669,8 +768,8 @@ else{
                          <h5 className='text-[#1F1F1F] text-[12px] font-[600]'>Admission</h5>
                       </div>
                       {searchInput.length > 1 ? (
-                    filteredResults.map(request => <StudentRow key={request._id} name={request.student_name} actions cours={request.course_name} accept={() => acceptEnrollRequest(request)} refuse={() => refuseEnrollRequest(request._id)}/>)) :
-                      enrollRequests.map(request => <StudentRow  key={request._id}name={request.student_name} actions cours={request.course_name} accept={() => acceptEnrollRequest(request)} refuse={() => refuseEnrollRequest(request._id)}/>)}
+                    filteredResults.map(request => <StudentRow key={request._id} name={request.student_name} actions cours={request.course_name} accept={() => handleAcceptModal(request)} refuse={() => handleRefuseModal(request._id)}/>)) :
+                      enrollRequests.map(request => <StudentRow  key={request._id}name={request.student_name} actions cours={request.course_name} accept={() => handleAcceptModal(request)} refuse={() => handleRefuseModal(request._id)}/>)}
                     </div>
                 </div>
   
@@ -687,12 +786,13 @@ else{
                     <div className='mt-5'>
                         <div className="grid grid-cols-4">
                             <h5 className='text-[#1F1F1F] text-[12px] font-[600] '>Name</h5>
-                            <h5 className='text-[#1F1F1F] text-[12px] font-[600] col-span-2'>Cours</h5>
+                            <h5 className='text-[#1F1F1F] text-[12px] font-[600] '>Cours</h5>
                             <h5 className='text-[#1F1F1F] text-[12px] font-[600] text-center'>Progress</h5>
+                            <h5 className='text-[#1F1F1F] text-[12px] font-[600] text-center'>Action</h5>
                         </div>
                         {searchStudent.length > 1 ? (
-                          filteredStudents?.map(student => <StudentRow key={student._id} name={student.name} cours={firstCourse.name} progress={parseInt(calculateProgress(student, firstCourse._id) * 100) == 0 ? -1 :parseInt(calculateProgress(student, firstCourse._id) * 100) }/>)):
-                        courseStudents?.map(student => <StudentRow key={student._id} name={student.name} cours={firstCourse.name} progress={parseInt(calculateProgress(student, firstCourse._id) * 100) == 0 ? -1 :parseInt(calculateProgress(student, firstCourse._id) * 100) }/>)}
+                          filteredStudents?.map(student => <StudentRow key={student._id} name={student.name} cours={firstCourse.name} progress={parseInt(calculateProgress(student, firstCourse._id) * 100) == 0 ? -1 :parseInt(calculateProgress(student, firstCourse._id) * 100) } delete deleteStudent={()=> setDeleteModal(true)}/>)):
+                        courseStudents?.map(student => <StudentRow key={student._id} name={student.name} cours={firstCourse.name} progress={parseInt(calculateProgress(student, firstCourse._id) * 100) == 0 ? -1 :parseInt(calculateProgress(student, firstCourse._id) * 100) } delete deleteStudent={()=> setDeleteModal(true)}/>)}
                     </div>
               
                 </div>

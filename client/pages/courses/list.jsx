@@ -8,6 +8,31 @@ import { useEffect } from 'react'
 import axios from '../../axiosInstance'
 import toast, { Toaster } from 'react-hot-toast';
 import { faL } from '@fortawesome/free-solid-svg-icons'
+import {
+  Accordion,
+  AccordionHeader,
+  AccordionBody,
+} from "@material-tailwind/react";
+import PlayCircleIcon from '@mui/icons-material/PlayCircle';
+
+
+
+function Icon({ id, open }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className={`${
+        id === open ? "rotate-180" : ""
+      } h-5 w-5 transition-transform`}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+    </svg>
+  );
+}
 
 
 const style = {
@@ -43,9 +68,16 @@ function Courses() {
   const [firstCourse, setFirstCourse] = React.useState(null)
   const [storageData, setStorageData] = useState(null)
   const [save, setSave] = React.useState(false);
-
+  const [openAcc, setOpenAcc] = useState(0);
+  const [openDelete, setOpenDelete] = React.useState(false);
+ 
+  const handleOpenAcc = (value) => {
+    setOpenAcc(openAcc === value ? 0 : value);
+  };
 
 const handleOpen = () => setOpen(true);
+const handleOpenDelete = () => setOpenDelete(true);
+const handleCloseDelete = () => setOpenDelete(false);
 const handleClose = () => setOpen(false);
 
 useEffect(  ()  => {
@@ -195,8 +227,108 @@ useEffect(  ()  => {
                         </Box>
                       </Modal>
           
-    </IndexPage>
 
+                      <h4 className='text-[25px] font-[600] text-[#1F1F1F] mt-5 mb-2'>Courses list</h4>
+                      <div  className="bg-[#fff] py-2 px-3 rounded-xl">
+                         <Accordion
+                             open={openAcc === 1}
+                             icon={<Icon id={1} open={openAcc} />}
+                             onClick={() => handleOpenAcc(1)}
+                       
+                           >
+                             <AccordionHeader>Course 1 : Web development with javascript</AccordionHeader>
+                             <AccordionBody>
+                             <div className='text-[18px] font-[600] text-[#1F1F1F]  ml-5 mb-2 flex items-center justify-between hover:bg-[#eee] p-2 rounded-lg'>
+                              <div>
+                               <span className='mr-2  mb-1'><PlayCircleIcon /></span>
+                               <span>Dom manipulation</span>
+                              </div>
+                              <button           onClick={() => handleOpenDelete()} className='normal-case hover:bg-[#EE1D5295] rounded-[10px] text-[10px] sm:text-[13px] lg:text-[10px] xl:text-[13px] text-[#EE1D52] bg-[#EE1D5278] mr-2 h-[30px] w-[80px]'>Delete</button>
+                             </div>
+                             <div className='text-[18px] font-[600] text-[#1F1F1F]  ml-5 mb-2 flex items-center justify-between hover:bg-[#eee] p-2 rounded-lg'>
+                              <div>
+                               <span className='mr-2  mb-1'><PlayCircleIcon /></span>
+                               <span>Dom manipulation</span>
+                              </div>
+                              <button className='normal-case hover:bg-[#EE1D5295] rounded-[10px] text-[10px] sm:text-[13px] lg:text-[10px] xl:text-[13px] text-[#EE1D52] bg-[#EE1D5278] mr-2 h-[30px] w-[80px]'>Delete</button>
+                             </div>
+                            
+                             </AccordionBody>
+                           </Accordion>
+                           <Accordion
+                             open={openAcc === 2}
+                             icon={<Icon id={2} open={openAcc} />}
+                             onClick={() => handleOpenAcc(2)}
+                       
+                           >
+                             <AccordionHeader>Course 1 : Web development with javascript</AccordionHeader>
+                             <AccordionBody>
+                             <div className='text-[18px] font-[600] text-[#1F1F1F]  ml-5 mb-2 flex items-center justify-between hover:bg-[#eee] p-2 rounded-lg'>
+                              <div>
+                               <span className='mr-2  mb-1'><PlayCircleIcon /></span>
+                               <span>Dom manipulation</span>
+                              </div>
+                              <button className='normal-case hover:bg-[#EE1D5295] rounded-[10px] text-[10px] sm:text-[13px] lg:text-[10px] xl:text-[13px] text-[#EE1D52] bg-[#EE1D5278] mr-2 h-[30px] w-[80px]'>Delete</button>
+                             </div>
+                             <div className='text-[18px] font-[600] text-[#1F1F1F]  ml-5 mb-2 flex items-center justify-between hover:bg-[#eee] p-2 rounded-lg'>
+                              <div>
+                               <span className='mr-2  mb-1'><PlayCircleIcon /></span>
+                               <span>Dom manipulation</span>
+                              </div>
+                              <button className='normal-case hover:bg-[#EE1D5295] rounded-[10px] text-[10px] sm:text-[13px] lg:text-[10px] xl:text-[13px] text-[#EE1D52] bg-[#EE1D5278] mr-2 h-[30px] w-[80px]'>Delete</button>
+                             </div>
+                            
+                             </AccordionBody>
+                           </Accordion>
+                           <Accordion
+                             open={openAcc === 3}
+                             icon={<Icon id={3} open={openAcc} />}
+                             onClick={() => handleOpenAcc(3)}
+                       
+                           >
+                             <AccordionHeader>Course 1 : Web development with javascript</AccordionHeader>
+                             <AccordionBody>
+                             <div className='text-[18px] font-[600] text-[#1F1F1F]  ml-5 mb-2 flex items-center justify-between hover:bg-[#eee] p-2 rounded-lg'>
+                              <div>
+                               <span className='mr-2  mb-1'><PlayCircleIcon /></span>
+                               <span>Dom manipulation</span>
+                              </div>
+                              <button className='normal-case hover:bg-[#EE1D5295] rounded-[10px] text-[10px] sm:text-[13px] lg:text-[10px] xl:text-[13px] text-[#EE1D52] bg-[#EE1D5278] mr-2 h-[30px] w-[80px]'>Delete</button>
+                             </div>
+                             <div className='text-[18px] font-[600] text-[#1F1F1F]  ml-5 mb-2 flex items-center justify-between hover:bg-[#eee] p-2 rounded-lg'>
+                              <div>
+                               <span className='mr-2  mb-1'><PlayCircleIcon /></span>
+                               <span>Dom manipulation</span>
+                              </div>
+                              <button className='normal-case hover:bg-[#EE1D5295] rounded-[10px] text-[10px] sm:text-[13px] lg:text-[10px] xl:text-[13px] text-[#EE1D52] bg-[#EE1D5278] mr-2 h-[30px] w-[80px]'>Delete</button>
+                             </div>
+                            
+                             </AccordionBody>
+                           </Accordion>
+
+                           <Modal
+                        open={openDelete}
+                        onClose={handleCloseDelete}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description"
+                      >
+                        <Box sx={style}>
+                        <h4 className='text-[20px] font-[600] text-[#1F1F1F] text-center'>Wanna delete this lesson ?</h4>
+         
+
+
+
+                     <div className="flex justify-end mt-8">
+                      <button onClick={()=>handleCloseDelete()} className="muiBtn  sign text-[#079C49] border-2 border-[#079C49] w-[120px] 2xl:w-[120px] h-[40px] 2xl:h-[40px] text-[16px] 2xl:text-[18px] rounded-[10px] font-[600] mr-3" >Cancel</button>
+                      <button  className='muiBtn register text-[#079C49] border-2 border-[#079C49] w-[120px] 2xl:w-[120px] h-[40px] 2xl:h-[40px] text-[16px] 2xl:text-[18px] rounded-[10px] font-[600] '>{save ?<CircularProgress style={{height: "30px",width: "30px",marginTop : "3px"}} color="inherit" />: <span>yes</span>}</button>
+                    </div>
+                   
+       
+                        </Box>
+                      </Modal>
+                        </div>
+                            </IndexPage>
+                  
     </>
   )
 }
