@@ -14,6 +14,7 @@ import {
   AccordionBody,
 } from "@material-tailwind/react";
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
+import HashLoader from "react-spinners/HashLoader";
 
 
 
@@ -59,7 +60,8 @@ const less = [
 
 function Courses() {
   const router = useRouter()
-  const [lessons, setLessons] = React.useState([]);
+  const [courses, setCourses] = useState([])
+  const [coursesLessons, setCoursesLessons] = React.useState({});
   const [lessonTitle, setLessonTitle] = React.useState("");
   const [lessonDescription, setLessonDescription] = React.useState("");
   const [lessonVideo, setLessonVideo] = React.useState(null);
@@ -81,47 +83,36 @@ const handleCloseDelete = () => setOpenDelete(false);
 const handleClose = () => setOpen(false);
 
 useEffect(  ()  => {
-
+  
 }, [])
 
 
 
 
-  const getAllLessons = (ids) =>{
-    let i = 0;
-    for (let i = 0; i < ids?.length; i++) {
-      const  lesson = getLesson(ids[i])
-      console.log(lesson);
-      setLessons([...lessons,lesson])
-    }
-    console.log(lessons);
-  }
-  const getLesson = (id) =>{
-    axios.get(`/lesson/${id}`)
-    .then((res) => {
-        console.log(res.data)
-       
-    return res.data
-        
-       
-    }).catch((error) => {
-        console.log(error)
-    });
-    
-  }
 
-  const fetchFirstCourse = async () => {
+  const fetchCourses = async () => {
     try {
       const response = await axios.get("/course")
       console.log(response.data)
       if(response.data.data.length != 0){
         setFirstCourse(response.data.data[0])
       }
+      setCourses(response.data.data)
     } catch(err) {
       console.log(err)
     }
   }
 
+  const fetchCourseLessons = async (course_id) => {
+    try {
+      const response = await axios.get(`/lesson/course/${course_id}`)
+      const updatedCoursesLessons = { ...coursesLessons }
+      updatedCoursesLessons[course_id] = response.data.data
+      setCoursesLessons(updatedCoursesLessons)
+    } catch(err) {
+      console.log(err)
+    }
+  }
   const fetchStorageData = () => {
     const jwt = localStorage.getItem("jwt")
     const role =  localStorage.getItem("role")
@@ -165,7 +156,7 @@ useEffect(  ()  => {
     console.log("helloooooooo -----")
   }
   useEffect(() => {
-    fetchFirstCourse()
+    fetchCourses()
   }, [])
 
   useEffect(() => {
@@ -194,7 +185,6 @@ useEffect(  ()  => {
   
        
        </div>
-       {createdCourse != undefined && (<h1 className='mt-10 text-[20px]'>the course {createdCourse} is created</h1> )}
                       <Modal
                         open={open}
                         onClose={handleClose}
@@ -230,82 +220,28 @@ useEffect(  ()  => {
 
                       <h4 className='text-[25px] font-[600] text-[#1F1F1F] mt-5 mb-2'>Courses list</h4>
                       <div  className="bg-[#fff] py-2 px-3 rounded-xl">
-                         <Accordion
+                         {courses.map((course, index) => <Accordion
                              open={openAcc === 1}
                              icon={<Icon id={1} open={openAcc} />}
                              onClick={() => handleOpenAcc(1)}
                        
                            >
-                             <AccordionHeader>Course 1 : Web development with javascript</AccordionHeader>
+                             <AccordionHeader onClick={() => {
+                                if(!coursesLessons[course.id]){
+                                  fetchCourseLessons(course._id)
+                                }
+                             }}>Course {index + 1}: {course.name}</AccordionHeader>
                              <AccordionBody>
-                             <div className='text-[18px] font-[600] text-[#1F1F1F]  ml-5 mb-2 flex items-center justify-between hover:bg-[#eee] p-2 rounded-lg'>
+                             {coursesLessons[course._id] ?  coursesLessons[course._id].map((lesson, lessonIndex) =><div className='text-[18px] font-[600] text-[#1F1F1F]  ml-5 mb-2 flex items-center justify-between hover:bg-[#eee] p-2 rounded-lg'>
                               <div>
                                <span className='mr-2  mb-1'><PlayCircleIcon /></span>
-                               <span>Dom manipulation</span>
+                               <span>{lesson.name}</span>
                               </div>
-                              <button           onClick={() => handleOpenDelete()} className='normal-case hover:bg-[#EE1D5295] rounded-[10px] text-[10px] sm:text-[13px] lg:text-[10px] xl:text-[13px] text-[#EE1D52] bg-[#EE1D5278] mr-2 h-[30px] w-[80px]'>Delete</button>
-                             </div>
-                             <div className='text-[18px] font-[600] text-[#1F1F1F]  ml-5 mb-2 flex items-center justify-between hover:bg-[#eee] p-2 rounded-lg'>
-                              <div>
-                               <span className='mr-2  mb-1'><PlayCircleIcon /></span>
-                               <span>Dom manipulation</span>
-                              </div>
-                              <button className='normal-case hover:bg-[#EE1D5295] rounded-[10px] text-[10px] sm:text-[13px] lg:text-[10px] xl:text-[13px] text-[#EE1D52] bg-[#EE1D5278] mr-2 h-[30px] w-[80px]'>Delete</button>
-                             </div>
+                              <button onClick={() => handleOpenDelete()} className='normal-case hover:bg-[#EE1D5295] rounded-[10px] text-[10px] sm:text-[13px] lg:text-[10px] xl:text-[13px] text-[#EE1D52] bg-[#EE1D5278] mr-2 h-[30px] w-[80px]'>Delete</button>
+                         </div>) : <HashLoader color="#079C49" loading={true} size={30} />}
                             
                              </AccordionBody>
-                           </Accordion>
-                           <Accordion
-                             open={openAcc === 2}
-                             icon={<Icon id={2} open={openAcc} />}
-                             onClick={() => handleOpenAcc(2)}
-                       
-                           >
-                             <AccordionHeader>Course 1 : Web development with javascript</AccordionHeader>
-                             <AccordionBody>
-                             <div className='text-[18px] font-[600] text-[#1F1F1F]  ml-5 mb-2 flex items-center justify-between hover:bg-[#eee] p-2 rounded-lg'>
-                              <div>
-                               <span className='mr-2  mb-1'><PlayCircleIcon /></span>
-                               <span>Dom manipulation</span>
-                              </div>
-                              <button className='normal-case hover:bg-[#EE1D5295] rounded-[10px] text-[10px] sm:text-[13px] lg:text-[10px] xl:text-[13px] text-[#EE1D52] bg-[#EE1D5278] mr-2 h-[30px] w-[80px]'>Delete</button>
-                             </div>
-                             <div className='text-[18px] font-[600] text-[#1F1F1F]  ml-5 mb-2 flex items-center justify-between hover:bg-[#eee] p-2 rounded-lg'>
-                              <div>
-                               <span className='mr-2  mb-1'><PlayCircleIcon /></span>
-                               <span>Dom manipulation</span>
-                              </div>
-                              <button className='normal-case hover:bg-[#EE1D5295] rounded-[10px] text-[10px] sm:text-[13px] lg:text-[10px] xl:text-[13px] text-[#EE1D52] bg-[#EE1D5278] mr-2 h-[30px] w-[80px]'>Delete</button>
-                             </div>
-                            
-                             </AccordionBody>
-                           </Accordion>
-                           <Accordion
-                             open={openAcc === 3}
-                             icon={<Icon id={3} open={openAcc} />}
-                             onClick={() => handleOpenAcc(3)}
-                       
-                           >
-                             <AccordionHeader>Course 1 : Web development with javascript</AccordionHeader>
-                             <AccordionBody>
-                             <div className='text-[18px] font-[600] text-[#1F1F1F]  ml-5 mb-2 flex items-center justify-between hover:bg-[#eee] p-2 rounded-lg'>
-                              <div>
-                               <span className='mr-2  mb-1'><PlayCircleIcon /></span>
-                               <span>Dom manipulation</span>
-                              </div>
-                              <button className='normal-case hover:bg-[#EE1D5295] rounded-[10px] text-[10px] sm:text-[13px] lg:text-[10px] xl:text-[13px] text-[#EE1D52] bg-[#EE1D5278] mr-2 h-[30px] w-[80px]'>Delete</button>
-                             </div>
-                             <div className='text-[18px] font-[600] text-[#1F1F1F]  ml-5 mb-2 flex items-center justify-between hover:bg-[#eee] p-2 rounded-lg'>
-                              <div>
-                               <span className='mr-2  mb-1'><PlayCircleIcon /></span>
-                               <span>Dom manipulation</span>
-                              </div>
-                              <button className='normal-case hover:bg-[#EE1D5295] rounded-[10px] text-[10px] sm:text-[13px] lg:text-[10px] xl:text-[13px] text-[#EE1D52] bg-[#EE1D5278] mr-2 h-[30px] w-[80px]'>Delete</button>
-                             </div>
-                            
-                             </AccordionBody>
-                           </Accordion>
-
+                           </Accordion>)}
                            <Modal
                         open={openDelete}
                         onClose={handleCloseDelete}

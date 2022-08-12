@@ -106,11 +106,17 @@ module.exports = {
                     data: null
                 })
             }
-            console.log(result)
+            if(!result){
+                return res.status(400).json({
+                    error: true,
+                    message: "student request not found!",
+                    data: null
+                })
+            }
             return res.status(200).json({
                 error: false,
-                message: "something went wrong!",
-                data: result
+                message: "Student request deleted succesfully!",
+                data: null
             })
         })
     },

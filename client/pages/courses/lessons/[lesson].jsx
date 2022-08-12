@@ -24,7 +24,7 @@ import { faLeaf } from '@fortawesome/free-solid-svg-icons'
 
 function Lesson() {
    const router = useRouter()
-   const [lesson, setLesson] = useState({ name: router.query.name, description: router.query.description, filename: router.query.filename,courseName : router.query.courseName, classement:  router.query.classement})
+   const [lesson, setLesson] = useState({ lesson_id: router.query.lesson_id, name: router.query.name, description: router.query.description, filename: router.query.filename,courseName : router.query.courseName, classement:  router.query.classement})
    const [storageData, setStorageData] = useState(null)
    const [isLoading, setIsLoading] = useState(true)
 
@@ -127,12 +127,6 @@ function Lesson() {
    console.log();
  }, [])
  console.log(isLoading)
- const checkLoading = () => {
- const video = document.getElementById("lesson_video")
-    if ( video.readyState === 4 ) {
-      setIsLoading(false)
-    }
- }
   return (
     <>
     <Toaster />
@@ -167,9 +161,9 @@ function Lesson() {
 
         <div className='col-span-12'>
    
-        <video  id="lesson_video" muted controls autoPlay onEnded={handleEndedVideo} onLoadEnd={() => setIsLoading(false)} controlsList="nodownload" type="video/mp4" src={`http://localhost:4000/api/v1/lesson/files/${lesson.filename}`}>
+        {lesson? <video  id="lesson_video" muted controls autoPlay onEnded={handleEndedVideo} controlsList="nodownload" type="video/mp4" src={`http://localhost:4000/api/v1/lesson/file/62f6a297eef2b01be5c497bc`}>
                
-            </video>
+            </video>: null}
             
            
            {/*isLoading && (<Skeleton variant="rectangular" width="100%" height="70vh" />)*/}

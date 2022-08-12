@@ -49,7 +49,7 @@ function AdminLogin() {
           if (!response.data.error){
             await localStorage.setItem("jwt", response.data.access_token)
             await localStorage.setItem("role","admin")
-            await toast.success(response.data.message);
+            await toast.success(response.data?.message);
             router.push({
               pathname :"/profile",
             })

@@ -29,41 +29,15 @@ app.use('/api/v1/lesson', lessonRoutes)
 app.use('/api/v1/student', studentRoutes)
 
 //----- env -----
-const port = process.env.PORT || 4000
-//const MONGO_URL = process.env.MONGO_URL
-MONGO_URL = "mongodb://localhost:27017/courses"
+const MONGO_URL = process.env.MONGO_URL
+//MONGO_URL = "mongodb://localhost:27017/courses"
 mongoose.connect(MONGO_URL)
   .then(result => {
     // set up connection to db for file storage
-    gfs = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
-      bucketName: "uploads"
-    });
-    const storage = new GridFsStorage({
-      db: mongoose.connection.db,
-      file: (req, file) => {
-        return new Promise((resolve, reject) => {
-          crypto.randomBytes(16, (err, buf) => {
-            if (err) {
-              return reject(err);
-            }
-            if (file.mimetype != 'video/mp4') {
-              console.log("extension false");
-            }
-            const filename = Date.now() + "lesson.mp4";
-            const fileInfo = {
-              filename: filename,
-              bucketName: "uploads"
-            };
-            resolve(fileInfo);
-          });
-        });
-      }
-    });
-    const singleUpload = multer({ storage }).single('file');
     console.log(`database connected successfully`)
-    const port = process.env.PORT || 3000
-    app.post('/api/v1/course/:course_id/lesson', checkAdminToken, singleUpload, addLessonToCourse)
-    app.get('/api/v1/lesson/files/:filename', (req, res) => {
+    const port = process.env.PORT || 4000
+    //app.post('/api/v1/course/:course_id/lesson', checkAdminToken, singleUpload, addLessonToCourse)
+    /*app.get('/api/v1/lesson/files/:filename', (req, res) => {
       console.log(req.params.filename)
       const range = req.headers.range;
       const file = gfs
@@ -77,7 +51,7 @@ mongoose.connect(MONGO_URL)
               err: "no files exist"
             });
           }
-          /*
+          
           // Create response headers
           const videoSize = files[0].length;
           const start = Number(range.replace(/\D/g, ""));
@@ -92,7 +66,7 @@ mongoose.connect(MONGO_URL)
           };
 
           // HTTP Status 206 for Partial Content
-          res.writeHead(206, headers);*/
+          res.writeHead(206, headers);
           gfs.openDownloadStreamByName(req.params.filename).pipe(res);
         });
     })
@@ -114,7 +88,7 @@ mongoose.connect(MONGO_URL)
           });
         }
       });
-    })
+    })*/
     app.listen(port, () => {
       const admin = {
         email: "admin@admin.com",

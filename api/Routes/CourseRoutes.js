@@ -10,15 +10,16 @@ const storage = multer.diskStorage({
         cb(null, 'uploads/')
     },
     filename: function (req, file, cb) {
-        cb(null, Date.now() + file.fieldname + ".png")
+        cb(null, Date.now() + file.fieldname + ".mp4")
     },
 })
 const upload = multer({
     storage
-}).single("course_file");
+}).single("lesson_file");
 
-// course routes 
+// course routes
 router.post('/', checkAdminToken, upload, createCourse)
+router.post('/:course_id/lesson', checkAdminToken, upload, addLessonToCourse)
 router.get('/',  checkAdminToken, getAllCourses)
 router.get('/names', getCoursesNames)
 router.get('/:course_id',  checkStudentToken, getCourse)
