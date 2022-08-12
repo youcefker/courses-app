@@ -482,5 +482,51 @@ module.exports = {
                 fs.createReadStream(path).pipe(res);
             }
         })
+    },
+    deleteStudentFromCourse : (req, res) => {
+        const { student_id, course_id } = req.body
+        getStudent(student_id, (err, student) => {
+            if(err) {
+                return res.status(400).json({
+                    error: true,
+                    message: "something went wrong!",
+                    data: null
+                })
+            }
+            if(!student){
+                return res.status(404).json({
+                    error: true,
+                    message: "student not found.",
+                    data: null
+                })
+            }
+            getCourse(course_id, async (err, course) => {
+                if(err) {
+                    return res.status(400).json({
+                        error: true,
+                        message: "something went wrong!",
+                        data: null
+                    })
+                }
+                if(!course){
+                    return res.status(404).json({
+                        error: true,
+                        message: "course not found.",
+                        data: null
+                    })
+                }
+                try {
+                    const updatedStudentCourses = student.courses
+                    currentStudentCourses.filter(id => course._id != id)
+                    student.courses = updatedStudentCourses
+                } catch(error){
+                    return res.status(400).json({
+                        error: true,
+                        message: "something went wrong!",
+                        data: null
+                    })
+                }
+            })
+        })
     }
 }
