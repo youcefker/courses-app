@@ -24,72 +24,134 @@ a {
 }
 
 
-.muiBtn{
+.muiBtn {
   text-transform: unset !important;
   color: unset !important;
 }
 
-.sign{
+.sign {
   color: #079C49 !important;
   border: 2px solid #079C49 !important;
 }
 
-.register{
+.register {
 
   color: #fff !important;
   background-color: #079C49 !important;
 }
 
-.blur__circle{
+.blur__circle {
 
 
-top: -7%;
-right: -9%;
-border-radius: 50%;
-position: absolute;
+  top: -7%;
+  right: -9%;
+  border-radius: 50%;
+  position: absolute;
 
-background: linear-gradient(180deg, #F2F2F2 0%, rgba(242, 242, 242, 0) 100%);
-/* Blur style */
+  background: linear-gradient(180deg, #F2F2F2 0%, rgba(242, 242, 242, 0) 100%);
+  /* Blur style */
 
-filter: blur(4px);
-backdrop-filter: blur(10px);
+  filter: blur(4px);
+  backdrop-filter: blur(10px);
 }
 
-.blur__best{
+.blur__best {
 
-position: absolute;
-
-
-filter: blur(4px);
-
-background: linear-gradient(90deg, #E1E1E1 5.31%, rgba(242, 242, 242, 0) 111.81%);
-/* Blur style */
+  position: absolute;
 
 
-backdrop-filter: blur(10px);
-/* Note: backdrop-filter has minimal browser support */
+  filter: blur(4px);
 
-border-radius: 10px;
+  background: linear-gradient(90deg, #E1E1E1 5.31%, rgba(242, 242, 242, 0) 111.81%);
+  /* Blur style */
+
+
+  backdrop-filter: blur(10px);
+  /* Note: backdrop-filter has minimal browser support */
+
+  border-radius: 10px;
 }
 
- .googleBtn{
+.googleBtn {
   border: 2px solid #333333 !important;
   border-radius: 32px !important;
-} 
+}
 
 
-.courseIcon{
+.courseIcon {
   background: linear-gradient(236.62deg, #079C49 13.53%, #AAFBCE 101.01%);
 }
 
 
-.CircularProgressbar-text{
+.CircularProgressbar-text {
   transform: translate(-24%, 5px);
 }
-.circleProgress{
+
+.circleProgress {
   background: linear-gradient(180deg, rgba(1, 131, 255, 0.036) 0%, rgba(1, 131, 255, 0.132) 100%);
 }
 
-.doc__card{
+.doc__card {
   box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+
+
+/* Style the accordion section */
+.accordion__section {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Style the buttons that are used to open and close the accordion panel */
+.accordion {
+  background-color: #fff;
+  margin-bottom: 10px;
+  color: #444;
+  cursor: pointer;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: none;
+  outline: none;
+  transition: background-color 0.6s ease;
+}
+
+/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+.accordion:hover,
+.active {
+  background-color: #ccc;
+}
+
+/* Style the accordion content title */
+.accordion__title {
+  font-family: "Open Sans", sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* Style the accordion chevron icon */
+.accordion__icon {
+  margin-left: auto;
+  transition: transform 0.6s ease;
+}
+
+/* Style to rotate icon when state is active */
+.rotate {
+  transform: rotate(90deg);
+}
+
+/* Style the accordion content panel. Note: hidden by default */
+.accordion__content {
+  background-color: white;
+  overflow: hidden;
+  transition: max-height 0.6s ease;
+}
+
+/* Style the accordion content text */
+.accordion__text {
+  font-family: "Open Sans", sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  padding: 18px;
 }
