@@ -61,6 +61,7 @@ module.exports = {
             const doc = await Lesson.findById(id)
             return callBack(false, doc)
         } catch(err) {
+            console.log(err)
             return callBack(true)
         }
     },
@@ -93,6 +94,7 @@ module.exports = {
             const doc = await Lesson.findByIdAndRemove(id)
             return callBack(false, doc)
         } catch(err) {
+            console.log(err)
             return(true)
         }
     }

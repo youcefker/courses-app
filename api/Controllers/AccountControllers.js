@@ -727,10 +727,4 @@ module.exports = {
             })
         })
     },
-    deleteEnrollRequest: (req, res) => {
-        const enrollRequest_id = req.params.enrollRequest_id
-        deleteEnrollRequest(enrollRequest_id, (err, result) => {
-            
-        })
-    }
 }

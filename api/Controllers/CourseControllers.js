@@ -381,7 +381,7 @@ module.exports = {
     },
     deleteLesson: async (req, res) => {
         const lesson_id = req.params.lesson_id
-        deleteLesson(lesson_id, (err, result) => {
+        getLesson(lesson_id, (err, lesson) => {
             if(err){
                 return res.status(400).json({
                     error: true,
@@ -389,17 +389,62 @@ module.exports = {
                     data: null
                 })
             }
-            if(!result){
+            if(!lesson){
                 return res.status(400).json({
                     error: true,
                     message: "lesson not found",
                     data: null
                 })
             }
-            return res.status(200).json({
-                error: false, 
-                message: "Lesson deleted succesfully",
-                data: null
+            deleteLesson(lesson_id, async (err, result) => {
+                if(err){
+                    return res.status(400).json({
+                        error: true,
+                        message: "something went wrong!",
+                        data: null
+                    })
+                }
+                if(!result){
+                    return res.status(400).json({
+                        error: true,
+                        message: "lesson not found",
+                        data: null
+                    })
+                }
+                getCourse(lesson.course_id, async(err, course) => {
+                    if(err){
+                        return res.status(400).json({
+                            error: true,
+                            message: "something went wrong!",
+                            data: null
+                        })
+                    }
+                    if(!course){
+                        return res.status(400).json({
+                            error: true,
+                            message: "lesson course not found",
+                            data: null
+                        })
+                    }
+                    try {
+                        const updatedCourseLessons = course.lessons.filter(id => course.id !== id.toString())
+                        console.log("updated", updatedCourseLessons)
+                        course.lessons = updatedCourseLessons
+                        await course.save()
+                        return res.status(200).json({
+                            error: false, 
+                            message: "Lesson deleted succesfully",
+                            data: null
+                        })
+                    } catch(err){
+                        console.log(err)
+                        return res.status(400).json({
+                            error: true,
+                            message: "something went wrong!",
+                            data: null
+                        })
+                    }
+                })
             })
         })
     },
@@ -484,7 +529,8 @@ module.exports = {
         })
     },
     deleteStudentFromCourse : (req, res) => {
-        const { student_id, course_id } = req.body
+        const { student_id, course_id } = req.params
+        console.log(student_id, course_id)
         getStudent(student_id, (err, student) => {
             if(err) {
                 return res.status(400).json({
@@ -516,9 +562,19 @@ module.exports = {
                     })
                 }
                 try {
-                    const updatedStudentCourses = student.courses
-                    currentStudentCourses.filter(id => course._id != id)
+                    const updatedStudentCourses = student.courses.filter(id => course.id !== id.toString())
                     student.courses = updatedStudentCourses
+                    const updatedStudentProgress = student.progress.filter(courseProgress => course.id != courseProgress.course_id.toString() )
+                    student.progress = updatedStudentProgress
+                    const updatedCourseStudents = course.students.filter(id => student.id != id.toString())
+                    course.students = updatedCourseStudents
+                    await student.save()
+                    await course.save()
+                    return res.status(200).json({
+                        error: false,
+                        message: "Student deleted from course succesfully",
+                        data: null
+                    })
                 } catch(error){
                     return res.status(400).json({
                         error: true,

@@ -118,6 +118,7 @@ function Dashboard() {
   const [deleteModal, setDeleteModal] = useState(false)
   const [accepted, setAccepted] = useState(null)
   const [refused, setRefused] = useState(null)
+  const [deleted, setDeleted] = useState(null)
 const [lessons, setLessons] = useState([])
 
   const [state, setState] = React.useState({
@@ -380,6 +381,17 @@ else{
       }
     }
 
+    const deleteStudentFromCourse = async (course_id, student_id) => {
+      try {
+        const response = await axios.delete(`/course/${course_id}/student/${student_id}`)
+        console.log(response)
+        response.data.error ? toast.error(response.data.message) : toast.success(response.data.message)
+        fetchDataForAdmin()
+        setDeleteModal(false)
+      } catch(err){
+        console.log(err)
+      }
+    }
     const calculateProgress = (student, course_id) => {
       console.log("studnet to calculate", student)
       const course_progress = student.progress.filter(course => course.course_id === course_id)[0]
@@ -400,8 +412,9 @@ else{
         setFetched(true)
       } else {
         fetchDataForAdmin()
+        setFetched(true)
       }
-    }, [lastWatched, storageData, student])
+    }, [lastWatched, storageData])
     const content =  storageData ? ( 
       <>
       <Sidebar active="dashboard"/>
@@ -462,7 +475,9 @@ else{
 
                      <div className="flex justify-center mt-8">
                       <button onClick={()=> setDeleteModal(false)} className="muiBtn  sign text-[#079C49] border-2 border-[#079C49] w-[120px] 2xl:w-[120px] h-[40px] 2xl:h-[40px] text-[16px] 2xl:text-[18px] rounded-[10px] font-[600] mr-3" >Cancel</button>
-                      <button  className='muiBtn register text-[#079C49] border-2 border-[#079C49] w-[120px] 2xl:w-[120px] h-[40px] 2xl:h-[40px] text-[16px] 2xl:text-[18px] rounded-[10px] font-[600] '> <span>yes</span></button>
+                      <button  onClick={() => {
+                        deleteStudentFromCourse(firstCourse._id, deleted)
+                      }} className='muiBtn register text-[#079C49] border-2 border-[#079C49] w-[120px] 2xl:w-[120px] h-[40px] 2xl:h-[40px] text-[16px] 2xl:text-[18px] rounded-[10px] font-[600] '> <span>yes</span></button>
                     </div>
                    
        
@@ -791,8 +806,14 @@ else{
                             <h5 className='text-[#1F1F1F] text-[12px] font-[600] text-center'>Action</h5>
                         </div>
                         {searchStudent.length > 1 ? (
-                          filteredStudents?.map(student => <StudentRow key={student._id} name={student.name} cours={firstCourse.name} progress={parseInt(calculateProgress(student, firstCourse._id) * 100) == 0 ? -1 :parseInt(calculateProgress(student, firstCourse._id) * 100) } delete deleteStudent={()=> setDeleteModal(true)}/>)):
-                        courseStudents?.map(student => <StudentRow key={student._id} name={student.name} cours={firstCourse.name} progress={parseInt(calculateProgress(student, firstCourse._id) * 100) == 0 ? -1 :parseInt(calculateProgress(student, firstCourse._id) * 100) } delete deleteStudent={()=> setDeleteModal(true)}/>)}
+                          filteredStudents?.map(student => <StudentRow key={student._id} name={student.name} cours={firstCourse.name} progress={parseInt(calculateProgress(student, firstCourse._id) * 100) == 0 ? -1 :parseInt(calculateProgress(student, firstCourse._id) * 100) } delete deleteStudent={()=> {
+                            setDeleted(student._id)
+                            setDeleteModal(true)
+                          }}/>)):
+                        courseStudents?.map(student => <StudentRow key={student._id} name={student.name} cours={firstCourse.name} progress={parseInt(calculateProgress(student, firstCourse._id) * 100) == 0 ? -1 :parseInt(calculateProgress(student, firstCourse._id) * 100) } delete deleteStudent={()=> {
+                          setDeleted(student._id)
+                          setDeleteModal(true)
+                        }}/>)}
                     </div>
               
                 </div>
