@@ -27,7 +27,7 @@ function Lesson() {
    const [lesson, setLesson] = useState({ lesson_id: router.query.lesson_id, name: router.query.name, description: router.query.description, filename: router.query.filename,courseName : router.query.courseName, classement:  router.query.classement})
    const [storageData, setStorageData] = useState(null)
    const [isLoading, setIsLoading] = useState(true)
-
+   const [lessonId, setLessonId] = useState(lesson.lesson_id)
    const [lessons, setLessons] = useState([])
 
   const [state, setState] = React.useState({
@@ -70,12 +70,12 @@ function Lesson() {
       <Divider />
         {lessons.map((lesson,index) =>  
        
-        <ListItem  onClick={() => {
+        <ListItem    onClick={() => {
           router.push({
             pathname: "/courses/lessons/"+lesson._id,
               query : {course_id: router.query.course_id, lesson_id: lesson._id, filename: lesson.filename, name: lesson.name, description: lesson.description}
             })
-        }} key={lesson._id} disablePadding className='my-2'>
+        }} key={lesson._id} disablePadding className={lesson._id == lessonId ? 'my-2 bg-[#eee]' : 'my-2' }>
             <ListItemButton>
               <span className='mr-2 font-bold'>{index +1}-</span>
           

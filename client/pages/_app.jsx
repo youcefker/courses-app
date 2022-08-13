@@ -4,8 +4,13 @@ import { config } from "@fortawesome/fontawesome-svg-core";
 import NextNProgress from 'nextjs-progressbar';
 config.autoAddCss = false;
 
+
+const isBrowser = typeof window !== "undefined";
+
+
 function MyApp({ Component, pageProps }) {
   return (
+    
   <>
   <NextNProgress color='#079C49' />
   <Component {...pageProps} />

@@ -9,13 +9,13 @@ import axios from '../../axiosInstance'
 import toast, { Toaster } from 'react-hot-toast';
 import { faL } from '@fortawesome/free-solid-svg-icons'
 import {
-  Accordion,
+ 
   AccordionHeader,
   AccordionBody,
 } from "@material-tailwind/react";
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import HashLoader from "react-spinners/HashLoader";
-
+import Accordion from '../../components/shared/Accordion'
 
 
 function Icon({ id, open }) {
@@ -219,11 +219,19 @@ useEffect(  ()  => {
           
 
                       <h4 className='text-[25px] font-[600] text-[#1F1F1F] mt-5 mb-2'>Courses list</h4>
-                      <div  className="bg-[#fff] py-2 px-3 rounded-xl">
-                         {courses.map((course, index) => <Accordion
-                             open={openAcc === 1}
-                             icon={<Icon id={1} open={openAcc} />}
-                             onClick={() => handleOpenAcc(1)}
+                      <div  className=" py-2 px-3 rounded-xl">
+                      {courses.map((course, index) =><Accordion title={`Course ${index + 1} : ${course.name}`} 
+                      content={coursesLessons[course._id] ?  coursesLessons[course._id].map((lesson, lessonIndex) =><div className='text-[18px] font-[600] text-[#1F1F1F]  ml-5 mb-2 flex items-center justify-between hover:bg-[#eee] p-2 rounded-lg'>
+                              <div>
+                               <span className='mr-2  mb-1'><PlayCircleIcon /></span>
+                               <span>{lesson.name}</span>
+                              </div>
+                              <button onClick={() => handleOpenDelete()} className='normal-case hover:bg-[#EE1D5295] rounded-[10px] text-[10px] sm:text-[13px] lg:text-[10px] xl:text-[13px] text-[#EE1D52] bg-[#EE1D5278] mr-2 h-[30px] w-[80px]'>Delete</button>
+                         </div>) : <HashLoader color="#079C49" loading={true} size={30} />}/>)}
+                         {/* {courses.map((course, index) => <Accordion
+                             open={openAcc === index+1}
+                             icon={<Icon id={index+1} open={openAcc} />}
+                             onClick={() => handleOpenAcc(index+1)}
                        
                            >
                              <AccordionHeader onClick={() => {
@@ -231,7 +239,7 @@ useEffect(  ()  => {
                                   fetchCourseLessons(course._id)
                                 }
                              }}>Course {index + 1}: {course.name}</AccordionHeader>
-                             <AccordionBody>
+                             <AccordionBody onClick={()=>setOpenAcc(true)}>
                              {coursesLessons[course._id] ?  coursesLessons[course._id].map((lesson, lessonIndex) =><div className='text-[18px] font-[600] text-[#1F1F1F]  ml-5 mb-2 flex items-center justify-between hover:bg-[#eee] p-2 rounded-lg'>
                               <div>
                                <span className='mr-2  mb-1'><PlayCircleIcon /></span>
@@ -241,7 +249,8 @@ useEffect(  ()  => {
                          </div>) : <HashLoader color="#079C49" loading={true} size={30} />}
                             
                              </AccordionBody>
-                           </Accordion>)}
+                           </Accordion>)} */}
+                           
                            <Modal
                         open={openDelete}
                         onClose={handleCloseDelete}
