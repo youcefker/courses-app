@@ -72,6 +72,7 @@ function Courses() {
   const [save, setSave] = React.useState(false);
   const [openAcc, setOpenAcc] = useState(0);
   const [openDelete, setOpenDelete] = React.useState(false);
+  const [lessonTodelete, setLessonTodelete] = useState(null)
  
   const handleOpenAcc = (value) => {
     setOpenAcc(openAcc === value ? 0 : value);
@@ -134,19 +135,17 @@ useEffect(  ()  => {
         console.log(response.data.error);
         if (!response.data.error){
           setOpen(false)
+          setSave(false)
           console.log("lesson added");
           toast.success("Lesson added successfully")
         }
 
        
-      }).catch( (eroor)=> {
+      }).catch( (error)=> {
         //handle error
-        console.log(response);
-        if (response.response.data.error) {
+        console.log(error);
           toast.error("Fill all the fields please !")
           setSave(false)
-        }
-       
       });
 
   }
@@ -157,7 +156,7 @@ useEffect(  ()  => {
   }
   useEffect(() => {
     fetchCourses()
-  }, [])
+  }, [firstCourse])
 
   useEffect(() => {
     const auth = fetchStorageData()
@@ -166,8 +165,24 @@ useEffect(  ()  => {
     } else {
       router.replace("/adminLogin")
     }
+  }, [])
+
+  useEffect(() => {
+    
   }, [firstCourse])
   
+  
+  const deleteLesson = async (lesson_id) => {
+    try {
+      const response = await axios.delete(`/lesson/${lesson_id}`)
+      response.data.error ? toast.error(response.data.message) : toast.success(response.data.message)
+      setOpenDelete(false)
+    } catch(err) {
+      console.log(err)
+    }
+
+  }
+
   return (
     <>
     <Sidebar active="courses" />
@@ -175,13 +190,13 @@ useEffect(  ()  => {
     <IndexPage>
 
       <div className="flex">
-      {!firstCourse ?<Button className='normal-case bg-[#079C49] text-[#fff] font-bold mr-4 text-[20px]' onClick={()=> router.push("/courses/add")}>Add Course</Button>: null}
+      {!firstCourse ?<button className='ormal-case bg-[#079C49] text-[#fff] font-bold  text-[20px] p-2 px-3 rounded-xl' onClick={()=> router.push("/courses/add")}>Add Course</button>: null}
 
         
 
 
              
-      {firstCourse? <button onClick={handleOpen} className='normal-case bg-[#079C49] text-[#fff] font-bold  text-[20px] p-2 px-3 rounded-xl'>Add lesson</button>: null}
+      {firstCourse ? <button onClick={handleOpen} className='normal-case bg-[#079C49] text-[#fff] font-bold  text-[20px] p-2 px-3 rounded-xl'>Add lesson</button>: null}
   
        
        </div>
@@ -218,15 +233,18 @@ useEffect(  ()  => {
                       </Modal>
           
 
-                      <h4 className='text-[25px] font-[600] text-[#1F1F1F] mt-5 mb-2'>Courses list</h4>
+                      <h4 className='text-[20px] font-[600] text-[#1F1F1F] mt-5 mb-2'>Courses list</h4>
                       <div  className=" py-2 px-3 rounded-xl">
-                      {courses.map((course, index) =><Accordion title={`Course ${index + 1} : ${course.name}`} 
+                      {courses.map((course, index) =><Accordion fetchLessons={() => fetchCourseLessons(course._id)} title={`Course ${index + 1} : ${course.name}`} 
                       content={coursesLessons[course._id] ?  coursesLessons[course._id].map((lesson, lessonIndex) =><div className='text-[18px] font-[600] text-[#1F1F1F]  ml-5 mb-2 flex items-center justify-between hover:bg-[#eee] p-2 rounded-lg'>
                               <div>
                                <span className='mr-2  mb-1'><PlayCircleIcon /></span>
                                <span>{lesson.name}</span>
                               </div>
-                              <button onClick={() => handleOpenDelete()} className='normal-case hover:bg-[#EE1D5295] rounded-[10px] text-[10px] sm:text-[13px] lg:text-[10px] xl:text-[13px] text-[#EE1D52] bg-[#EE1D5278] mr-2 h-[30px] w-[80px]'>Delete</button>
+                              <button onClick={() =>{ 
+                                setLessonTodelete(lesson._id)
+                                handleOpenDelete()
+                                }} className='normal-case hover:bg-[#EE1D5295] rounded-[10px] text-[10px] sm:text-[13px] lg:text-[10px] xl:text-[13px] text-[#EE1D52] bg-[#EE1D5278] mr-2 h-[30px] w-[80px]'>Delete</button>
                          </div>) : <HashLoader color="#079C49" loading={true} size={30} />}/>)}
                          {/* {courses.map((course, index) => <Accordion
                              open={openAcc === index+1}
@@ -265,7 +283,7 @@ useEffect(  ()  => {
 
                      <div className="flex justify-end mt-8">
                       <button onClick={()=>handleCloseDelete()} className="muiBtn  sign text-[#079C49] border-2 border-[#079C49] w-[120px] 2xl:w-[120px] h-[40px] 2xl:h-[40px] text-[16px] 2xl:text-[18px] rounded-[10px] font-[600] mr-3" >Cancel</button>
-                      <button  className='muiBtn register text-[#079C49] border-2 border-[#079C49] w-[120px] 2xl:w-[120px] h-[40px] 2xl:h-[40px] text-[16px] 2xl:text-[18px] rounded-[10px] font-[600] '>{save ?<CircularProgress style={{height: "30px",width: "30px",marginTop : "3px"}} color="inherit" />: <span>yes</span>}</button>
+                      <button  onClick={() => deleteLesson(lessonTodelete)} className='muiBtn register text-[#079C49] border-2 border-[#079C49] w-[120px] 2xl:w-[120px] h-[40px] 2xl:h-[40px] text-[16px] 2xl:text-[18px] rounded-[10px] font-[600] '>{save ?<CircularProgress style={{height: "30px",width: "30px",marginTop : "3px"}} color="inherit" />: <span>yes</span>}</button>
                     </div>
                    
        

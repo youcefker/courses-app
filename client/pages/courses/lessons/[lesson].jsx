@@ -99,10 +99,11 @@ function Lesson() {
          }
          const response = await axios.post("/lesson/complete", body)
          console.log(response.data)
-         response.data.error ? toast.error(response.data.message) : toast.success(response.data.message)
+         response.data.error ? toast.error(response.data?.message) : toast.success(response.data?.message)
+         setState({ ...state, ["right"]: true });
       } catch(err) {
          console.log(err)
-         toast.error(err.response.data.message)
+         toast.error(err.response?.data.message)
       }
    }
    const fetchStorageData = () => {
@@ -161,7 +162,7 @@ function Lesson() {
 
         <div className='col-span-12'>
    
-        {lesson? <video  id="lesson_video" muted controls autoPlay onEnded={handleEndedVideo} controlsList="nodownload" type="video/mp4" src={`http://localhost:4000/api/v1/lesson/file/62f6d0ac2e5c2cff5339c98c`}>
+        {lesson? <video  id="lesson_video" muted controls autoPlay onEnded={handleEndedVideo} controlsList="nodownload" type="video/mp4" src={`http://localhost:4000/api/v1/lesson/file/${lesson.lesson_id}`}>
                
             </video>: null}
             

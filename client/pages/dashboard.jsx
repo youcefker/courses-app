@@ -96,7 +96,7 @@ const CustomTab = withStyles({
 
 function Dashboard() {
     const router = useRouter()
-    const [student, setStudent] = useState(true)
+    const [student, setStudent] = useState(null)
     const [firstCourse, setFirstCourse] = useState(null)
     const [firstCourseProgress, setFirstCourseProgress] = useState(null)
     const [lastWatched, setLastWatched] = useState(null)
@@ -229,26 +229,10 @@ else{
           return data
         } 
     } 
-    useEffect(() => {
-      const auth = fetchStorageData()
-      console.log(auth)
-      if(auth){
-        if(auth.role === "admin") {
-          setStudent(false)
-        } else if(auth.role === "student") {
-          setStudent(true)
-        } else {
-          router.replace('login')
-        }
-        setStorageData(auth)
-        setFetched(true)
-      } else {
-        router.replace('login')
-      }
-    }, [])
-    const fetchDataForStudent = async () => {
+    const fetchDataForStudent = async (student_id) => {
       try {
-        const { data } = await axios.get(`/student/courses/${storageData.student_id}`)
+        console.log("storage data", storageData)
+        const { data } = await axios.get(`/student/courses/${student_id}`)
         console.log("student", data);
         if(data.data.courses.length > 0) {
           const firstCourse_id = data.data.courses[0]._id
@@ -405,16 +389,38 @@ else{
       return num_lessons_completed / course_progress.lessons_progress.length
     }
     useEffect(() => {
-      
-      if(student){
-
-        fetchDataForStudent()
+      console.log("student########", student)
+      const auth = fetchStorageData()
+      console.log("auth", auth)
+      if(auth){
+        if(auth.role === "admin") {
+          setStudent(false)
+          fetchDataForAdmin()
+          setFetched(true)
+        } else if(auth.role === "student") {
+          setStudent(true)
+          fetchDataForStudent(auth.student_id)
+          setFetched(true)
+        } else {
+          router.replace('login')
+        }
+        setStorageData(auth)
         setFetched(true)
       } else {
-        fetchDataForAdmin()
-        setFetched(true)
+        router.replace('login')
       }
-    }, [lastWatched, storageData])
+    }, [])
+    useEffect(() => {
+      
+    }, [student])
+    useEffect(() => {
+      
+    }, [upcoming, latest,firstCourse, storageData])
+
+    useEffect(() => {
+
+    }, [enrollRequests, courseStudents, storageData])
+    
     const content =  storageData ? ( 
       <>
       <Sidebar active="dashboard"/>
@@ -602,7 +608,7 @@ else{
                            
                       {upcoming.length == 0 && ( <h3 className='text-center'>No upcoming courses found</h3>)}        
                      {upcoming[0]? <CourseCard lessonIndex={"lesson " + upcoming[0].classement} goToLesson={() => {
-                              console.log(upcoming[0].description)
+                              console.log("upcoming 0 ", upcoming[0])
                              router.push({
                              pathname: "/courses/lessons/"+upcoming[0]._id,
                                query : {course_id: firstCourse._id, lesson_id: upcoming[0]._id, filename: upcoming[0].filename, name: upcoming[0].name, description: upcoming[0].description, courseName : firstCourse.name, classement: upcoming[0].classement}
@@ -658,11 +664,12 @@ else{
     
     
                     <div className="bg-[#fff] p-4 rounded-[15px] ">
-                       <h3 className='text-[#1F1F1F] font-[600] text-[22px]'>Upcoming courses</h3>
+                       <h3 className='text-[#1F1F1F] font-[600] text-[22px]'>Upcoming lessons</h3>
                        {upcoming.length == 0 && ( <h3 className='text-center'>No upcoming courses found</h3>)}   
                        <div className="grid grid-cols-3 gap-4 my-4">
                       
                            {upcoming[0]? <CourseCard lessonIndex={"lesson " + upcoming[0].classement} goToLesson={() => {
+                              console.log("upcoming @@@@@@", upcoming)
                              router.push({
                              pathname: "/courses/lessons/"+upcoming[0]._id,
                              query : {course_id: firstCourse._id, lesson_id: upcoming[0]._id, filename: upcoming[0].filename, name: upcoming[0].name, description: upcoming[0].description, courseName : firstCourse.name, classement: upcoming[0].classement}

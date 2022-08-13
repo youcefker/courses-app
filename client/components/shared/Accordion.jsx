@@ -11,6 +11,7 @@ function Accordion(props) {
   }, [height]);
 
   function toggleAccordion() {
+    props.fetchLessons()
     setActive(!active);
     setHeight(active ? "0px" : `${content.current.scrollHeight}px`);
   }
