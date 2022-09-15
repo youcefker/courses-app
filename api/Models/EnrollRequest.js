@@ -10,6 +10,10 @@ const enrollRequestSchema = new Schema({
         type: String, 
         required: true, 
     },
+    email: {
+        type: String, 
+        required: true, 
+    },
     student_id: {
         type: Schema.Types.ObjectId,
         required: true,

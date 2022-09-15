@@ -2,8 +2,9 @@ import Image from 'next/image'
 import { useRouter, withRouter } from 'next/router'
 import React from 'react'
 import Footer from '../components/layout/footer';
-import axios from 'axios';
+import axios from '../axiosInstance';
 import { Alert } from '@mui/material';
+import toast, { Toaster } from 'react-hot-toast'
 
 function VerificationSent() {
   const router = useRouter();
@@ -19,12 +20,9 @@ function VerificationSent() {
      
       };
       
-      axios.post('http://localhost:4000/api/v1/auth/resend', userObject)
+      axios.post('/auth/resend', userObject)
           .then((res) => {
-              console.log(res.data)
-              alert("Email resent")
-           
-             
+              toast.success(res.data.message)
           }).catch((error) => {
               console.log(error)
           });
@@ -34,7 +32,7 @@ function VerificationSent() {
   return (
     <>
 
-    
+  <Toaster />
       <div className="container mx-auto px-2 md:px-0 pt-[33.32px]">
         <Image onClick={() => router.push("/")} className="cursor-pointer" src="/images/footer_logo.svg" width={60} height={60} />
         <div className="flex flex-col-reverse md:flex-row justify-between items-center">

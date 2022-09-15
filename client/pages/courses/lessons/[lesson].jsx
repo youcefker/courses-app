@@ -21,6 +21,7 @@ import PlayLessonIcon from '@mui/icons-material/PlayLesson';
 import HashLoader from 'react-spinners/HashLoader'
 import toast, { Toaster } from 'react-hot-toast'
 import { faLeaf } from '@fortawesome/free-solid-svg-icons'
+import { SelectContext } from '@material-tailwind/react/components/Select/SelectContext'
 
 function Lesson() {
    const router = useRouter()
@@ -29,6 +30,7 @@ function Lesson() {
    const [isLoading, setIsLoading] = useState(true)
    const [lessonId, setLessonId] = useState(lesson.lesson_id)
    const [lessons, setLessons] = useState([])
+   const [next, setNext] = useState(0)
 
   const [state, setState] = React.useState({
     top: false,
@@ -58,6 +60,34 @@ function Lesson() {
     setState({ ...state, [anchor]: open });
   };
 
+  const loadVideo = () => {
+    console.log("video src changed")
+    const videoTag = document.getElementById("lesson_video")
+    console.log(videoTag)
+    videoTag.pause()
+    videoTag.setAttribute('src', `http://localhost:4000/api/v1/lesson/file/${lesson.lesson_id}`);
+    videoTag.load()
+  }
+  useEffect(() => {
+    loadVideo()
+  }, [lesson])
+
+  const nextLesson = () => {
+    lessons.map((less, index) => {
+      if(less._id === lesson.lesson_id){
+        if(index < lessons.length - 1) {
+          setNext(index + 1)
+        } else {
+          setNext(0)
+        }
+      }
+    })
+  }
+  useEffect(() => {
+    nextLesson()
+  }, [lesson, lessons])
+  
+  
   const list = (anchor) => (
     <Box
       sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 320 }}
@@ -68,18 +98,19 @@ function Lesson() {
       <h5 className='text-center mt-3 mb-2 font-bold text-lg text-[#079C49]'>Your lessons</h5>
       <List>
       <Divider />
-        {lessons.map((lesson,index) =>  
+        {lessons.map((lessonItem,index) =>  
        
-        <ListItem    onClick={() => {
+        <ListItem  key={lessonItem._id}  onClick={() => {
+          setLesson({course_id: router.query.course_id, courseName : router.query.courseName, lesson_id: lessonItem._id, filename: lessonItem.filename, name: lessonItem.name, description: lessonItem.description})
           router.push({
             pathname: "/courses/lessons/"+lesson._id,
-              query : {course_id: router.query.course_id, lesson_id: lesson._id, filename: lesson.filename, name: lesson.name, description: lesson.description}
+              query : {course_id: router.query.course_id, courseName : router.query.courseName, lesson_id: lessonItem._id, filename: lessonItem.filename, name: lessonItem.name, description: lessonItem.description}
             })
-        }} key={lesson._id} disablePadding className={lesson._id == lessonId ? 'my-2 bg-[#eee]' : 'my-2' }>
+        }} disablePadding className={lessonItem._id == lesson.lesson_id ? 'my-2 bg-[#eee]' : 'my-2' }>
             <ListItemButton>
               <span className='mr-2 font-bold'>{index +1}-</span>
           
-              {lesson.name}
+              {lessonItem.name}
             </ListItemButton>
           </ListItem>)}
       
@@ -100,7 +131,11 @@ function Lesson() {
          const response = await axios.post("/lesson/complete", body)
          console.log(response.data)
          response.data.error ? toast.error(response.data?.message) : toast.success(response.data?.message)
-         setState({ ...state, ["right"]: true });
+         setLesson({course_id: router.query.course_id, courseName : router.query.courseName, lesson_id: lessons[next]._id, filename: lessons[next].filename, name: lessons[next].name, description: lessons[next].description})
+          router.push({
+            pathname: "/courses/lessons/"+lesson._id,
+              query : {course_id: router.query.course_id, courseName : router.query.courseName, lesson_id: lessons[next]._id, filename: lessons[next].filename, name: lessons[next].name, description: lessons[next].description}
+            })
       } catch(err) {
          console.log(err)
          toast.error(err.response?.data.message)

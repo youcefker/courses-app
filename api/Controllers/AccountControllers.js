@@ -117,6 +117,7 @@ module.exports = {
                                     }
                                     const enrollRequestData = {
                                         course_id: course.id,
+                                        email: req.body.email,
                                         course_name: course.name,
                                         student_id: student.id,
                                         student_name: student.name
@@ -305,7 +306,7 @@ module.exports = {
                         })
                     }
                     const body = `<a href="http://localhost:3000/verify/${savedConfirmationToken.token}">Confirm your account</a>`
-                    await sendMail(account.email, "no-reply@coursesapp.com", body, async (err, result) => {
+                    await sendMail(account.email, "contact@investinsmart.com", body, async (err, result) => {
                         if(err) {
                             console.log(err)
                             await Account.deleteOne({

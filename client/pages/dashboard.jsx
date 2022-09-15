@@ -184,7 +184,7 @@ else{
         <ListItem  onClick={() => {
           router.push({
             pathname: "/courses/lessons/"+lesson._id,
-              query : {course_id: firstCourse._id, lesson_id: lesson._id, filename: lesson.filename, name: lesson.name, description: lesson.description, course_name : firstCourse.name}
+              query : {course_id: firstCourse._id, courseName : firstCourse.name, lesson_id: lesson._id, filename: lesson.filename, name: lesson.name, description: lesson.description, course_name : firstCourse.name, classement: lesson.classement}
             })
         }} key={lesson._id} disablePadding className='my-2'>
             <ListItemButton>
@@ -543,7 +543,7 @@ else{
                            <div className="flex justify-center mt-3">
                                 <div className='bg-[#48DA6F] w-[200px] h-[200px] rounded-full p-8 relative'>
                                  <CircularProgressbar
-                                   value={percentage}
+                                   value={percentage.toFixed(0)}
                               
                                    
                                    backgroundColor="#48DA6F"
@@ -572,8 +572,8 @@ else{
                                      backgroundColor: '#3e98c7',
                                    })}
                                  />
-                                 {percentage == 100 && (<div className="absolute top-[45%] left-[35%] text-white font-bold text-[22px]">{percentage}%</div>)}
-                                 {percentage != 100  && (<div className="absolute top-[45%] left-[40%] text-white font-bold text-[22px]">{percentage}%</div>)}
+                                 {percentage.toFixed(0) == 100 && (<div className="absolute top-[45%] left-[35%] text-white font-bold text-[22px]">{percentage.toFixed(0)}%</div>)}
+                                 {percentage.toFixed(0) != 100  && (<div className="absolute top-[45%] left-[40%] text-white font-bold text-[22px]">{percentage.toFixed(0)}%</div>)}
                                  </div>
                             </div>
                           
@@ -703,7 +703,7 @@ else{
                            <div className="flex justify-center mt-5">
                                 <div className='bg-[#48DA6F] w-[200px] h-[200px] rounded-full p-8 relative'>
                                  <CircularProgressbar
-                                   value={percentage}
+                                   value={percentage.toFixed(0)}
                          
                                    
                                    backgroundColor="#48DA6F"
@@ -732,8 +732,8 @@ else{
                                      backgroundColor: '#3e98c7',
                                    })}
                                  />
-                                                    {percentage == 100 && (<div className="absolute top-[45%] left-[35%] text-white font-bold text-[22px]">{percentage}%</div>)}
-                                 {percentage != 100  && (<div className="absolute top-[45%] left-[40%] text-white font-bold text-[22px]">{percentage}%</div>)}
+                                                    {percentage.toFixed(0) == 100 && (<div className="absolute top-[45%] left-[35%] text-white font-bold text-[22px]">{percentage.toFixed(0)}%</div>)}
+                                 {percentage.toFixed(0) != 100  && (<div className="absolute top-[45%] left-[40%] text-white font-bold text-[22px]">{percentage.toFixed(0)}%</div>)}
                                  </div>
                             </div>
                           
@@ -786,12 +786,13 @@ else{
                     <div className='mt-5'>
                       <div className="grid grid-cols-3 sm:grid-cols-4">
                          <h5 className='text-[#1F1F1F] text-[12px] font-[600] '>Name</h5>
+                         <h5 className='text-[#1F1F1F] text-[12px] font-[600] '>email</h5>
                          <h5 className='text-[#1F1F1F] text-[12px] font-[600] sm:col-span-2'>Cours</h5>
                          <h5 className='text-[#1F1F1F] text-[12px] font-[600]'>Admission</h5>
                       </div>
                       {searchInput.length > 1 ? (
-                    filteredResults.map(request => <StudentRow key={request._id} name={request.student_name} actions cours={request.course_name} accept={() => handleAcceptModal(request)} refuse={() => handleRefuseModal(request._id)}/>)) :
-                      enrollRequests.map(request => <StudentRow  key={request._id}name={request.student_name} actions cours={request.course_name} accept={() => handleAcceptModal(request)} refuse={() => handleRefuseModal(request._id)}/>)}
+                    filteredResults.map(request => <StudentRow key={request._id} name={request.student_name} email={request.email} actions cours={request.course_name} accept={() => handleAcceptModal(request)} refuse={() => handleRefuseModal(request._id)}/>)) :
+                      enrollRequests.map(request => <StudentRow  key={request._id} name={request.student_name} email={request.email} actions cours={request.course_name} accept={() => handleAcceptModal(request)} refuse={() => handleRefuseModal(request._id)}/>)}
                     </div>
                 </div>
   

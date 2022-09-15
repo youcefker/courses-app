@@ -235,8 +235,8 @@ useEffect(  ()  => {
 
                       <h4 className='text-[20px] font-[600] text-[#1F1F1F] mt-5 mb-2'>Courses list</h4>
                       <div  className=" py-2 px-3 rounded-xl">
-                      {courses.map((course, index) =><Accordion fetchLessons={() => fetchCourseLessons(course._id)} title={`Course ${index + 1} : ${course.name}`} 
-                      content={coursesLessons[course._id] ?  coursesLessons[course._id].map((lesson, lessonIndex) =><div className='text-[18px] font-[600] text-[#1F1F1F]  ml-5 mb-2 flex items-center justify-between hover:bg-[#eee] p-2 rounded-lg'>
+                      {courses.map((course, index) =><Accordion key={course._id} fetchLessons={() => fetchCourseLessons(course._id)} title={`Course ${index + 1} : ${course.name}`} 
+                      content={coursesLessons[course._id] ?  coursesLessons[course._id].map((lesson, lessonIndex) =><div key={lesson._id} className='text-[18px] font-[600] text-[#1F1F1F]  ml-5 mb-2 flex items-center justify-between hover:bg-[#eee] p-2 rounded-lg'>
                               <div>
                                <span className='mr-2  mb-1'><PlayCircleIcon /></span>
                                <span>{lesson.name}</span>

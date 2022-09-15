@@ -76,7 +76,8 @@ function Profile() {
                     </div>
                </div>
               
-               <h5 className='text-[#1F1F1F] text-[16px] font-[600]  text-center mt-3'>{localStorage.getItem('name')}</h5>
+               <h5 className='text-[#1F1F1F] text-[16px] font-[600]  text-center mt-3'>{typeof window !== "undefined" ? localStorage && localStorage.getItem('name')
+      ? localStorage.getItem('name') : "" : ""}</h5>
             </div>
             <div className='mt-5 sm:mt-12'>
                <form onSubmit={formik.handleSubmit}>

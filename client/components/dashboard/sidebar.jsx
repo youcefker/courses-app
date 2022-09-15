@@ -190,7 +190,7 @@ const Sidebar = ({ active }) => {
               
                
           
-                <li
+                {!student ? <li
                   onClick={() => {
                     setActiveItem("courses");
                     router.push("/courses/list");
@@ -204,7 +204,7 @@ const Sidebar = ({ active }) => {
                   {" "}
                   <MenuBookIcon className="mr-2 text-[22px]" /> Courses
                 
-                </li>
+                </li> : null}
                </ul>
                <div className=" flex flex-col justify-center items-center" onClick={handleLogout}>
                   

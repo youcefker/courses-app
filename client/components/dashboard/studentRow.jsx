@@ -6,6 +6,7 @@ function StudentRow(props) {
   return (
     <div className="grid grid-cols-3 sm:grid-cols-4 mt-6 items-center">
         <h5 className='text-[#1F1F1F] text-[12px]  '>{props.name}</h5>
+        {props.email? <h5 className='text-[#1F1F1F] text-[12px]'>{props.email}</h5>: null}
         <h5 className={props.actions ?  'text-[#1F1F1F] text-[12px] sm:col-span-2': "text-[#1F1F1F] text-[12px]"}>{props.cours}</h5>
    
 
