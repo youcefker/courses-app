@@ -16,7 +16,8 @@ import {
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import HashLoader from "react-spinners/HashLoader";
 import Accordion from '../../components/shared/Accordion'
-
+import CourseCard from '../../components/admin/CourseCard'
+import SearchIcon from '@mui/icons-material/Search';
 
 function Icon({ id, open }) {
   return (
@@ -156,7 +157,7 @@ useEffect(  ()  => {
   }
   useEffect(() => {
     fetchCourses()
-  }, [firstCourse])
+  }, [])
 
   useEffect(() => {
     const auth = fetchStorageData()
@@ -167,9 +168,7 @@ useEffect(  ()  => {
     }
   }, [])
 
-  useEffect(() => {
-    
-  }, [firstCourse])
+
   
   
   const deleteLesson = async (lesson_id) => {
@@ -189,17 +188,7 @@ useEffect(  ()  => {
     <Toaster />
     <IndexPage>
 
-      <div className="flex">
-      {!firstCourse ?<button className='ormal-case bg-[#079C49] text-[#fff] font-bold  text-[20px] p-2 px-3 rounded-xl' onClick={()=> router.push("/courses/add")}>Add Course</button>: null}
 
-        
-
-
-             
-      {firstCourse ? <button onClick={handleOpen} className='normal-case bg-[#079C49] text-[#fff] font-bold  text-[20px] p-2 px-3 rounded-xl'>Add lesson</button>: null}
-  
-       
-       </div>
                       <Modal
                         open={open}
                         onClose={handleClose}
@@ -232,10 +221,19 @@ useEffect(  ()  => {
                         </Box>
                       </Modal>
           
+                      <div className="flex justify-between items-center mb-4">
+                        <h4 className='text-[30px] font-[600] text-[#1F1F1F] mt-5 mb-2'>Courses list</h4>
+                        <div className='flex items-center border-[1px] border-[#9DA6BACC] p-2 rounded-[10px] mt-3 text-[#9DA6BA] bg-white h-12'>
+                          <SearchIcon />
+                          <input type="search" className='w-full outline-none pl-2 text-[#000]' placeholder='Search ...' />
+                        </div>
+                        <button className='ormal-case bg-[#079C49] text-[#fff] font-bold  text-[20px] p-2 px-3 rounded-xl h-12' onClick={()=> router.push("/courses/add")}>Add Course</button>
+                      </div>
+                  
+                      <div  className=" py-2 grid grid-cols-4 gap-6 gap-y-10">
+                      {courses.map((course, index) =><CourseCard fetchLessons={() => fetchCourseLessons(course._id)} name={course.name} description={course.description} nbrLessons={course.lessons?.length} />)}
 
-                      <h4 className='text-[20px] font-[600] text-[#1F1F1F] mt-5 mb-2'>Courses list</h4>
-                      <div  className=" py-2 px-3 rounded-xl">
-                      {courses.map((course, index) =><Accordion key={course._id} fetchLessons={() => fetchCourseLessons(course._id)} title={`Course ${index + 1} : ${course.name}`} 
+                      {/* <Accordion key={course._id} fetchLessons={() => fetchCourseLessons(course._id)} title={`Course ${index + 1} : ${course.name}`} 
                       content={coursesLessons[course._id] ?  coursesLessons[course._id].map((lesson, lessonIndex) =><div key={lesson._id} className='text-[18px] font-[600] text-[#1F1F1F]  ml-5 mb-2 flex items-center justify-between hover:bg-[#eee] p-2 rounded-lg'>
                               <div>
                                <span className='mr-2  mb-1'><PlayCircleIcon /></span>
@@ -245,7 +243,7 @@ useEffect(  ()  => {
                                 setLessonTodelete(lesson._id)
                                 handleOpenDelete()
                                 }} className='normal-case hover:bg-[#EE1D5295] rounded-[10px] text-[10px] sm:text-[13px] lg:text-[10px] xl:text-[13px] text-[#EE1D52] bg-[#EE1D5278] mr-2 h-[30px] w-[80px]'>Delete</button>
-                         </div>) : <HashLoader color="#079C49" loading={true} size={30} />}/>)}
+                         </div>) : <HashLoader color="#079C49" loading={true} size={30} />}/> */}
                          {/* {courses.map((course, index) => <Accordion
                              open={openAcc === index+1}
                              icon={<Icon id={index+1} open={openAcc} />}
