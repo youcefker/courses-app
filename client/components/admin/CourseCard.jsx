@@ -8,6 +8,7 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { useRouter } from 'next/router';
 
 const options = [
   'Activate',
@@ -20,6 +21,8 @@ const ITEM_HEIGHT = 48;
 
 function CourseCard(props) {
 
+  const router = useRouter()
+  
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -38,7 +41,7 @@ function CourseCard(props) {
       <div className='bg-[green] h-2 w-full'></div>
       <div className='px-4 py-5'>
         <div className="flex justify-between items-center">
-          <h3 className='text-xl mb-3'>{props.name}</h3>
+          <h3 className='text-xl mb-3' onClick={()=> router.push(`/courses/detail/${props.id}`)} style={{cursor : "pointer"}}>{props.name}</h3>
           <div>
               <IconButton
                 aria-label="more"
@@ -76,39 +79,41 @@ function CourseCard(props) {
           </div>
         </div>
 
-        
-        <p className='text-[gray] my-2'>{props.description}</p>
+        <div onClick={()=> router.push(`/courses/detail/${props.id}`)} style={{cursor : "pointer"}}>
 
-
-        <div className='text-[#9DA6BA] flex items-center text-sm mb-3 mt-5'>
-          <PersonIcon style={{fontSize : "18px"}}/>
-          <span className='ml-2'>Teacher name </span>
-        </div>
-
-
-        <div className="flex justify-between text-[#9DA6BA] text-sm mb-5">
-          <div className='flex items-center'>
-            <PlayLessonIcon style={{fontSize : "18px"}} />
-            <span className='ml-2'><span>{props.nbrLessons}</span> Lessons </span>
+   
+           <p className='text-[gray] my-2'>{props.description}</p>
+  
+  
+           <div className='text-[#9DA6BA] flex items-center text-sm mb-3 mt-5'>
+             <PersonIcon style={{fontSize : "18px"}}/>
+             <span className='ml-2'>Teacher name </span>
+           </div>
+  
+  
+           <div className="flex justify-between text-[#9DA6BA] text-sm mb-5">
+             <div className='flex items-center'>
+               <PlayLessonIcon style={{fontSize : "18px"}} />
+               <span className='ml-2'><span>{props.nbrLessons}</span> Lessons </span>
+             </div>
+             <div className='flex items-center'>
+               <TimerIcon style={{fontSize : "18px"}}/>
+               <span className='ml-2'><span>20</span> hours </span>
+             </div>
+           </div>
+  
+  
+           <div className='flex justify-center'>
+             <AvatarGroup max={4}>
+               <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+               <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
+               <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
+               <Avatar alt="Agnes Walker" src="/static/images/avatar/4.jpg" />
+               <Avatar alt="Trevor Henderson" src="/static/images/avatar/5.jpg" />
+             </AvatarGroup>
+           </div>
           </div>
-          <div className='flex items-center'>
-            <TimerIcon style={{fontSize : "18px"}}/>
-            <span className='ml-2'><span>20</span> hours </span>
-          </div>
-        </div>
-
-
-        <div className='flex justify-center'>
-          <AvatarGroup max={4}>
-            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-            <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-            <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
-            <Avatar alt="Agnes Walker" src="/static/images/avatar/4.jpg" />
-            <Avatar alt="Trevor Henderson" src="/static/images/avatar/5.jpg" />
-          </AvatarGroup>
-        </div>
       </div>
-    
     </div>
   )
 }

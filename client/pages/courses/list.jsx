@@ -1,7 +1,7 @@
 import { Button, CircularProgress, Input, Modal } from '@mui/material'
 import { Box } from '@mui/system'
 import { useRouter } from 'next/router'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import IndexPage from '../../components/dashboard/indexPage'
 import Sidebar from '../../components/dashboard/sidebar'
 import { useEffect } from 'react'
@@ -18,6 +18,8 @@ import HashLoader from "react-spinners/HashLoader";
 import Accordion from '../../components/shared/Accordion'
 import CourseCard from '../../components/admin/CourseCard'
 import SearchIcon from '@mui/icons-material/Search';
+import AddIcon from '@mui/icons-material/Add';
+
 
 function Icon({ id, open }) {
   return (
@@ -56,7 +58,7 @@ const less = [
 
 
 
-
+const useForceUpdate = () => useState()[1];
 
 
 function Courses() {
@@ -74,6 +76,7 @@ function Courses() {
   const [openAcc, setOpenAcc] = useState(0);
   const [openDelete, setOpenDelete] = React.useState(false);
   const [lessonTodelete, setLessonTodelete] = useState(null)
+  const [openAddCourse, setOpenAddCourse] = useState(false)
  
   const handleOpenAcc = (value) => {
     setOpenAcc(openAcc === value ? 0 : value);
@@ -170,7 +173,10 @@ useEffect(  ()  => {
 
 
   
-  
+  const fileInput = useRef(null);
+  const forceUpdate = useForceUpdate();
+
+
   const deleteLesson = async (lesson_id) => {
     try {
       const response = await axios.delete(`/lesson/${lesson_id}`)
@@ -180,6 +186,22 @@ useEffect(  ()  => {
       console.log(err)
     }
 
+  }
+
+
+
+
+  function fileNames() {
+    const { current } = fileInput;
+
+    if (current && current.files.length > 0) {
+      let messages = [];
+      for (let file of current.files) {
+        messages = messages.concat(<p key={file.name}>{file.name}</p>);
+      }
+      return messages;
+    }
+    return null;
   }
 
   return (
@@ -227,11 +249,11 @@ useEffect(  ()  => {
                           <SearchIcon />
                           <input type="search" className='w-full outline-none pl-2 text-[#000]' placeholder='Search ...' />
                         </div>
-                        <button className='ormal-case bg-[#079C49] text-[#fff] font-bold  text-[20px] p-2 px-3 rounded-xl h-12' onClick={()=> router.push("/courses/add")}>Add Course</button>
+                        <button className='ormal-case bg-[#079C49] text-[#fff] font-bold  text-[20px] p-2 px-3 rounded-xl h-12' onClick={()=>setOpenAddCourse(true)}>Add Course</button>
                       </div>
                   
                       <div  className=" py-2 grid grid-cols-4 gap-6 gap-y-10">
-                      {courses.map((course, index) =><CourseCard fetchLessons={() => fetchCourseLessons(course._id)} name={course.name} description={course.description} nbrLessons={course.lessons?.length} />)}
+                      {courses.map((course, index) =><CourseCard id={course._id} fetchLessons={() => fetchCourseLessons(course._id)} name={course.name} description={course.description} nbrLessons={course.lessons?.length} />)}
 
                       {/* <Accordion key={course._id} fetchLessons={() => fetchCourseLessons(course._id)} title={`Course ${index + 1} : ${course.name}`} 
                       content={coursesLessons[course._id] ?  coursesLessons[course._id].map((lesson, lessonIndex) =><div key={lesson._id} className='text-[18px] font-[600] text-[#1F1F1F]  ml-5 mb-2 flex items-center justify-between hover:bg-[#eee] p-2 rounded-lg'>
@@ -289,6 +311,48 @@ useEffect(  ()  => {
                       </Modal>
                         </div>
                             </IndexPage>
+                            <Modal
+      open={openAddCourse}
+      onClose={handleClose}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+    >
+       <Box sx={style}>
+             <h4 className='text-[18px] font-[600] text-[#1F1F1F] text-center'>Add Course</h4>
+             <div  className='mt-[20px]'>
+                <input type="text" className='w-full border border-2 border-[#079C49]   px-2 py-3 rounded-xl mt-2 focus:outline-none h-[40px]' placeholder='Course Name' />
+            </div>
+            <div className='mt-4'>
+               <textarea  type="text" className='w-full border border-2 border-[#079C49]  px-3 py-3 rounded-xl mt-2 focus:outline-none h-[10vh]' placeholder="Course description..."/>
+            </div>
+
+
+            <div className='mt-5'>
+
+            <input
+              id="file"
+              type="file"
+              ref={fileInput}
+              // The onChange should trigger updates whenever
+              // the value changes?
+              // Try to select a file, then try selecting another one.
+              onChange={forceUpdate}
+              multiple
+            />
+                <label htmlFor="file" className='flex items-center'>
+                  <span tabIndex="0" role="button" aria-controls="filename" className='bg-[#079C49] rounded-md flex items-center justify-center w-10  h-10'>
+                    <AddIcon style={{color: "#fff"}}/>
+                  </span>
+                  <span className='text-xs nowrap border-2 border-[#079C49] rounded-lg ml-1 h-10 flex items-center p-2 w-full'>{fileNames() ? fileNames(): "No file attached"}</span>
+                </label>
+           
+            </div>
+            <div className="flex justify-end mt-6">
+              <button className='ormal-case  text-[#fff] border border-[#079C49] text-[#079C49]  font-bold  text-[18px] px-3 rounded-xl h-10 w-1/5 mr-2'  onClick={()=> setOpenAddCourse(!openAddCourse)}>Cancel</button>
+              <button className='ormal-case  text-[#fff] border border-[#079C49] bg-[#079C49]  font-bold  text-[18px] px-3 rounded-xl h-10 w-1/5' onClick={()=> setOpenAddCourse(!openAddCourse)}>Save</button>
+            </div>
+        </Box>
+    </Modal>
                   
     </>
   )
