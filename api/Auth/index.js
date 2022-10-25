@@ -40,7 +40,7 @@ module.exports = {
                     data: null
                 });
             }
-            if(account.role != "student"){
+            if(account.role != "student" && account.role != "admin"){
                 return res.status(400).json({
                     error: true,
                     message: "Access Denied! Unauthorized User",

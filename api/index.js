@@ -10,6 +10,7 @@ const authRoutes = require("./Routes/AccountRoutes")
 const courseRoutes = require("./Routes/CourseRoutes")
 const lessonRoutes = require("./Routes/LessonRoutes")
 const studentRoutes = require("./Routes/StudentRoutes")
+const chapterRoutes = require("./Routes/ChapterRoutes")
 
 //----- controllers if needed -----
 const { addLessonToCourse } = require("./Controllers/CourseControllers")
@@ -21,12 +22,13 @@ const { createAccount } = require("./Services/AccountService");
 
 //----- middlewares -----
 require('dotenv').config({ silent: true });
-app.use(cors("https://investinsmart.com/"));
+app.use(cors());
 app.use(express.json())
 app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/course', courseRoutes)
 app.use('/api/v1/lesson', lessonRoutes)
 app.use('/api/v1/student', studentRoutes)
+app.use('/api/v1/chapter', chapterRoutes)
 
 //----- env -----
 const MONGO_URL = process.env.MONGO_URL

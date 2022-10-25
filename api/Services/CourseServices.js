@@ -1,4 +1,5 @@
 const { createCipheriv } = require("crypto")
+const Chapter = require("../Models/Chapter")
 const Course = require("../Models/Course")
 const Lesson = require("../Models/Lesson")
 
@@ -22,9 +23,9 @@ module.exports = {
             return callBack(true)
         }
     },
-    getAllCourses: async (callBack) => {
+    filterCourses: async (filters, callBack) => {
         try {
-            const docs = await Course.find()
+            const docs = await Course.find(filters)
             return callBack(false, docs)
         } catch(err) {
             return callBack(true)
@@ -94,6 +95,42 @@ module.exports = {
             const doc = await Lesson.findByIdAndRemove(id)
             return callBack(false, doc)
         } catch(err) {
+            console.log(err)
+            return(true)
+        }
+    },
+    createChapter: async (data, callBack) => {
+        try {
+            const doc = await Chapter.create(data)
+            return callBack(false, doc)
+        } catch(err){
+            console.log(err)
+            return(true)
+        }
+    },
+    getChapter: async (id, callBack) => {
+        try {
+            const doc = await Chapter.findById(id)
+            return callBack(false, doc)
+        } catch(err){
+            console.log(err)
+            return(true)
+        }
+    },
+    updateChapter: async (id, data, callBack) => {
+        try {
+            const doc = await Chapter.findByIdAndUpdate(id, data)
+            return callBack(false, doc)
+        } catch(err){
+            console.log(err)
+            return(true)
+        }
+    },
+    deleteChapter: async (id, data, callBack) => {
+        try {
+            const doc = await Chapter.findByIdAndDelete(id, data)
+            return callBack(false, doc)
+        } catch(err){
             console.log(err)
             return(true)
         }

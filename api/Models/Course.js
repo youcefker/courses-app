@@ -13,9 +13,16 @@ const courseSchema = new Schema({
     filename: {
         type: String,
     },
-    lessons: [{
+    teacher_name: {
+        type: String,
+    },
+    isActive: {
+        type: Boolean,
+        default: false
+    },
+    chapters: [{
         type: Schema.Types.ObjectId, 
-        ref: "Lesson"
+        ref: "Chapter"
     }],
     students: [{
         type: Schema.Types.ObjectId, 

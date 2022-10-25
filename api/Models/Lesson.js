@@ -12,7 +12,7 @@ const lessonSchema = new Schema({
     filename: {
         type: String
     },
-    course_id: {
+    chapter_id: {
         type: Schema.Types.ObjectId, 
         ref: "Course"
     }
