@@ -155,3 +155,34 @@ a {
   font-size: 14px;
   padding: 18px;
 }
+
+
+input[type="file"] {
+  display: none;
+}
+
+.custom-file-upload {
+  border: 1px solid #ccc;
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer
+}
+
+.file-preview {
+  margin: 0 10px;
+}
+
+
+.custom-file-input {
+  background-color: unset !important;
+}
+
+.uploadBtn {
+  width: 100px !important;
+  color: #fff !important;
+  background-color: #155697 !important;
+  text-transform: unset !important;
+  height: 100% !important;
+  border-radius: 0px 8px 8px 0px !important;
+  font-size: 16px !important;
+}
