@@ -9,13 +9,8 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useRouter } from 'next/router';
-
-const options = [
-  'Activate',
-  'Desactivate',
-  'Delete',
-
-];
+import axios from '../../axiosInstance';
+import toast, { Toaster } from 'react-hot-toast';
 
 const ITEM_HEIGHT = 48;
 
@@ -34,11 +29,42 @@ function CourseCard(props) {
 
   useEffect(() => {
     props.fetchLessons()
+  
   }, [])
+
+  const options = [props.isActive ? "Deactivate" : "Activate" ,"Update" , "Delete" ]
+
+
+  const handleAction  = async (option)=>{
+    console.log(props.id);
+    handleClose()
+   switch (option) {
+    case "Activate":
+     await  axios.put(`/course/${props.id}`,{isActive : true})
+      .then(async(res) => {
+        console.log(res)
+        props.updateToast(res.data.message)
+        props.refresh()
+      
+    
+       
+    }).catch((error) => {
+        console.log(error)
+  
+    });
+      break;
+   
+    default:
+      break;
+   }
+  }
   
   return (
+    <>
+
     <div className='bg-white rounded-lg overflow-hidden'>
-      <div className='bg-[green] h-2 w-full'></div>
+    
+      <div className={props.isActive ? "bg-[green] h-2 w-full" : "bg-[red] h-2 w-full"}></div>
       <div className='px-4 py-5'>
         <div className="flex justify-between items-center">
           <h3 className='text-xl mb-3' onClick={()=> router.push(`/courses/detail/${props.id}`)} style={{cursor : "pointer"}}>{props.name}</h3>
@@ -69,10 +95,11 @@ function CourseCard(props) {
                    
                   },
                 }}
+               
               >
                 {options.map((option) => (
-                  <MenuItem key={option} selected={option === 'Pyxis'} onClick={handleClose}>
-                    {option}
+                  <MenuItem key={option} selected={option === 'Pyxis'} onClick={()=> handleAction(option)} >
+                   {option}
                   </MenuItem>
                 ))}
               </Menu>
@@ -87,14 +114,14 @@ function CourseCard(props) {
   
            <div className='text-[#9DA6BA] flex items-center text-sm mb-3 mt-5'>
              <PersonIcon style={{fontSize : "18px"}}/>
-             <span className='ml-2'>Teacher name </span>
+             <span className='ml-2'>{props.teacherName} </span>
            </div>
   
   
            <div className="flex justify-between text-[#9DA6BA] text-sm mb-5">
              <div className='flex items-center'>
                <PlayLessonIcon style={{fontSize : "18px"}} />
-               <span className='ml-2'><span>{props.nbrLessons}</span> Lessons </span>
+               <span className='ml-2'><span>{props.nbrLessons ? props.nbrLessons : 0}</span> Lessons </span>
              </div>
              <div className='flex items-center'>
                <TimerIcon style={{fontSize : "18px"}}/>
@@ -115,6 +142,7 @@ function CourseCard(props) {
           </div>
       </div>
     </div>
+    </>
   )
 }
 

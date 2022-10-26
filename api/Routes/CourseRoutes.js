@@ -38,10 +38,10 @@ router.post('/', checkAdminToken, upload, checkSchema({
         }
     },
 }), createCourse)
-router.get('/',  checkAdminToken, filterCourses)
+router.get('/', checkAdminToken, filterCourses)
 router.get('/names', getCoursesNames)
-router.get('/:course_id',  checkStudentToken, param("course_id", "invalid course id.").isMongoId(), getCourse)
-router.put('/:course_id',  checkAdminToken, upload, param("course_id", "invalid course id.").isMongoId(), checkSchema({
+router.get('/:course_id', checkStudentToken, getCourse)
+router.put('/:course_id', checkAdminToken, upload, checkSchema({
     name: {
         optional: true,
         isLength: {
@@ -72,7 +72,7 @@ router.put('/:course_id',  checkAdminToken, upload, param("course_id", "invalid 
 }), updateCourse)
 router.delete('/:course_id', checkAdminToken, param("course_id", "invalid course id.").isMongoId(), deleteCourse)
 router.delete('/:lesson_id', checkAdminToken, param("lesson_id", "invalid lesson id.").isMongoId(), deleteLesson)
-router.get("/students/:name",  checkAdminToken, getCourseStudents)
-router.delete("/:course_id/student/:student_id", checkAdminToken,param("course_id", "invalid course id.").isMongoId(), param("student_id", "invalid student id.").isMongoId(), deleteStudentFromCourse)
+router.get("/students/:name", checkAdminToken, getCourseStudents)
+router.delete("/:course_id/student/:student_id", checkAdminToken, param("course_id", "invalid course id.").isMongoId(), param("student_id", "invalid student id.").isMongoId(), deleteStudentFromCourse)
 
 module.exports = router

@@ -1,4 +1,4 @@
-import { Box, Modal } from '@mui/material'
+import { Box, MenuItem, Modal } from '@mui/material'
 import React, { useEffect, useRef, useState } from 'react'
 import { Toaster } from 'react-hot-toast'
 import ChapterCard from '../../../components/admin/ChapterCard'
@@ -7,6 +7,8 @@ import Sidebar from '../../../components/dashboard/sidebar'
 import { CircularProgress, InputLabel, Select } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+
+
 
 
 const useForceUpdate = () => useState()[1];
@@ -123,6 +125,7 @@ function CourseDetail(props) {
   const [items, setItems] = useState(chapters)
 
 
+  const [lessnType, setLessonType] = React.useState(1);
 
 
   const [open, setOpen] = React.useState(false);
@@ -167,6 +170,12 @@ function CourseDetail(props) {
     }
     return null;
   }
+
+
+
+  const handleChange = (event) => {
+    setLessonType(event.target.value);
+  };
   return (
     <>
     <Sidebar active="courses" />
@@ -251,6 +260,16 @@ function CourseDetail(props) {
                <textarea  type="text" className='w-full border border-2 border-[#079C49]  px-3 py-3 rounded-xl mt-2 focus:outline-none h-[10vh]' placeholder="Lesson description..."/>
             </div>
 
+
+            <div className='my-3'>
+         
+              <Select value={lessnType}
+                className='selectInput w-full h-[40px] border border-2 border-[#079C49] rounded-lg'
+                onChange={handleChange} >
+                  <MenuItem value={1}>Document</MenuItem>
+                  <MenuItem value={2}>Video</MenuItem>
+                </Select>
+            </div>
 
             <div className='mt-5'>
 
@@ -343,15 +362,17 @@ function CourseDetail(props) {
     >
        <Box sx={style}>
              <h4 className='text-[18px] font-[600] text-[#1F1F1F] text-center'>Update course</h4>
-             <div  className='mt-[20px]'>
-                <input type="text" className='w-full border border-2 border-[#079C49]   px-2 py-3 rounded-xl mt-2 focus:outline-none h-[40px]' placeholder='Lesson Name' />
+             <div  className='mt-4'>
+                <input type="text" className='w-full border border-2 border-[#079C49]   px-2 py-3 rounded-xl mt-2 focus:outline-none h-[40px]' placeholder='Course Name' />
             </div>
-            <div className='mt-4'>
-               <textarea  type="text" className='w-full border border-2 border-[#079C49]  px-3 py-3 rounded-xl mt-2 focus:outline-none h-[10vh]' placeholder="Lesson description..."/>
+            <div className='mt-3 mb-2'>
+               <textarea  type="text" className='w-full border border-2 border-[#079C49]  px-3 py-3 rounded-xl mt-2 focus:outline-none h-[10vh]' placeholder="Course description..."/>
+            </div>
+            <div>
+                <input type="text" className='w-full border border-2 border-[#079C49]   px-2 py-3 rounded-xl mt-2 focus:outline-none h-[40px]' placeholder='Teacher Name' />
             </div>
 
-
-            <div className='mt-5'>
+            <div className='mt-[40px]'>
 
             <input
               id="file"

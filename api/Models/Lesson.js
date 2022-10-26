@@ -14,12 +14,12 @@ const lessonSchema = new Schema({
     },
     file_type: {
         type: String,
-        enum: ["VIDEO, FILE"]
+        enum: ["VIDEO", "FILE"]
     },
     chapter_id: {
-        type: Schema.Types.ObjectId, 
+        type: Schema.Types.ObjectId,
         ref: "Course"
     }
-}) 
+})
 
 module.exports = model('Lesson', lessonSchema)

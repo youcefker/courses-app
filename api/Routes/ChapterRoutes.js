@@ -4,7 +4,7 @@ const { addChapterToCourse, deleteChapter, updateChapter } = require("../Control
 
 const router = require("express").Router()
 
-router.post("/course/:course_id", checkAdminToken, param("chapter_id", "invalid chapter id.").isMongoId(), checkSchema({
+router.post("/course/:course_id", checkAdminToken, checkSchema({
     name: {
         isLength: {
             errorMessage: "chapter name should not be empty."
