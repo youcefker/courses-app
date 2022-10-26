@@ -14,7 +14,6 @@ const ResetToken = require("../Models/ResetToken")
 
 module.exports = {
     signup: async (req, res) => {
-        console.log(req.body)
         await getAccountByEmail(req.body.email, async (err, result) => {
             if(err) {
                 console.log("email exists ?", err)
@@ -61,7 +60,8 @@ module.exports = {
                     const account = {
                         email: req.body.email, 
                         password : hashedPassword, 
-                        role: "student"
+                        role: "student",
+                        isVerified: true
                     }
                     await createAccount(account, async (err, account) => {
                         if(err){
@@ -72,84 +72,53 @@ module.exports = {
                                 data: null
                             })
                         }
-                        const currentDate = new Date();
-                        const expiresAt = new Date(currentDate.getTime() + 15 * 60000);
-                        const confirmationToken = new ConfirmationToken({
-                            account_id: account.id,
-                            token: crypto.randomBytes(16).toString('hex'),
-                            expiresAt
-                        })
-                        await createConfirmationToken(confirmationToken, async (err, savedConfirmationToken) => {
+                        const studentData = {
+                            name: req.body.name,
+                            courses: [],
+                            progress: [],
+                        }
+                        await createStudent(studentData, async(err, student) => {
                             if(err){
-                                console.log("create confirmation token", err)
                                 return res.status(400).json({
                                     error: true,
                                     message: "something went wrong!",
                                     data: null
                                 })
                             }
-                            const body = `<a href="http://localhost:3000/verify/${savedConfirmationToken.token}">verify</a>`
-                            await sendMail(account.email, "contact@investinsmart.com", body, async (err, result) => {
-                                if(err) {
-                                    console.log(err)
-                                    await Account.deleteOne({
-                                        id: account.id
-                                    })
+                            const enrollRequestData = {
+                                course_id: course.id,
+                                email: req.body.email,
+                                course_name: course.name,
+                                student_id: student.id,
+                                student_name: student.name
+                            }
+                            await createEnrollRequest(enrollRequestData, async(err, enrollRequest) => {
+                                if(err){
                                     return res.status(400).json({
-                                        error: true,
-                                        message: "Email not sent",
+                                        error: true, 
+                                        message: "something went wrong!",
                                         data: null
                                     })
                                 }
-                                const studentData = {
-                                    name: req.body.name,
-                                    courses: [],
-                                    progress: []
-                                }
-                                await createStudent(studentData, async(err, student) => {
-                                    if(err){
-                                        return res.status(400).json({
-                                            error: true,
-                                            message: "something went wrong!",
-                                            data: null
-                                        })
-                                    }
-                                    const enrollRequestData = {
-                                        course_id: course.id,
-                                        email: req.body.email,
-                                        course_name: course.name,
-                                        student_id: student.id,
-                                        student_name: student.name
-                                    }
-                                    await createEnrollRequest(enrollRequestData, async(err, enrollRequest) => {
-                                        if(err){
-                                            return res.status(400).json({
-                                                error: true, 
-                                                message: "something went wrong!",
-                                                data: null
-                                            })
-                                        }
-                                        try {
-                                            console.log("account",account)
-                                            account.student = student._id
-                                            await account.save()
-                                            return res.status(201).json({
-                                                error: false, 
-                                                message: "Student signed up succesfully. please check your email"
-                                            })
-                                        } catch(err) {
-                                            console.log(err)
-                                            return res.json({
-                                                error: true,
-                                                status: 401, 
-                                                message: "something went wrong!",
-                                                data: null
-                                            })
-                                        }
+                                try {
+                                    console.log("account",account)
+                                    account.student = student._id
+                                    await account.save()
+                                    return res.status(201).json({
+                                        error: false, 
+                                        message: "Student signed up succesfully. go to login"
                                     })
-                                    
-                                })
+                                } catch(err) {
+                                    console.log(err)
+                                    return res.json({
+                                        error: true,
+                                        status: 401, 
+                                        message: "something went wrong!",
+                                        data: null
+                                    })
+                                }
                             })
+                            
                         })
                     })
                 })

@@ -98,7 +98,7 @@ module.exports = {
         })
     },
     deleteEnrollRequest: async (req, res) => {
-        deleteEnrollRequest(req.params.request_id, (err, result) => {
+        deleteEnrollRequest(req.params.enrollRequest_id, (err, result) => {
             if(err) {
                 return res.status(400).json({
                     error: true,

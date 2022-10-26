@@ -1,6 +1,6 @@
 const { checkAdminToken, checkStudentToken } = require('../Auth')
 const { signup, signin, verifyAccount, resendConfirmationLink, activateAccount, getAccounts, signinAdmin, getEnrollRequests, updateAccount, forgetPassword, resetPassword } = require('../Controllers/AccountControllers')
-const { deleteEnrollRequest } = require('../Services/EnrollRequestService')
+const { deleteEnrollRequest } = require('../Controllers/StudentControllers')
 
 const router = require('express').Router()
 

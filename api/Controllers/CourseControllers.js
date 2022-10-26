@@ -377,7 +377,8 @@ module.exports = {
                 name: req.body.name,
                 description: req.body.description,
                 filename: req.file ? req.file.filename: null,
-                chapter_id: chapter.id
+                chapter_id: chapter.id,
+                file_type: file.mimetype ===  "video/quicktime" ? "VIDEO" : "FILE"
             }
             createLesson(lesson, async (err, lesson) => {
                 if(err){

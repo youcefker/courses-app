@@ -12,6 +12,10 @@ const lessonSchema = new Schema({
     filename: {
         type: String
     },
+    file_type: {
+        type: String,
+        enum: ["VIDEO, FILE"]
+    },
     chapter_id: {
         type: Schema.Types.ObjectId, 
         ref: "Course"
