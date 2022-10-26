@@ -97,12 +97,12 @@ mongoose.connect(MONGO_URL)
         password: "$2a$10$q9fLVhmOEBOWHKizLnYbSOBp6.14P.oLrWbIDsko1rrcgQXcdFY5u",
         role: "admin"
       }
-      // createAccount(admin, (err, account) => {
-      // //   if (err) {
-      // //     console.log(err)
-      // //   }
-      // //   console.log("admin created successfully")
-      // // })
+      /*createAccount(admin, (err, account) => {
+      if (err) {
+      console.log(err)
+      }
+      console.log("admin created successfully")
+      })*/
       console.log(`server is listening at port ${port}`)
     })
   })

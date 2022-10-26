@@ -13,13 +13,13 @@ module.exports = {
                 data: null
             }) 
         }
-        const course = {
+        const data = {
             name: req.body.name,
             description: req.body.description,
             teacher_name: req.body.teacher_name,
             filename: req.file?.filename
         }
-        createCourse(course, (err, result) => {
+        createCourse(data, (err, course) => {
             if(err) {
                 console.log("err")
                 return res.status(400).json({
