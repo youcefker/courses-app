@@ -11,9 +11,18 @@ const { createStudent } = require("../Services/StudentService")
 const { createEnrollRequest, getEnrollRequests } = require("../Services/EnrollRequestService")
 const { createResetToken, getResetToken } = require("../Services/ResetTokenService")
 const ResetToken = require("../Models/ResetToken")
+const { validationResult } = require("express-validator")
 
 module.exports = {
     signup: async (req, res) => {
+        const result = validationResult(req)
+        if(!result.isEmpty()){
+            return res.status(400).json({
+                error: true, 
+                message: result.errors[0].msg,
+                data: null
+            }) 
+        }
         await getAccountByEmail(req.body.email, async (err, result) => {
             if(err) {
                 console.log("email exists ?", err)
@@ -134,6 +143,14 @@ module.exports = {
         })
     }, 
     signin: async (req, res) => {
+        const result = validationResult(req)
+        if(!result.isEmpty()){
+            return res.status(400).json({
+                error: true, 
+                message: result.errors[0].msg,
+                data: null
+            }) 
+        }
         await getAccountByEmail(req.body.email, async (err, account) => {
             if(err){
                 return res.status(400).json({
@@ -197,6 +214,14 @@ module.exports = {
         })
     },
     signinAdmin: async (req, res) => {
+        const result = validationResult(req)
+        if(!result.isEmpty()){
+            return res.status(400).json({
+                error: true, 
+                message: result.errors[0].msg,
+                data: null
+            }) 
+        }
         await getAccountByEmail(req.body.email, async (err, account) => {
             if(err){
                     return res.status(400).json({
@@ -498,6 +523,14 @@ module.exports = {
         })
     }*/
     updateAccount: async (req, res) => {
+        const result = validationResult(req)
+        if(!result.isEmpty()){
+            return res.status(400).json({
+                error: true, 
+                message: result.errors[0].msg,
+                data: null
+            }) 
+        }
         try {
             console.log(req.params.account_id)
             let updateData = {}

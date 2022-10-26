@@ -1,9 +1,18 @@
+const { validationResult } = require("express-validator")
 const { getCourse } = require("../Services/CourseServices")
 const { deleteEnrollRequest } = require("../Services/EnrollRequestService")
 const { getStudent, getStudents, deleteStudent, updateStudent } = require("../Services/StudentService")
 
 module.exports = {
     addCourseToStudent: async (req, res) => {
+        const result = validationResult(req)
+        if(!result.isEmpty()){
+            return res.status(400).json({
+                error: true, 
+                message: result.errors[0].msg,
+                data: null
+            }) 
+        }
         getStudent(req.body.student_id, async(err, student) => {
             if(err) {
                 return res.json({
@@ -98,6 +107,14 @@ module.exports = {
         })
     },
     deleteEnrollRequest: async (req, res) => {
+        const result = validationResult(req)
+        if(!result.isEmpty()){
+            return res.status(400).json({
+                error: true, 
+                message: result.errors[0].msg,
+                data: null
+            }) 
+        }
         deleteEnrollRequest(req.params.enrollRequest_id, (err, result) => {
             if(err) {
                 return res.status(400).json({
@@ -147,6 +164,14 @@ module.exports = {
         })
     },
     getStudentCourses: async(req, res) => {
+        const result = validationResult(req)
+        if(!result.isEmpty()){
+            return res.status(400).json({
+                error: true, 
+                message: result.errors[0].msg,
+                data: null
+            }) 
+        }
         getStudent(req.params.student_id, async (err, student) => {
             if(err) {
                 return res.status(400).json({
@@ -175,6 +200,14 @@ module.exports = {
         })
     },
     deleteStudent: async (req, res) => {
+        const result = validationResult(req)
+        if(!result.isEmpty()){
+            return res.status(400).json({
+                error: true, 
+                message: result.errors[0].msg,
+                data: null
+            }) 
+        }
         deleteStudent(req.params.student_id, (err, result) => {
             if(err) {
                 return res.json({
@@ -201,6 +234,14 @@ module.exports = {
         })
     }, 
     updateStudent : async (req, res) => {
+        const result = validationResult(req)
+        if(!result.isEmpty()){
+            return res.status(400).json({
+                error: true, 
+                message: result.errors[0].msg,
+                data: null
+            }) 
+        }
         console.log(req.params.student_id)
         if(!req.body.name){
             return res.status(400).json({
