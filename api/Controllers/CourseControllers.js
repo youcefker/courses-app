@@ -94,20 +94,11 @@ module.exports = {
                     data: null
                 })
             }
-            try {
-                const courseWithLessons = await course.populate("lessons")
-                return res.status(200).json({
-                    error: false, 
-                    message: "Course fetched succesfully",
-                    data: courseWithLessons
-                })
-            } catch(err) {
-                return res.status(400).json({
-                    error: true, 
-                    message: "something went wrong!",
-                    data: null
-                })
-            }
+             return res.status(200).json({
+                error: false, 
+                message: "Course fetched succesfully",
+                data: courseWithLessons
+             })
         })
     },
     getCourseStudents: async (req, res) => {
@@ -168,7 +159,7 @@ module.exports = {
                     data: null
                 })
             }
-            getCourse(course.id, (err, updatedCourse) => {
+            getrse(course.id, (err, updatedCourse) => {
                 if(err){
                     return res.status(400).json({
                         error: true, 
@@ -466,7 +457,7 @@ module.exports = {
                 return res.status(200).json({
                     error: false,
                     message: "chapter Lessons fetched succesfully",
-                    data: courseWithChapters.chapters
+                    data: courseWithChapters
                 })
             } catch(error){
                 return res.status(400).json({
