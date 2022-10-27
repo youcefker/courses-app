@@ -97,7 +97,7 @@ module.exports = {
              return res.status(200).json({
                 error: false, 
                 message: "Course fetched succesfully",
-                data: courseWithLessons
+                data: course
              })
         })
     },
@@ -159,7 +159,7 @@ module.exports = {
                     data: null
                 })
             }
-            getrse(course.id, (err, updatedCourse) => {
+            getCourse(course.id, (err, updatedCourse) => {
                 if(err){
                     return res.status(400).json({
                         error: true, 
