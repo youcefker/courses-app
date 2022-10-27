@@ -7,6 +7,8 @@ import Sidebar from '../../../components/dashboard/sidebar'
 import { CircularProgress, InputLabel, Select } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { useRouter } from 'next/router'
+import axios from '../../../axiosInstance'
 
 
 
@@ -91,6 +93,24 @@ const chapters = [
 
 
 function CourseDetail(props) {
+
+  const router = useRouter()
+ 
+
+  useEffect(async() => {
+    const  courseId = await router.query.course || props.id
+    console.log(courseId);
+    axios.get("/course/"+courseId)
+    .then((res)=>{
+      console.log(res);
+    })
+    .catch((err)=>{
+      console.log(err);
+    })
+
+  }, [])
+  
+
 
   const initial = Array.from({ length: 5 }, (v, k) => k).map(k => {
     const custom = {

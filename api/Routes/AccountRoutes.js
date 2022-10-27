@@ -52,11 +52,6 @@ router.post("/signin", checkSchema({
     },
 }), signin)
 router.post("/admin/signin", checkSchema({
-    email: {
-        isEmail: {
-            errorMessage: "invalid email.",
-        }
-    },
     password: {
         isLength: {
             errorMessage: "password should be at least 8 chars long.",

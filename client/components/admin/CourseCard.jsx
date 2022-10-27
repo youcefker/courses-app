@@ -32,7 +32,7 @@ function CourseCard(props) {
   
   }, [])
 
-  const options = [props.isActive ? "Deactivate" : "Activate" ,"Update" , "Delete" ]
+  const options = [props.isActive ? "Desactivate" : "Activate" ,"Update" , "Delete" ]
 
 
   const handleAction  = async (option)=>{
@@ -53,7 +53,20 @@ function CourseCard(props) {
   
     });
       break;
-   
+      case "Desactivate":
+        await  axios.put(`/course/${props.id}`,{isActive : false})
+        .then(async(res) => {
+          console.log(res)
+          props.updateToast(res.data.message)
+          props.refresh()
+        
+      
+         
+      }).catch((error) => {
+          console.log(error)
+    
+      });
+        break;
     default:
       break;
    }
