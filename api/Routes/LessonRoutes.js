@@ -16,8 +16,8 @@ const upload = multer({
     storage
 }).single("lesson_file");
 
-//router.get("/",  checkAdminToken, getAllLessons)
-router.get("/course/:course_id", param("course_id", "invalid course id.").isMongoId(), getCourseChaptersWithLessons)
+router.get("/",  checkAdminToken, getAllLessons)
+router.get("/course/:course_id", checkStudentToken, param("course_id", "invalid course id.").isMongoId(), getCourseChaptersWithLessons)
 router.post('/chapter/:chapter_id', checkAdminToken, upload, param("chapter_id", "invalid chapter id.").isMongoId(), checkSchema({
     name: {
         isLength: {

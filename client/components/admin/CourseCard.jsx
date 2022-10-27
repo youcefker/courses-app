@@ -67,6 +67,16 @@ function CourseCard(props) {
     
       });
         break;
+
+        case "Update":
+
+        props.updateCourse()
+          break;
+
+          case "Delete":
+
+        props.deleteCourse()
+            break;
     default:
       break;
    }

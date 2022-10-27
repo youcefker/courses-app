@@ -82,7 +82,8 @@ function Courses() {
   const [courseDescrip, setCourseDescrip] = useState('')
   const [courseTeacher, setCourseTeacher] = useState('')
   const [file, setFile] = useState(null)
- 
+  const [openUpdateCourse, setOpenUpdateCourse] = useState(false)
+ const [openDeleteCourse, setOpenDeleteCourse] = useState(false)
   const handleOpenAcc = (value) => {
     setOpenAcc(openAcc === value ? 0 : value);
   };
@@ -196,7 +197,7 @@ const handleClose = () => setOpen(false);
   }
 
 
-
+  const forceUpdate = useForceUpdate();
 
   function fileNames() {
     const { current } = fileInput;
@@ -251,6 +252,10 @@ const handleClose = () => setOpen(false);
   const updateMsg = (msg)=>{
     toast.success(msg)
   }
+
+
+
+
   
   return (
     <>
@@ -301,7 +306,7 @@ const handleClose = () => setOpen(false);
                       </div>
                   
                       <div  className=" py-2 grid grid-cols-4 gap-6 gap-y-10">
-                      {courses.map((course, index) =><CourseCard updateToast={(msg)=>updateMsg(msg)} refresh={()=>refresh()} isActive={course.isActive} id={course._id} fetchLessons={() => fetchCourseLessons(course._id)} name={course.name} description={course.description} teacherName={course.teacher_name} nbrLessons={course.lessons?.length}  />)}
+                      {courses.map((course, index) =><CourseCard deleteCourse={()=>setOpenDeleteCourse(true)} updateCourse={()=>setOpenUpdateCourse(true)} updateToast={(msg)=>updateMsg(msg)} refresh={()=>refresh()} isActive={course.isActive} id={course._id} fetchLessons={() => fetchCourseLessons(course._id)} name={course.name} description={course.description} teacherName={course.teacher_name} nbrLessons={course.lessons?.length}  />)}
 
                       {/* <Accordion key={course._id} fetchLessons={() => fetchCourseLessons(course._id)} title={`Course ${index + 1} : ${course.name}`} 
                       content={coursesLessons[course._id] ?  coursesLessons[course._id].map((lesson, lessonIndex) =><div key={lesson._id} className='text-[18px] font-[600] text-[#1F1F1F]  ml-5 mb-2 flex items-center justify-between hover:bg-[#eee] p-2 rounded-lg'>
@@ -403,7 +408,67 @@ const handleClose = () => setOpen(false);
             </div>
         </Box>
     </Modal>
+
+    <Modal
+      open={openUpdateCourse}
+      onClose={handleClose}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+    >
+       <Box sx={style}>
+             <h4 className='text-[18px] font-[600] text-[#1F1F1F] text-center'>Update course</h4>
+             <div  className='mt-4'>
+                <input type="text" className='w-full border border-2 border-[#079C49]   px-2 py-3 rounded-xl mt-2 focus:outline-none h-[40px]' placeholder='Course Name' />
+            </div>
+            <div className='mt-3 mb-2'>
+               <textarea  type="text" className='w-full border border-2 border-[#079C49]  px-3 py-3 rounded-xl mt-2 focus:outline-none h-[10vh]' placeholder="Course description..."/>
+            </div>
+            <div>
+                <input type="text" className='w-full border border-2 border-[#079C49]   px-2 py-3 rounded-xl mt-2 focus:outline-none h-[40px]' placeholder='Teacher Name' />
+            </div>
+
+            <div className='mt-[40px]'>
+
+            <input
+              id="file"
+              type="file"
+              ref={fileInput}
+              // The onChange should trigger updates whenever
+              // the value changes?
+              // Try to select a file, then try selecting another one.
+              onChange={forceUpdate}
+              multiple
+            />
+                <label htmlFor="file" className='flex items-center'>
+                  <span tabIndex="0" role="button" aria-controls="filename" className='bg-[#079C49] rounded-md flex items-center justify-center w-10  h-10'>
+                    <AddIcon style={{color: "#fff"}}/>
+                  </span>
+                  <span className='text-xs nowrap border-2 border-[#079C49] rounded-lg ml-1 h-10 flex items-center p-2 w-full'>{fileNames() ? fileNames(): "No file attached"}</span>
+                </label>
+           
+            </div>
+            <div className="flex justify-end mt-6">
+              <button className='ormal-case  text-[#fff] border border-[#079C49] text-[#079C49]  font-bold  text-[18px] px-3 rounded-xl h-10 w-1/3 mr-2'  onClick={()=> setOpenUpdateCourse(false)}>Cancel</button>
+              <button className='ormal-case  text-[#fff] border border-[#079C49] bg-[#079C49]  font-bold  text-[18px] px-3 rounded-xl h-10 w-1/3' onClick={()=> setOpenUpdateCourse(false)}>Save</button>
+            </div>
+        </Box>
+    </Modal>
                   
+    <Modal
+      open={openDeleteCourse}
+      onClose={handleClose}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+    >
+       <Box sx={style}>
+             <h4 className='text-[18px] font-[600] text-[#1F1F1F] text-center'>Do you want to delete this Course !</h4>
+        
+            <div className="flex justify-center mt-5">
+              <button className='ormal-case  text-[#fff] border border-[#079C49] text-[#079C49]  font-bold  text-[18px] px-3 rounded-xl h-10 w-1/3 mr-3' onClick={()=> setOpenDeleteCourse(!openDeleteCourse)}>Cancel</button>
+              <button className='ormal-case  text-[#fff] border border-[#079C49] bg-[#079C49]  font-bold  text-[18px] px-3 rounded-xl h-10 w-1/3' onClick={()=> setOpenDeleteCourse(!openDeleteCourse)}>Confirm</button>
+            </div>
+        </Box>
+    </Modal>
     </>
   )
 }

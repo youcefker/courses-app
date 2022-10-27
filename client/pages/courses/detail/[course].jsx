@@ -95,20 +95,26 @@ const chapters = [
 function CourseDetail(props) {
 
   const router = useRouter()
- 
 
-  useEffect(async() => {
-    const  courseId = await router.query.course || props.id
-    console.log(courseId);
-    axios.get("/course/"+courseId)
+  const [courseId, setCourseId] = useState(null)
+  const [courseData, setCourseData] = useState(null)
+
+  
+
+  useEffect(() => {
+   
+   
+   
+    axios.get("/course/"+router.query.course)
     .then((res)=>{
       console.log(res);
+      setCourseData(res.data.data)
     })
     .catch((err)=>{
       console.log(err);
     })
 
-  }, [])
+  }, [router.query.course != undefined])
   
 
 
@@ -205,21 +211,15 @@ function CourseDetail(props) {
             <h4 className='text-[30px] font-[600] text-[#1F1F1F] mt-5 mb-2'>Course Detail</h4>
             <button className='ormal-case  text-[#079C49] border border-[#079C49] hover:text-[#fff] hover:bg-[#079C49] font-bold  text-[20px] p-2 px-3 rounded-xl h-12' onClick={()=> setOpen(true)}>Add Chapter</button>
         </div>
+          
         <div className="grid grid-cols-12 gap-5">
 
 
           <div className='flex flex-col items-center col-span-7'>
-            <h1 className='text-[22px] font-bold mb-5'>Course title 01</h1>
+            <h1 className='text-[22px] font-bold mb-5'>{courseData?.name}</h1>
             <video className='w-4/5'  id="lesson_video" muted controls autoPlay  controlsList="nodownload" type="video/mp4" src={`http://localhost:4000/api/v1/lesson/file/`}></video>
             <h6 className='text-[#1F1F1F] text-[14px] font-[500] mt-5 text-center'>
-                Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
-                Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
-                when an unknown printer took a galley of type and scrambled it to make a type
-                 specimen book. It has survived not only five centuries, but also the leap into
-                 electronic typesetting, remaining essentially unchanged. It was popularised in the
-                 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and
-                 more recently with desktop publishing software like Aldus PageMaker including 
-                versions of Lorem Ipsum.
+               {courseData?.description}
              </h6>
 
              <div className='flex justify-center mt-5'>
