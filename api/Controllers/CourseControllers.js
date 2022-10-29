@@ -596,70 +596,26 @@ module.exports = {
             })
         }
         const lesson_id = req.params.lesson_id
-        getLesson(lesson_id, (err, lesson) => {
-            if (err) {
+        deleteLesson(lesson_id, (err , result) => {
+            if(err){
                 return res.status(400).json({
                     error: true,
                     message: "something went wrong!",
                     data: null
                 })
             }
-            if (!lesson) {
+            if(!result){
                 return res.status(400).json({
-                    error: true,
-                    message: "lesson not found",
+                    error: true, 
+                    message: "Lesson not found!",
                     data: null
                 })
             }
-            deleteLesson(lesson_id, async (err, result) => {
-                if (err) {
-                    return res.status(400).json({
-                        error: true,
-                        message: "something went wrong!",
-                        data: null
-                    })
-                }
-                if (!result) {
-                    return res.status(400).json({
-                        error: true,
-                        message: "lesson not found",
-                        data: null
-                    })
-                }
-                getCourse(lesson.course_id, async (err, course) => {
-                    if (err) {
-                        return res.status(400).json({
-                            error: true,
-                            message: "something went wrong!",
-                            data: null
-                        })
-                    }
-                    if (!course) {
-                        return res.status(400).json({
-                            error: true,
-                            message: "lesson course not found",
-                            data: null
-                        })
-                    }
-                    try {
-                        const updatedCourseLessons = course.lessons.filter(id => course.id !== id.toString())
-                        console.log("updated", updatedCourseLessons)
-                        course.lessons = updatedCourseLessons
-                        await course.save()
-                        return res.status(200).json({
-                            error: false,
-                            message: "Lesson deleted succesfully",
-                            data: null
-                        })
-                    } catch (err) {
-                        console.log(err)
-                        return res.status(400).json({
-                            error: true,
-                            message: "something went wrong!",
-                            data: null
-                        })
-                    }
-                })
+            return res.status(200).json({
+                error: false, 
+                message: "Lesson deleted succesfully.",
+                data: null
+
             })
         })
     },

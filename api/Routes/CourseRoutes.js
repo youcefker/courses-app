@@ -1,4 +1,4 @@
-const { createCourse, getCourse, getAllCourses, updateCourse, deleteCourse, addLessonToCourse, getAllLessons, getCourseStudents, getCoursesNames, deleteStudentFromCourse, filterCourses } = require('../Controllers/CourseControllers')
+const { createCourse, getCourse, getAllCourses, updateCourse, deleteCourse, addLessonToCourse, getAllLessons, getCourseStudents, getCoursesNames, deleteStudentFromCourse, filterCourses, deleteChapter } = require('../Controllers/CourseControllers')
 
 const router = require('express').Router()
 
