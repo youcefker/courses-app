@@ -75,7 +75,7 @@ function CourseCard(props) {
 
           case "Delete":
 
-        props.deleteCourse()
+        props.deleteCourse(props.id)
             break;
     default:
       break;

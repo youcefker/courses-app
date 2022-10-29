@@ -78,6 +78,7 @@ function CourseDetail(props) {
   const [courseId, setCourseId] = useState(null)
   const [courseData, setCourseData] = useState(null)
   const [chapterId, setChapterId] = useState(null)
+  const [lessonId, setLessonId] = useState(null)
   
   const fetchCourseData = ()=>{
     axios.get("/lesson/course/"+router.query.course)
@@ -125,7 +126,20 @@ function CourseDetail(props) {
   }
 
   const handleDeleteChapter =()=>{
-    console.log(chapterId);
+   axios.delete("/chapter/"+chapterId)
+   .then((res)=>{
+    console.log(res.data);
+    toast.success(res.data.message)
+    setOpenDeleteChapter(false)
+    fetchCourseData()
+
+
+  })
+  .catch((err)=>{
+    console.log(err);
+    toast.error(err.data.message)
+    setOpenDeleteChapter(false)
+  })
   }
 
 
@@ -149,7 +163,7 @@ function CourseDetail(props) {
             className="my-4"
             key={Math.random()}
           >
-           <ChapterCard name={quote.title} lessons={quote.lessons}  key={Math.random()} id={quote._id}  addLesson={()=> {setOpenAddLesson(true),setChapterId(quote._id)}} deleteChapter={()=>{setOpenDeleteChapter(true),setChapterId(quote._id)}}  deleteLesson={()=> setOpenDeleteLesson(true)}/>
+           <ChapterCard name={quote.title} lessons={quote.lessons}  key={Math.random()} id={quote._id}  addLesson={()=> {setOpenAddLesson(true),setChapterId(quote._id)}} deleteChapter={()=>{setOpenDeleteChapter(true),setChapterId(quote._id)}}  deleteLesson={(lessonId)=>{ setOpenDeleteLesson(true),setLessonId(lessonId)}}/>
           </div>
         )}
       </Draggable>
@@ -261,6 +275,44 @@ function CourseDetail(props) {
   const handleFileUpload = (e) =>{
     setFile(e.target.files[0])
     useForceUpdate = () => useState()[1];
+  }
+
+
+
+
+  const handleDeleteLesson = ()=>{
+    console.log(lessonId);
+    axios.delete("/lesson/"+lessonId)
+    .then((res)=>{
+     console.log(res.data);
+     toast.success(res.data.message)
+     setOpenDeleteLesson(false)
+     fetchCourseData()
+ 
+ 
+   })
+   .catch((err)=>{
+     console.log(err);
+     toast.error(err.data.message)
+     setOpenDeleteLesson(false)
+  })
+  }
+
+
+  const handleDeleteCourse = ()=>{
+
+    axios.delete("/course/"+courseData._id)
+    .then((res) => {
+      console.log(res.data)
+     toast.success(res.data.message)
+     setOpenDeleteCourse(false)
+     router.back()
+     
+  }).catch((error) => {
+      console.log(error)
+      
+  });
+
   }
 
 
@@ -393,8 +445,8 @@ function CourseDetail(props) {
              <h4 className='text-[18px] font-[600] text-[#1F1F1F] text-center'>Do you want to delete this chapter !</h4>
         
             <div className="flex justify-center mt-5">
-              <button className='ormal-case  text-[#fff] border border-[#079C49] text-[#079C49]  font-bold  text-[18px] px-3 rounded-xl h-10 w-1/3 mr-3' onClick={()=> setOpenDeleteChapter(!openDeleteChapter)}>Cancel</button>
-              <button className='ormal-case  text-[#fff] border border-[#079C49] bg-[#079C49]  font-bold  text-[18px] px-3 rounded-xl h-10 w-1/3' onClick={()=> setOpenDeleteChapter(!openDeleteChapter)}>Confirm</button>
+              <button className='ormal-case  text-[#fff] border border-[#079C49] text-[#079C49]  font-bold  text-[18px] px-3 rounded-xl h-10 w-1/3 mr-3' onClick={()=> setOpenDeleteChapter(false)}>Cancel</button>
+              <button className='ormal-case  text-[#fff] border border-[#079C49] bg-[#079C49]  font-bold  text-[18px] px-3 rounded-xl h-10 w-1/3' onClick={()=> handleDeleteChapter()}>Confirm</button>
             </div>
         </Box>
     </Modal>
@@ -408,10 +460,10 @@ function CourseDetail(props) {
     >
        <Box sx={style}>
              <h4 className='text-[18px] font-[600] text-[#1F1F1F] text-center'>Do you want to delete this lesson!</h4>
-        
+             
             <div className="flex justify-center mt-5">
               <button className='ormal-case  text-[#fff] border border-[#079C49] text-[#079C49]  font-bold  text-[18px] px-3 rounded-xl h-10 w-30 mr-3' onClick={()=> setOpenDeleteLesson(false)}>Cancel</button>
-              <button className='ormal-case  text-[#fff] border border-[#079C49] bg-[#079C49]  font-bold  text-[18px] px-3 rounded-xl h-10 w-30' onClick={()=> setOpenDeleteLesson(false)}>Confirm</button>
+              <button className='ormal-case  text-[#fff] border border-[#079C49] bg-[#079C49]  font-bold  text-[18px] px-3 rounded-xl h-10 w-30' onClick={()=> handleDeleteLesson()}>Confirm</button>
             </div>
         </Box>
     </Modal>
@@ -429,7 +481,7 @@ function CourseDetail(props) {
         
             <div className="flex justify-center mt-5">
               <button className='ormal-case  text-[#fff] border border-[#079C49] text-[#079C49]  font-bold  text-[18px] px-3 rounded-xl h-10 w-1/3 mr-3' onClick={()=> setOpenDeleteCourse(!openDeleteCourse)}>Cancel</button>
-              <button className='ormal-case  text-[#fff] border border-[#079C49] bg-[#079C49]  font-bold  text-[18px] px-3 rounded-xl h-10 w-1/3' onClick={()=> setOpenDeleteCourse(!openDeleteCourse)}>Confirm</button>
+              <button className='ormal-case  text-[#fff] border border-[#079C49] bg-[#079C49]  font-bold  text-[18px] px-3 rounded-xl h-10 w-1/3' onClick={()=> handleDeleteCourse()}>Confirm</button>
             </div>
         </Box>
     </Modal>

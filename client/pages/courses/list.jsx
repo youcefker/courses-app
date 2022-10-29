@@ -78,6 +78,8 @@ function Courses() {
   const [lessonTodelete, setLessonTodelete] = useState(null)
   const [openAddCourse, setOpenAddCourse] = useState(false)
 
+  const [courseId, setCourseId] = useState(null)
+
   const [courseName, setCourseName] = useState('')
   const [courseDescrip, setCourseDescrip] = useState('')
   const [courseTeacher, setCourseTeacher] = useState('')
@@ -254,6 +256,21 @@ const handleClose = () => setOpen(false);
   }
 
 
+  const handleDeleteCourse = ()=>{
+    console.log(courseId);
+    axios.delete("/course/"+courseId)
+    .then((res) => {
+      console.log(res.data)
+     toast.success(res.data.message)
+     setOpenDeleteCourse(false)
+     fetchCourses()
+     
+  }).catch((error) => {
+      console.log(error)
+      toast.error(error.response.data.message)
+  });
+
+  }
 
 
   
@@ -306,7 +323,7 @@ const handleClose = () => setOpen(false);
                       </div>
                   
                       <div  className=" py-2 grid grid-cols-4 gap-6 gap-y-10">
-                      {courses.map((course, index) =><CourseCard deleteCourse={()=>setOpenDeleteCourse(true)} updateCourse={()=>setOpenUpdateCourse(true)} updateToast={(msg)=>updateMsg(msg)} refresh={()=>refresh()} isActive={course.isActive} id={course._id} fetchLessons={() => fetchCourseLessons(course._id)} name={course.name} description={course.description} teacherName={course.teacher_name} nbrLessons={course.lessons?.length}  />)}
+                      {courses.map((course, index) =><CourseCard deleteCourse={(courseId)=>{setOpenDeleteCourse(true), setCourseId(courseId)}} updateCourse={()=>setOpenUpdateCourse(true)} updateToast={(msg)=>updateMsg(msg)} refresh={()=>refresh()} isActive={course.isActive} id={course._id} fetchLessons={() => fetchCourseLessons(course._id)} name={course.name} description={course.description} teacherName={course.teacher_name} nbrLessons={course.lessons?.length}  />)}
 
                       {/* <Accordion key={course._id} fetchLessons={() => fetchCourseLessons(course._id)} title={`Course ${index + 1} : ${course.name}`} 
                       content={coursesLessons[course._id] ?  coursesLessons[course._id].map((lesson, lessonIndex) =><div key={lesson._id} className='text-[18px] font-[600] text-[#1F1F1F]  ml-5 mb-2 flex items-center justify-between hover:bg-[#eee] p-2 rounded-lg'>
@@ -465,7 +482,7 @@ const handleClose = () => setOpen(false);
         
             <div className="flex justify-center mt-5">
               <button className='ormal-case  text-[#fff] border border-[#079C49] text-[#079C49]  font-bold  text-[18px] px-3 rounded-xl h-10 w-1/3 mr-3' onClick={()=> setOpenDeleteCourse(!openDeleteCourse)}>Cancel</button>
-              <button className='ormal-case  text-[#fff] border border-[#079C49] bg-[#079C49]  font-bold  text-[18px] px-3 rounded-xl h-10 w-1/3' onClick={()=> setOpenDeleteCourse(!openDeleteCourse)}>Confirm</button>
+              <button className='ormal-case  text-[#fff] border border-[#079C49] bg-[#079C49]  font-bold  text-[18px] px-3 rounded-xl h-10 w-1/3' onClick={()=> handleDeleteCourse()}>Confirm</button>
             </div>
         </Box>
     </Modal>

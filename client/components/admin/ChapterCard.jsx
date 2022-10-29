@@ -73,7 +73,7 @@ function ChapterCard(props) {
             <div className="my-5">
               {props.lessons.length !== 0?
               props.lessons.map((lesson,index) =>
-                <LessonCard name={lesson.name}  key={index} index={index+1}  deleteLesson={props.deleteLesson}/>
+                <LessonCard name={lesson.name}  key={index} index={index+1}  deleteLesson={()=>props.deleteLesson(lesson._id)}/>
         
               ): <h2 className='text-center'>No lessons</h2>}
    
