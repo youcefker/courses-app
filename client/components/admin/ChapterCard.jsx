@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import AddIcon from '@mui/icons-material/Add';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
@@ -28,15 +28,26 @@ const icon = (
 
 function ChapterCard(props) {
     const [checked, setChecked] = React.useState(false);
-
+    const [lessons, setLessons] = React.useState([{chapter_id: "635c4c64ece772b6422f4f09",
+    description: "hellooooo",
+    file_type: "FILE",
+    name: "algorithms 1",
+    filename: "1666994009592lesson_file.mp4"
+    }]);
     const handleChange = () => {
       setChecked((prev) => !prev);
     };
+
+    useEffect(() => {
+
+      setLessons(props.lessons)
+    }, [])
+    
   
   return (
     <div className='bg-[#F5F5F5] py-4 px-5 rounded-xl my-3'>
         <div className="flex justify-between items-center ">
-           <h3 className='text-lg text-[#079C49] font-bold'>trading chapter {props.id}</h3>
+           <h3 className='text-lg text-[#079C49] font-bold'>{props.name}</h3>
            <div className='flex items-center'>
               <div className='bg-white rounded-full mr-6 hover:bg-[#079C49] cursor-pointer' style={{width : "fit-content"}} onClick={props.addLesson}>
                 <AddIcon className='text-[#079C49] hover:text-[#fff]'/>
@@ -60,9 +71,13 @@ function ChapterCard(props) {
         <div>
           <Collapse in={checked}>
             <div className="my-5">
-              <LessonCard  key={1}  deleteLesson={props.deleteLesson}/>
-              <LessonCard key={2}  deleteLesson={props.deleteLesson}/>
-              <LessonCard key={3} deleteLesson={props.deleteLesson}/>
+              {props.lessons.length !== 0?
+              props.lessons.map((lesson,index) =>
+                <LessonCard name={lesson.name}  key={index} index={index+1}  deleteLesson={props.deleteLesson}/>
+        
+              ): <h2 className='text-center'>No lessons</h2>}
+   
+            
             </div>
             
           </Collapse>

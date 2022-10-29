@@ -77,7 +77,13 @@ function Courses() {
   const [openDelete, setOpenDelete] = React.useState(false);
   const [lessonTodelete, setLessonTodelete] = useState(null)
   const [openAddCourse, setOpenAddCourse] = useState(false)
- 
+
+  const [courseName, setCourseName] = useState('')
+  const [courseDescrip, setCourseDescrip] = useState('')
+  const [courseTeacher, setCourseTeacher] = useState('')
+  const [file, setFile] = useState(null)
+  const [openUpdateCourse, setOpenUpdateCourse] = useState(false)
+ const [openDeleteCourse, setOpenDeleteCourse] = useState(false)
   const handleOpenAcc = (value) => {
     setOpenAcc(openAcc === value ? 0 : value);
   };
@@ -87,9 +93,6 @@ const handleOpenDelete = () => setOpenDelete(true);
 const handleCloseDelete = () => setOpenDelete(false);
 const handleClose = () => setOpen(false);
 
-useEffect(  ()  => {
-  
-}, [])
 
 
 
@@ -174,7 +177,12 @@ useEffect(  ()  => {
 
   
   const fileInput = useRef(null);
-  const forceUpdate = useForceUpdate();
+
+  const handleFileUpload = (e) =>{
+    setFile(e.target.files[0])
+    useForceUpdate = () => useState()[1];
+  }
+
 
 
   const deleteLesson = async (lesson_id) => {
@@ -189,7 +197,7 @@ useEffect(  ()  => {
   }
 
 
-
+  const forceUpdate = useForceUpdate();
 
   function fileNames() {
     const { current } = fileInput;
@@ -204,6 +212,51 @@ useEffect(  ()  => {
     return null;
   }
 
+  const valideCourseInfos = courseName !== "" && courseDescrip !== "" && courseTeacher !== "" && file !== null 
+
+  const handleCreateCourse = ()=>{
+    
+      var bodyFormData = new FormData();
+      bodyFormData.append("name", courseName)
+      bodyFormData.append("description", courseDescrip)
+      bodyFormData.append("teacher_name", courseTeacher)
+      bodyFormData.append("course_file", file)
+
+    
+      console.log(bodyFormData);
+        axios.post('/course',bodyFormData, {headers: {
+            "Content-Type": "multipart/form-data" 
+          }})
+        .then((res) => {
+            console.log(res.data)
+           toast.success(res.data.message)
+           setOpenAddCourse(false)
+         
+            router.push({
+              pathname :"/courses/detail/"+res.data.data._id
+
+           })
+            
+           
+        }).catch((error) => {
+            console.log(error)
+            toast.error(error.response.data.message)
+        });
+   
+    
+  }
+  const refresh = ()=>{
+    fetchCourses()
+  }
+
+  const updateMsg = (msg)=>{
+    toast.success(msg)
+  }
+
+
+
+
+  
   return (
     <>
     <Sidebar active="courses" />
@@ -253,7 +306,7 @@ useEffect(  ()  => {
                       </div>
                   
                       <div  className=" py-2 grid grid-cols-4 gap-6 gap-y-10">
-                      {courses.map((course, index) =><CourseCard id={course._id} fetchLessons={() => fetchCourseLessons(course._id)} name={course.name} description={course.description} nbrLessons={course.lessons?.length} />)}
+                      {courses.map((course, index) =><CourseCard deleteCourse={()=>setOpenDeleteCourse(true)} updateCourse={()=>setOpenUpdateCourse(true)} updateToast={(msg)=>updateMsg(msg)} refresh={()=>refresh()} isActive={course.isActive} id={course._id} fetchLessons={() => fetchCourseLessons(course._id)} name={course.name} description={course.description} teacherName={course.teacher_name} nbrLessons={course.lessons?.length}  />)}
 
                       {/* <Accordion key={course._id} fetchLessons={() => fetchCourseLessons(course._id)} title={`Course ${index + 1} : ${course.name}`} 
                       content={coursesLessons[course._id] ?  coursesLessons[course._id].map((lesson, lessonIndex) =><div key={lesson._id} className='text-[18px] font-[600] text-[#1F1F1F]  ml-5 mb-2 flex items-center justify-between hover:bg-[#eee] p-2 rounded-lg'>
@@ -319,15 +372,62 @@ useEffect(  ()  => {
     >
        <Box sx={style}>
              <h4 className='text-[18px] font-[600] text-[#1F1F1F] text-center'>Add Course</h4>
-             <div  className='mt-[20px]'>
+             <div  className='mt-4'>
+                <input type="text" value={courseName} onChange={(e)=>setCourseName(e.target.value)} className='w-full border border-2 border-[#079C49]   px-2 py-3 rounded-xl mt-2 focus:outline-none h-[40px]' placeholder='Course Name' />
+            </div>
+            <div className='mt-3 mb-2'>
+               <textarea value={courseDescrip} onChange={(e)=>setCourseDescrip(e.target.value)}  type="text" className='w-full border border-2 border-[#079C49]  px-3 py-3 rounded-xl mt-2 focus:outline-none h-[10vh]' placeholder="Course description..."/>
+            </div>
+            <div>
+                <input value={courseTeacher} onChange={(e)=>setCourseTeacher(e.target.value)} type="text" className='w-full border border-2 border-[#079C49]   px-2 py-3 rounded-xl mt-2 focus:outline-none h-[40px]' placeholder='Teacher Name' />
+            </div>
+
+            <div className='mt-[40px]'>
+
+            <input
+              id="file"
+              type="file"
+              ref={fileInput}
+              // The onChange should trigger updates whenever
+              // the value changes?
+              // Try to select a file, then try selecting another one.
+              onChange={(e)=>handleFileUpload(e)}
+              multiple
+            />
+                <label htmlFor="file" className='flex items-center'>
+                  <span tabIndex="0" role="button" aria-controls="filename" className='bg-[#079C49] rounded-md flex items-center justify-center w-10  h-10'>
+                    <AddIcon style={{color: "#fff"}}/>
+                  </span>
+                  <span className='text-xs nowrap border-2 border-[#079C49] rounded-lg ml-1 h-10 flex items-center p-2 w-full'>{fileNames() ? fileNames(): "No file attached"}</span>
+                </label>
+           
+            </div>
+            <div className="flex justify-end mt-6">
+              <button className='ormal-case  text-[#fff] border border-[#079C49] text-[#079C49]  font-bold  text-[18px] px-3 rounded-xl h-10 w-1/5 mr-2'  onClick={()=> setOpenAddCourse(false)}>Cancel</button>
+              <button disabled={!valideCourseInfos} className='ormal-case  text-[#fff] border border-[#079C49] bg-[#079C49]  font-bold  text-[18px] px-3 rounded-xl h-10 w-1/5' onClick={()=>handleCreateCourse()}>Save</button>
+            </div>
+        </Box>
+    </Modal>
+
+    <Modal
+      open={openUpdateCourse}
+      onClose={handleClose}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+    >
+       <Box sx={style}>
+             <h4 className='text-[18px] font-[600] text-[#1F1F1F] text-center'>Update course</h4>
+             <div  className='mt-4'>
                 <input type="text" className='w-full border border-2 border-[#079C49]   px-2 py-3 rounded-xl mt-2 focus:outline-none h-[40px]' placeholder='Course Name' />
             </div>
-            <div className='mt-4'>
+            <div className='mt-3 mb-2'>
                <textarea  type="text" className='w-full border border-2 border-[#079C49]  px-3 py-3 rounded-xl mt-2 focus:outline-none h-[10vh]' placeholder="Course description..."/>
             </div>
+            <div>
+                <input type="text" className='w-full border border-2 border-[#079C49]   px-2 py-3 rounded-xl mt-2 focus:outline-none h-[40px]' placeholder='Teacher Name' />
+            </div>
 
-
-            <div className='mt-5'>
+            <div className='mt-[40px]'>
 
             <input
               id="file"
@@ -348,12 +448,27 @@ useEffect(  ()  => {
            
             </div>
             <div className="flex justify-end mt-6">
-              <button className='ormal-case  text-[#fff] border border-[#079C49] text-[#079C49]  font-bold  text-[18px] px-3 rounded-xl h-10 w-1/5 mr-2'  onClick={()=> setOpenAddCourse(!openAddCourse)}>Cancel</button>
-              <button className='ormal-case  text-[#fff] border border-[#079C49] bg-[#079C49]  font-bold  text-[18px] px-3 rounded-xl h-10 w-1/5' onClick={()=> setOpenAddCourse(!openAddCourse)}>Save</button>
+              <button className='ormal-case  text-[#fff] border border-[#079C49] text-[#079C49]  font-bold  text-[18px] px-3 rounded-xl h-10 w-1/3 mr-2'  onClick={()=> setOpenUpdateCourse(false)}>Cancel</button>
+              <button className='ormal-case  text-[#fff] border border-[#079C49] bg-[#079C49]  font-bold  text-[18px] px-3 rounded-xl h-10 w-1/3' onClick={()=> setOpenUpdateCourse(false)}>Save</button>
             </div>
         </Box>
     </Modal>
                   
+    <Modal
+      open={openDeleteCourse}
+      onClose={handleClose}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+    >
+       <Box sx={style}>
+             <h4 className='text-[18px] font-[600] text-[#1F1F1F] text-center'>Do you want to delete this Course !</h4>
+        
+            <div className="flex justify-center mt-5">
+              <button className='ormal-case  text-[#fff] border border-[#079C49] text-[#079C49]  font-bold  text-[18px] px-3 rounded-xl h-10 w-1/3 mr-3' onClick={()=> setOpenDeleteCourse(!openDeleteCourse)}>Cancel</button>
+              <button className='ormal-case  text-[#fff] border border-[#079C49] bg-[#079C49]  font-bold  text-[18px] px-3 rounded-xl h-10 w-1/3' onClick={()=> setOpenDeleteCourse(!openDeleteCourse)}>Confirm</button>
+            </div>
+        </Box>
+    </Modal>
     </>
   )
 }

@@ -31,8 +31,8 @@ app.use('/api/v1/student', studentRoutes)
 app.use('/api/v1/chapter', chapterRoutes)
 
 //----- env -----
-const MONGO_URL = process.env.MONGO_URL
-//MONGO_URL = "mongodb://localhost:27017/courses"
+//const MONGO_URL = process.env.MONGO_URL
+MONGO_URL = "mongodb://localhost:27017/courses"
 mongoose.connect(MONGO_URL)
   .then(result => {
     // set up connection to db for file storage
@@ -97,12 +97,12 @@ mongoose.connect(MONGO_URL)
         password: "$2a$10$q9fLVhmOEBOWHKizLnYbSOBp6.14P.oLrWbIDsko1rrcgQXcdFY5u",
         role: "admin"
       }
-      /*createAccount(admin, (err, account) => {
-      if (err) {
-      console.log(err)
-      }
-      console.log("admin created successfully")
-      })*/
+      // createAccount(admin, (err, account) => {
+      //   if (err) {
+      //     console.log(err)
+      //   }
+      //   console.log("admin created successfully")
+      // })
       console.log(`server is listening at port ${port}`)
     })
   })
