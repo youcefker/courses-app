@@ -1,4 +1,4 @@
-const { createCourse, getCourse, getAllCourses, updateCourse, deleteCourse, addLessonToCourse, getAllLessons, getCourseStudents, getCoursesNames, deleteStudentFromCourse, filterCourses } = require('../Controllers/CourseControllers')
+const { createCourse, getCourse, getAllCourses, updateCourse, deleteCourse, addLessonToCourse, getAllLessons, getCourseStudents, getCoursesNames, deleteStudentFromCourse, filterCourses, deleteChapter } = require('../Controllers/CourseControllers')
 
 const router = require('express').Router()
 
@@ -71,7 +71,6 @@ router.put('/:course_id',  checkAdminToken, upload, param("course_id", "invalid 
     },
 }), updateCourse)
 router.delete('/:course_id', checkAdminToken, param("course_id", "invalid course id.").isMongoId(), deleteCourse)
-router.delete('/:lesson_id', checkAdminToken, param("lesson_id", "invalid lesson id.").isMongoId(), deleteLesson)
 router.get("/students/:name",  checkAdminToken, getCourseStudents)
 router.delete("/:course_id/student/:student_id", checkAdminToken,param("course_id", "invalid course id.").isMongoId(), param("student_id", "invalid student id.").isMongoId(), deleteStudentFromCourse)
 
