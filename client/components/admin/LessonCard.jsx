@@ -7,8 +7,8 @@ function LessonCard(props) {
   return (
     <div className='flex justify-between my-2'>
         <div className="flex">
-            <span className='font-bold'>Lesson 01 : </span>
-            <span> Interactivity with javascript</span>
+            <span className='font-bold'>Lesson {props.index} : </span>
+            <span>{props.name}</span>
         </div>
         <div>
               <DeleteIcon  className='cursor-pointer w-5' onClick={props.deleteLesson}/>

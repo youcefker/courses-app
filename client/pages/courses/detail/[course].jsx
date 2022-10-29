@@ -1,6 +1,6 @@
 import { Box, MenuItem, Modal } from '@mui/material'
 import React, { useEffect, useRef, useState } from 'react'
-import { Toaster } from 'react-hot-toast'
+import toast, { Toaster } from 'react-hot-toast'
 import ChapterCard from '../../../components/admin/ChapterCard'
 import IndexPage from '../../../components/dashboard/indexPage'
 import Sidebar from '../../../components/dashboard/sidebar'
@@ -9,6 +9,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useRouter } from 'next/router'
 import axios from '../../../axiosInstance'
+
 
 
 
@@ -45,29 +46,7 @@ const reorder = (list, startIndex, endIndex) => {
 };
 
 
-function Quote({ quote, index }) {
-  return (
-    <Draggable draggableId={quote.id} index={index}>
-      {provided => (
-        <div
-          ref={provided.innerRef}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-          className="my-4"
-          key={Math.random()}
-        >
-         <span>{quote.content} <span className='hidden'>{Math.random()} </span></span>
-        </div>
-      )}
-    </Draggable>
-  );
-}
 
-const QuoteList = React.memo(function QuoteList({ quotes }) {
-  return quotes.map((quote, index) => (
-    <Quote quote={quote} index={index} key={quote.id} />
-  ));
-});
 
 // const chapters = [
 //   <ChapterCard key={1} addLesson={()=>setOpenAddLesson(true)} deleteChapter={()=> setOpenDeleteChapter(true)}  deleteLesson={()=> setOpenDeleteLesson(true)}/>,
@@ -98,36 +77,91 @@ function CourseDetail(props) {
 
   const [courseId, setCourseId] = useState(null)
   const [courseData, setCourseData] = useState(null)
-
+  const [chapterId, setChapterId] = useState(null)
   
-
-  useEffect(() => {
-   
-   
-   
-    axios.get("/course/"+router.query.course)
+  const fetchCourseData = ()=>{
+    axios.get("/lesson/course/"+router.query.course)
     .then((res)=>{
-      console.log(res);
+      console.log(res.data.data.chapters);
       setCourseData(res.data.data)
     })
     .catch((err)=>{
       console.log(err);
     })
 
+  }
+
+  useEffect(() => {
+   
+
+       
+   fetchCourseData()
+
+
   }, [router.query.course != undefined])
   
 
+  const handleAddLesson = ()=>{
 
-  const initial = Array.from({ length: 5 }, (v, k) => k).map(k => {
-    const custom = {
-      id: `id-${k}`,
-      content: <ChapterCard  key={k} id={k} addLesson={()=>setOpenAddLesson(true)} deleteChapter={()=>setOpenDeleteChapter(true)}  deleteLesson={()=> setOpenDeleteLesson(true)}/>
-    };
+    var bodyFormData = new FormData();
+    bodyFormData.append('lesson_file', file);
+    bodyFormData.append('name', lessonName);
+    bodyFormData.append('description', lessonDescription);
+    
+    axios.post("/lesson/chapter/"+chapterId, bodyFormData, {headers: { "Content-Type": "multipart/form-data" }})
+    .then((res)=>{
+      console.log(res.data);
+      toast.success(res.data.message)
+      setOpenAddLesson(false)
+      fetchCourseData()
+
   
-    return custom;
-  });
+    })
+    .catch((err)=>{
+      console.log(err);
+      toast.error(err.data.message)
+      setOpenAddLesson(false)
+    })
+  }
 
-  const [state, setState] = useState({ quotes: initial });
+  const handleDeleteChapter =()=>{
+    console.log(chapterId);
+  }
+
+
+  // const initial = Array.from( (v, k) => k).map(k => {
+  //   const custom = {
+  //     id: `id-${k}`,
+  //     content: <ChapterCard  key={k} id={k}  addLesson={()=>setOpenAddLesson(true)} deleteChapter={()=>setOpenDeleteChapter(true)}  deleteLesson={()=> setOpenDeleteLesson(true)}/>
+  //   };
+  
+  //   return custom;
+  // });
+
+  function Quote({ quote, index }) {
+    return (
+      <Draggable draggableId={quote._id} index={index}>
+        {provided => (
+          <div
+            ref={provided.innerRef}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+            className="my-4"
+            key={Math.random()}
+          >
+           <ChapterCard name={quote.title} lessons={quote.lessons}  key={Math.random()} id={quote._id}  addLesson={()=> {setOpenAddLesson(true),setChapterId(quote._id)}} deleteChapter={()=>{setOpenDeleteChapter(true),setChapterId(quote._id)}}  deleteLesson={()=> setOpenDeleteLesson(true)}/>
+          </div>
+        )}
+      </Draggable>
+    );
+  }
+  
+  const QuoteList = React.memo(function QuoteList({ quotes }) {
+    return quotes?.map((quote, index) => (
+      <Quote quote={quote} index={index} key={quote.id} />
+    ));
+  });
+  const [state, setState] = useState({ quotes: [] });
 
   function onDragEnd(result) {
     if (!result.destination) {
@@ -164,6 +198,11 @@ function CourseDetail(props) {
   const [openUpdateCourse, setOpenUpdateCourse] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false)
 
+  const [chapterName, setChapterName] = useState("")
+  const [lessonName, setLessonName] = useState("")
+  const [lessonDescription, setLessonDescription] = useState("")
+  const [file, setFile] = useState(null)
+
 
 
 
@@ -181,7 +220,6 @@ function CourseDetail(props) {
 
 
   const fileInput = useRef(null);
-  const forceUpdate = useForceUpdate();
 
 
   function fileNames() {
@@ -202,6 +240,30 @@ function CourseDetail(props) {
   const handleChange = (event) => {
     setLessonType(event.target.value);
   };
+
+
+  const handleAddChapter = () =>{
+    axios.post("/chapter/course/"+router.query.course, {title : chapterName})
+    .then((res)=>{
+      console.log(res.data.message);
+      toast.success(res.data.message)
+       
+      setOpen(false)
+
+      fetchCourseData()
+    })
+    .catch((err)=>{
+      console.log(err);
+    })
+
+  }
+
+  const handleFileUpload = (e) =>{
+    setFile(e.target.files[0])
+    useForceUpdate = () => useState()[1];
+  }
+
+
   return (
     <>
     <Sidebar active="courses" />
@@ -236,7 +298,7 @@ function CourseDetail(props) {
       <Droppable droppableId="list">
         {provided => (
           <div ref={provided.innerRef} {...provided.droppableProps}>
-            <QuoteList quotes={state.quotes} />
+            <QuoteList quotes={courseData?.chapters} />
             {provided.placeholder}
           </div>
         )}
@@ -257,10 +319,10 @@ function CourseDetail(props) {
        <Box sx={style}>
              <h4 className='text-[18px] font-[600] text-[#1F1F1F] text-center'>Add a chapter to this course</h4>
              <div  className='mt-[20px]'>
-                <input type="text" className='w-full border border-2 border-[#079C49]   px-2 py-3 rounded-xl mt-2 focus:outline-none h-[40px]' placeholder='Chapter Name' />
+                <input type="text" value={chapterName} onChange={(e)=>setChapterName(e.target.value)} className='w-full border border-2 border-[#079C49]   px-2 py-3 rounded-xl mt-2 focus:outline-none h-[40px]' placeholder='Chapter Name' />
             </div>
             <div className="flex justify-end mt-5">
-            <button className='ormal-case  text-[#fff] border border-[#079C49] bg-[#079C49]  font-bold  text-[18px] px-3 rounded-xl h-10' onClick={()=> setOpen(!open)}>Save</button>
+            <button disabled={chapterName == ""} className='ormal-case  text-[#fff] border border-[#079C49] bg-[#079C49]  font-bold  text-[18px] px-3 rounded-xl h-10' onClick={()=> handleAddChapter()}>Save</button>
             </div>
         </Box>
     </Modal>
@@ -274,10 +336,10 @@ function CourseDetail(props) {
        <Box sx={style}>
              <h4 className='text-[18px] font-[600] text-[#1F1F1F] text-center'>Add a lesson to this Chapter</h4>
              <div  className='mt-[20px]'>
-                <input type="text" className='w-full border border-2 border-[#079C49]   px-2 py-3 rounded-xl mt-2 focus:outline-none h-[40px]' placeholder='Lesson Name' />
+                <input type="text" value={lessonName} onChange={(e)=>setLessonName(e.target.value)} className='w-full border border-2 border-[#079C49]   px-2 py-3 rounded-xl mt-2 focus:outline-none h-[40px]' placeholder='Lesson Name' />
             </div>
             <div className='mt-4'>
-               <textarea  type="text" className='w-full border border-2 border-[#079C49]  px-3 py-3 rounded-xl mt-2 focus:outline-none h-[10vh]' placeholder="Lesson description..."/>
+               <textarea value={lessonDescription} onChange={(e)=>setLessonDescription(e.target.value)}  type="text" className='w-full border border-2 border-[#079C49]  px-3 py-3 rounded-xl mt-2 focus:outline-none h-[10vh]' placeholder="Lesson description..."/>
             </div>
 
 
@@ -297,10 +359,11 @@ function CourseDetail(props) {
               id="file"
               type="file"
               ref={fileInput}
+              onChange={(e)=>handleFileUpload(e)}
               // The onChange should trigger updates whenever
               // the value changes?
               // Try to select a file, then try selecting another one.
-              onChange={forceUpdate}
+             
               multiple
             />
                 <label htmlFor="file" className='flex items-center'>
@@ -313,7 +376,7 @@ function CourseDetail(props) {
             </div>
             <div className="flex justify-end mt-6">
               <button className='ormal-case  text-[#fff] border border-[#079C49] text-[#079C49]  font-bold  text-[18px] px-3 rounded-xl h-10 w-1/3 mr-2'  onClick={()=> setOpenAddLesson(!openAddLesson)}>Cancel</button>
-              <button className='ormal-case  text-[#fff] border border-[#079C49] bg-[#079C49]  font-bold  text-[18px] px-3 rounded-xl h-10 w-1/3' onClick={()=> setOpenAddLesson(!openAddLesson)}>Save</button>
+              <button className='ormal-case  text-[#fff] border border-[#079C49] bg-[#079C49]  font-bold  text-[18px] px-3 rounded-xl h-10 w-1/3' onClick={()=> handleAddLesson()}>Save</button>
             </div>
         </Box>
     </Modal>
@@ -401,7 +464,7 @@ function CourseDetail(props) {
               // The onChange should trigger updates whenever
               // the value changes?
               // Try to select a file, then try selecting another one.
-              onChange={forceUpdate}
+              onChange={(e)=>handleFileUpload(e)}
               multiple
             />
                 <label htmlFor="file" className='flex items-center'>
