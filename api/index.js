@@ -31,8 +31,8 @@ app.use('/api/v1/student', studentRoutes)
 app.use('/api/v1/chapter', chapterRoutes)
 
 //----- env -----
-//const MONGO_URL = process.env.MONGO_URL
-MONGO_URL = "mongodb://localhost:27017/courses"
+const MONGO_URL = "mongodb+srv://youcef:youcef@cluster0.oscbhiw.mongodb.net/?retryWrites=true&w=majority"
+//MONGO_URL = "mongodb://localhost:27017/courses"
 mongoose.connect(MONGO_URL)
   .then(result => {
     // set up connection to db for file storage
