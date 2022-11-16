@@ -88,6 +88,22 @@ const Sidebar = ({ active }) => {
           <MenuBookIcon className="mr-2 text-[22px]" /> Courses
         
         </li> : null}
+
+        {student ?<li
+          onClick={() => {
+            setActiveItem("courses");
+            router.push("/student/courses/list");
+          }}
+          className={
+            activeItem === "courses"
+              ? "my-3 hover:text-[#079C49] font-semibold flex items-center pl-10  cursor-pointer text-[14px] text-[#079C49] relative"
+              : "my-3 hover:text-[#079C49] font-semibold flex items-center pl-10  cursor-pointer text-[14px] text-[#9DA6BA] relative"
+          }
+        >
+          {" "}
+          <MenuBookIcon className="mr-2 text-[22px]" /> Courses
+        
+        </li> : null}
       </ul>
 
      

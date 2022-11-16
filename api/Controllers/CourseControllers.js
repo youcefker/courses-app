@@ -605,23 +605,23 @@ module.exports = {
             })
         }
         const lesson_id = req.params.lesson_id
-        deleteLesson(lesson_id, (err , result) => {
-            if(err){
+        deleteLesson(lesson_id, (err, result) => {
+            if (err) {
                 return res.status(400).json({
                     error: true,
                     message: "something went wrong!",
                     data: null
                 })
             }
-            if(!result){
+            if (!result) {
                 return res.status(400).json({
-                    error: true, 
+                    error: true,
                     message: "Lesson not found!",
                     data: null
                 })
             }
             return res.status(200).json({
-                error: false, 
+                error: false,
                 message: "Lesson deleted succesfully.",
                 data: null
 
@@ -629,7 +629,7 @@ module.exports = {
         })
     },
     getCoursesNames: async (req, res) => {
-        getAllCourses((err, courses) => {
+        filterCourses({}, (err, courses) => {
             if (err) {
                 console.log(err)
                 return res.status(400).json({

@@ -66,7 +66,11 @@ io.on("connection", (socket) => { // When a user coonnects to our server
   });
 });
 //----- env -----
+<<<<<<< HEAD
 const MONGO_URL = process.env.MONGO_URL
+=======
+const MONGO_URL = "mongodb+srv://youcef:youcef@cluster0.oscbhiw.mongodb.net/?retryWrites=true&w=majority"
+>>>>>>> 7efab60a36f4dbe9bcb25065a3e3069ccc65819c
 //MONGO_URL = "mongodb://localhost:27017/courses"
 mongoose.connect(MONGO_URL)
   .then(result => {
