@@ -1,4 +1,4 @@
-const { createCourse, getCourse, getAllCourses, updateCourse, deleteCourse, addLessonToCourse, getAllLessons, getCourseStudents, getCoursesNames, deleteStudentFromCourse, filterCourses, deleteChapter } = require('../Controllers/CourseControllers')
+const { createCourse, getCourse, getAllCourses, updateCourse, deleteCourse, addLessonToCourse, getAllLessons, getCourseStudents, getCoursesNames, deleteStudentFromCourse, filterCourses, deleteChapter, filterCoursesForStudent } = require('../Controllers/CourseControllers')
 
 const router = require('express').Router()
 
@@ -40,6 +40,7 @@ router.post('/', checkAdminToken, upload, checkSchema({
 }), createCourse)
 router.get('/', checkAdminToken, filterCourses)
 router.get('/names', getCoursesNames)
+router.get("/student", checkStudentToken, filterCoursesForStudent)
 router.get('/:course_id', checkStudentToken, getCourse)
 router.put('/:course_id', checkAdminToken, upload, checkSchema({
     name: {
