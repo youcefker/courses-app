@@ -103,6 +103,15 @@ module.exports = {
                 const notEnrolledCourses = courses.filter(course => {
                     return !student.courses.includes(course._id)
                 })
+                enrolledCourses.map(course => {
+                    course.isActive = undefined
+                    course.students = undefined
+                })
+                notEnrolledCourses.map(course => {
+                    course.isActive = undefined
+                    course.students = undefined
+                })
+
                 return res.status(200).json({
                     error: false,
                     message: "Courses fetched succesfully",
