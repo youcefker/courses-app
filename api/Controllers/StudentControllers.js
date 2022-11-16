@@ -1,6 +1,6 @@
 const { validationResult } = require("express-validator")
 const { getCourse } = require("../Services/CourseServices")
-const { deleteEnrollRequest } = require("../Services/EnrollRequestService")
+const { deleteEnrollRequest, createEnrollRequest } = require("../Services/EnrollRequestService")
 const { getStudent, getStudents, deleteStudent, updateStudent } = require("../Services/StudentService")
 
 module.exports = {
@@ -47,61 +47,70 @@ module.exports = {
                         data: null
                     })
                 }
-                const existedStudent = course.students.filter(courseStudentId => {
-                    return student.id === courseStudentId.toString()
-                })
-                if(existedStudent.length > 0) {
-                    return res.json({
-                        error: true,
-                        status: 401, 
-                        message: "This course is already enrolled by this student!",
-                        data: null
-                    })
-                }
-                course.students = [...course.students, student.id]
-                student.courses = [ ...student.courses, course.id]
-                const lessons_progress = course.lessons.map(lesson => {
-                    return {
-                        lesson_id: lesson, 
-                        completed: false
-                    }
-                })
-                const courseProgress = {
-                    course_id: course.id,
-                    lessons_progress
-                }
-                console.log("hello-----")
-                student.progress = [ ...student.progress,  courseProgress]
-                console.log(student.progress)
                 try {
-                    await course.save()
-                    await student.save()
-                    deleteEnrollRequest(req.body.request_id, (err, result) => {
-                        if(err) {
-                            return res.json({
-                                error: true,
-                                status: 401, 
-                                message: "something went wrong!",
-                                data: null
-                            })
+                    const courseWithChapters = await course.populate({
+                        path: "chapters",
+                        populate: {
+                            path: "lessons"
                         }
-                        if(result.deletedCount === 0){
-                            return res.json({
-                                error: true,
-                                status: 401, 
-                                message: "request not found!",
-                                data: null
-                            })
-                        }
+                    })
+                    if(course.students.includes(student._id)) {
                         return res.json({
-                            error: false,
-                            status: 200, 
-                            message: "course added succesfully!",
-                            data: student
+                            error: true,
+                            status: 401, 
+                            message: "This course is already enrolled by this student!",
+                            data: null
+                        })
+                    }
+                    course.students = [...course.students, student.id]
+                    student.courses = [ ...student.courses, course.id]
+                    let chapters_progress = {}
+                    courseWithChapters.chapters.map(chapter => {
+                        chapters_progress[chapter._id] = {
+                            completed: false
+                        }
+                        chapter.lessons.map(lesson => {
+                            chapters_progress[chapter._id][lesson._id] = {
+                                completed: false
+                            }
                         })
                     })
-                } catch(err){
-                    console.log(err)
+                    console.log("progress", chapters_progress)
+                    student.progress[course.id] = {...chapters_progress}
+                    await course.save()
+                    await student.markModified("progress")
+                    await student.save()
+                    deleteEnrollRequest(req.body.request_id, (err, result) => {
+                            if(err) {
+                                return res.json({
+                                    error: true,
+                                    status: 401, 
+                                    message: "something went wrong!",
+                                    data: null
+                                })
+                            }
+                            if(!result){
+                                return res.json({
+                                    error: true,
+                                    status: 401, 
+                                    message: "request not found!",
+                                    data: null
+                                })
+                            }
+                            return res.json({
+                                error: false,
+                                status: 200, 
+                                message: "course added succesfully!",
+                                data: student
+                            })
+                        })
+                } catch (error) {
+                    console.log(error)
+                    return res.status(400).json({
+                        error: true,
+                        message: "something went wrong!",
+                        data: null
+                    })
                 }
             })
         })
@@ -289,6 +298,90 @@ module.exports = {
                 })
             })
 
+        })
+    },
+    createEnrollRequest : (req, res) => {
+        const result = validationResult(req)
+        if(!result.isEmpty()){
+            return res.status(400).json({
+                error: true, 
+                message: result.errors[0].msg,
+                data: null
+            }) 
+        }
+        const { course_id, student_id } = req.body
+        const email = req.decoded.email
+        getStudent(student_id, (err, student) => {
+            if(err) {
+                return res.status(400).json({
+                    error: true,
+                    message: "something went wrong!",
+                    data: null
+                })
+            }
+            if(!student) {
+                return res.status(400).json({
+                    error: true,
+                    message: "student not found!",
+                    data: null
+                })
+            }
+            getCourse(course_id, async (err, course) => {
+                if(err) {
+                    return res.status(400).json({
+                        error: true,
+                        message: "something went wrong!",
+                        data: null
+                    })
+                }
+                if(!course) {
+                    return res.status(400).json({
+                        error: true,
+                        message: "course not found!",
+                        data: null
+                    })
+                }
+                const existedCourse = student.courses.filter(courseId => courseId.toString() === course.id) 
+                if(existedCourse.length > 0){
+                    return res.status(400).json({
+                        error: true,
+                        message: "course already enrolled by student!",
+                        data: null
+                    })
+                }
+                try {
+                    const data = {
+                        course_id, 
+                        student_id,
+                        course_name: course.name,
+                        email,
+                        student_name: student.name
+                    }
+                    createEnrollRequest(data, (err, enrollRequest) => {
+                        if(err) {
+                            return res.status(400).json({
+                                error: true,
+                                message: "something went wrong!",
+                                data: null
+                            })
+                        }
+                        if(!enrollRequest) {
+                            return res.status(400).json({
+                                error: true,
+                                message: "enroll request not found!",
+                                data: null
+                            })
+                        }
+                        return res.status(201).json({
+                            error: true,
+                            message: "enroll request created succesfully",
+                            data: null
+                        })
+                    })
+                } catch(err){
+                    console.log(err)
+                }
+            })
         })
     }
 }

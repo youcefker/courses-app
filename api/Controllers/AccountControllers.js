@@ -84,10 +84,21 @@ module.exports = {
                         const studentData = {
                             name: req.body.name,
                             courses: [],
-                            progress: [],
                         }
-                        await createStudent(studentData, async(err, student) => {
+                        createStudent(studentData, async(err, student) => {
                             if(err){
+                                return res.status(400).json({
+                                    error: true,
+                                    message: "something went wrong!",
+                                    data: null
+                                })
+                            }
+                            try {
+                                student.progress = {}
+                                await student.markModified('progress')
+                                await student.save()
+                            } catch(err) {
+                                console.log(err)
                                 return res.status(400).json({
                                     error: true,
                                     message: "something went wrong!",

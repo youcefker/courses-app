@@ -28,7 +28,7 @@ module.exports = {
                     data: null
                 })
             }
-            return res.status(200).json({
+            return res.status(201).json({
                 error: false,
                 message: "Course created succesfully",
                 data: course
@@ -540,7 +540,9 @@ module.exports = {
         })
     },
     completeLesson: async (req, res) => {
-        getStudent(req.body.student_id, async (err, student) => {
+        const { course_id, chapter_id, lesson_id } = req.body
+        const student_id = req.decoded.student_id
+        getStudent(student_id, async (err, student) => {
             if (err) {
                 return res.status(400).json({
                     error: true,
@@ -555,21 +557,21 @@ module.exports = {
                     data: null
                 })
             }
-            let course_progress_index, lesson_progress_index
-            const course_progress = student.progress.map((course, index) => {
-                if (course.course_id.toString() === req.body.course_id) {
-                    course_progress_index = index
-                    return course
+            if(!student.progress[course_id][chapter_id][lesson_id].completed){
+                // set lesson progress to completed
+            student.progress[course_id][chapter_id][lesson_id].completed = true
+            // check if chapter progress is completed
+            let chapter_completed = true
+            let lessonsIds = Object.keys(student.progress[course_id][chapter_id])
+            const index = lessonsIds.indexOf("completed");
+
+            lessonsIds = lessonsIds.splice(index, 1);     
+            lessonsIds.map(lessonId => {
+                if(!student.progress[course_id][chapter_id][lesson_id].completed){
+                    chapter_completed = false
                 }
-            })[0]
-            const lesson_progress = course_progress.lessons_progress.map((lesson, index) => {
-                if (lesson.lesson_id.toString() === req.body.lesson_id) {
-                    lesson_progress_index = index
-                    return lesson
-                }
-            })[0]
-            student.progress[course_progress_index].lessons_progress[lesson_progress_index].completed = true
-            console.log(student.progress[course_progress_index].lessons_progress[lesson_progress_index])
+            })
+            student.progress[course_id][chapter_id].completed = chapter_completed
             try {
                 await student.save()
                 return res.status(200).json({
@@ -582,6 +584,13 @@ module.exports = {
                     error: true,
                     message: "something went wrong!",
                     data: null
+                })
+            }
+            } else {
+                return res.status(200).json({
+                    error: false,
+                    message: "Lesson already completed",
+                    data: student
                 })
             }
         })

@@ -47,10 +47,10 @@ module.exports = {
                     data: null
                 });
             }
+            console.log(req.decoded)
+            req.decoded = {...decoded, email: account.email};
+            next();
         })
-        console.log(req.decoded)
-          req.decoded = decoded;
-          next();
         }
       });
     } else {
