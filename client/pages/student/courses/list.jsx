@@ -7,6 +7,7 @@ import Image from 'next/image';
 import CourseCardStudent from '../../../components/student/courseCardStudent';
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
+import { useRouter } from 'next/router';
 
 
 const responsive = {
@@ -30,6 +31,8 @@ const responsive = {
     }
   };
 function List() {
+
+  const router = useRouter()
   return (
     <div>
         <Sidebar active="courses" />
