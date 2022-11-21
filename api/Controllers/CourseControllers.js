@@ -184,8 +184,42 @@ module.exports = {
             })
         })
     },
-    getCourseStudents: async (req, res) => {
+    getCourseStudentsByName: async (req, res) => {
         getCourseByName(req.params.name, async (err, course) => {
+            if (err) {
+                return res.status(400).json({
+                    error: true,
+                    message: "something went wrong!",
+                    data: null
+                })
+            }
+            if (!course) {
+                return res.status(400).json({
+                    error: true,
+                    message: "Course not found!",
+                    data: null
+                })
+            }
+            try {
+                const courseWithStudents = await course.populate("students")
+                return res.status(200).json({
+                    error: false,
+                    message: "Course students fetched succesfully",
+                    data: courseWithStudents.students
+                })
+            } catch (error) {
+                console.log(err)
+                return res.status(400).json({
+                    error: true,
+                    message: "something went wrong!",
+                    data: null
+                })
+            }
+        })
+    },
+    getCourseStudents: async (req, res) => {
+        const course_id = req.params.course_id
+        getCourse(course_id, async (err, course) => {
             if (err) {
                 return res.status(400).json({
                     error: true,
