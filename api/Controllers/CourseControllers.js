@@ -2,6 +2,7 @@ const { createCourse, createLesson, getCourse, getAllCourses, updateCourse, dele
 const { getStudent } = require("../Services/StudentService")
 const fs = require("fs")
 const { validationResult, body } = require("express-validator")
+const { getEnrollRequests } = require("../Services/EnrollRequestService")
 
 module.exports = {
     createCourse: async (req, res) => {
@@ -111,14 +112,42 @@ module.exports = {
                     course.isActive = undefined
                     course.students = undefined
                 })
-
-                return res.status(200).json({
-                    error: false,
-                    message: "Courses fetched succesfully",
-                    data: {
-                        enrolledCourses,
-                        notEnrolledCourses
+                let filters = {
+                    student_id: {
+                        $eq: student_id
                     }
+                }
+                getEnrollRequests(filters, (err, enrollRequests) => {
+                    if (err) {
+                        return res.status(400).json({
+                            error: true,
+                            message: "something went wrong!",
+                            data: null
+                        })
+                    }
+                    enrollRequests.map(enrollRequest => {
+                        notEnrolledCourses.map((course, index) => {
+                            if(enrollRequest.course_id.toString() === course._id.toString()){
+                                notEnrolledCourses[index]= {
+                                    ...notEnrolledCourses[index]._doc,
+                                    requested: true
+                                }
+                            } else {
+                                notEnrolledCourses[index]= {
+                                    ...notEnrolledCourses[index]._doc,
+                                    requested: false
+                                }
+                            }
+                        })
+                    })
+                    return res.status(200).json({
+                        error: false,
+                        message: "Courses fetched succesfully",
+                        data: {
+                            enrolledCourses,
+                            notEnrolledCourses
+                        }
+                    })
                 })
             })
         })

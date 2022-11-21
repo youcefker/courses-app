@@ -11,7 +11,7 @@ const meetSchema = new Schema({
     },
     students: [{
         type: Schema.Types.ObjectId,
-        ref: "Students"
+        ref: "Student"
     }],
     course: {
         type: Schema.Types.ObjectId,
