@@ -49,6 +49,8 @@ function ChapterCard(props) {
         <div className="flex justify-between items-center ">
            <h3 className='text-lg text-[#079C49] font-bold'>{props.name}</h3>
            <div className='flex items-center'>
+            {props.student ? null :
+            <>
               <div className='bg-white rounded-full mr-6 hover:bg-[#079C49] cursor-pointer' style={{width : "fit-content"}} onClick={props.addLesson}>
                 <AddIcon className='text-[#079C49] hover:text-[#fff]'/>
               </div>
@@ -56,6 +58,8 @@ function ChapterCard(props) {
               <DeleteIcon className=' cursor-pointer' onClick={props.deleteChapter}/>
             
               </div>
+              </>
+}
              
               <div className='bg-white hover:bg-[#079C49] rounded-full cursor-pointer' style={{width : "fit-content",height : "fit-content"}}>
               {!checked ?<ExpandMoreIcon className='text-[#079C49] hover:text-[#fff]'  onClick={handleChange}/> : <ExpandLessIcon className='text-[#079C49] hover:text-[#fff]'  onClick={handleChange} />}
@@ -71,9 +75,9 @@ function ChapterCard(props) {
         <div>
           <Collapse in={checked}>
             <div className="my-5">
-              {props.lessons.length !== 0?
-              props.lessons.map((lesson,index) =>
-                <LessonCard name={lesson.name}  key={index} index={index+1}  deleteLesson={()=>props.deleteLesson(lesson._id)}/>
+              {props.lessons?.length !== 0?
+              props.lessons?.map((lesson,index) =>
+                <LessonCard lessonId={lesson._id} courseId={props.courseId} student={props.student} name={lesson.name}  key={index} index={index+1}  deleteLesson={()=>props.deleteLesson(lesson._id)}/>
         
               ): <h2 className='text-center'>No lessons</h2>}
    

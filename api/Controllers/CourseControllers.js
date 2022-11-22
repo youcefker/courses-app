@@ -69,6 +69,60 @@ module.exports = {
             })
         })
     },
+    filterCoursesForStudent: (req, res) => {
+        const student_id = req.decoded.student_id
+        getStudent(student_id, async (err, student) => {
+            if (err) {
+                return res.status(400).json({
+                    error: true,
+                    message: "something went wrong!",
+                    data: null
+                })
+            }
+            let filters = {
+                isActive : {
+                    $eq: true
+                }
+            }
+            if (req.query.name) {
+                filters.name = {
+                    $regex: req.query.name
+                }
+            }
+            filterCourses(filters, (err, courses) => {
+                if (err) {
+                    return res.status(400).json({
+                        error: true,
+                        message: "something went wrong!",
+                        data: null
+                    })
+                }
+                const enrolledCourses = courses.filter(course => {
+                    return student.courses.includes(course._id)
+                })
+                const notEnrolledCourses = courses.filter(course => {
+                    return !student.courses.includes(course._id)
+                })
+                enrolledCourses.map(course => {
+                    course.isActive = undefined
+                    course.students = undefined
+                })
+                notEnrolledCourses.map(course => {
+                    course.isActive = undefined
+                    course.students = undefined
+                })
+
+                return res.status(200).json({
+                    error: false,
+                    message: "Courses fetched succesfully",
+                    data: {
+                        enrolledCourses,
+                        notEnrolledCourses
+                    }
+                })
+            })
+        })
+    },
     getCourse: async (req, res) => {
         const result = validationResult(req)
         if (!result.isEmpty()) {
