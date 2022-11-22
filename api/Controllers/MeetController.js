@@ -297,5 +297,25 @@ module.exports = {
                 })
             }
         })
+    },
+    getStudentMeetings: (req, res) => {
+        const student_id = req.decoded.student_id
+        console.log(student_id)
+        filterMeets({}, (err, meetings) => {
+            if (err) {
+                return res.status(400).json({
+                    error: true,
+                    message: "something went wrong!",
+                })
+            }
+            const studentMeetings = meetings.filter(meet => {
+                return meet.students.includes(student_id)
+            })
+            return res.status(200).json({
+                error: false,
+                message: "Student cancelled meet succesfully",
+                meetings: studentMeetings
+            })
+        } ) 
     }
 }

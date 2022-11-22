@@ -11,7 +11,10 @@ module.exports = {
     }, 
     filterMeets: async (filters, callBack) => {
         try {
-            const docs = await Meet.find(filters)
+            const docs = await Meet.find(filters).populate({
+                path: "course",
+                select: "name"
+            })
             return callBack(null, docs)
         } catch(err){
             console.log(err)

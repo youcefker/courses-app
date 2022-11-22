@@ -9,7 +9,7 @@ const { deleteLesson } = require('../Services/CourseServices');
 const { checkSchema, param } = require('express-validator');
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'uploads/')
+        cb(null, 'uploads/courses_images')
     },
     filename: function (req, file, cb) {
         cb(null, Date.now() + file.fieldname + ".png")
@@ -73,7 +73,8 @@ router.put('/:course_id', checkAdminToken, upload, checkSchema({
 }), updateCourse)
 router.delete('/:course_id', checkAdminToken, param("course_id", "invalid course id.").isMongoId(), deleteCourse)
 router.delete('/:lesson_id', checkAdminToken, param("lesson_id", "invalid lesson id.").isMongoId(), deleteLesson)
-router.get("/students/:name", checkAdminToken, getCourseStudents)
+
+router.get("/students/:course_id", checkAdminToken, getCourseStudents)
 router.delete("/:course_id/student/:student_id", checkAdminToken, param("course_id", "invalid course id.").isMongoId(), param("student_id", "invalid student id.").isMongoId(), deleteStudentFromCourse)
 
 module.exports = router

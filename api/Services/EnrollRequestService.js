@@ -10,10 +10,9 @@ module.exports = {
             return callBack(true)
         }
     },
-    getEnrollRequests: async (callBack) => {
+    getEnrollRequests: async (filters, callBack) => {
         try {
-            const doc = await EnrollRequest.find()
-            console.log(doc)
+            const doc = await EnrollRequest.find(filters)
             return callBack(false, doc)
         } catch(err) {
             console.log(err)

@@ -309,7 +309,8 @@ module.exports = {
                 data: null
             }) 
         }
-        const { course_id, student_id } = req.body
+        const student_id = req.decoded.student_id
+        const { course_id } = req.body
         const email = req.decoded.email
         getStudent(student_id, (err, student) => {
             if(err) {
