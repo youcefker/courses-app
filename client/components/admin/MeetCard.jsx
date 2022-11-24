@@ -14,6 +14,8 @@ import toast, { Toaster } from 'react-hot-toast';
 
 const ITEM_HEIGHT = 48;
 
+
+
 function MeetCard(props) {
 
 
@@ -84,7 +86,10 @@ function MeetCard(props) {
     <div className='bg-white rounded-lg overflow-hidden'>
     
       <div className={props.isActive ? "bg-[green] h-2 w-full" : "bg-[red] h-2 w-full"}></div>
-      <div className='px-4 py-5'>
+      <div className='flex justify-end text-[#9DA6BA] text-sm p-2'>
+               <span>{props.timeRemains}</span>
+            </div>
+      <div className='px-4 pb-5'>
         <div className="flex justify-between items-center">
           <h3 className='text-xl mb-3' onClick={()=> router.push(`/courses/detail/${props.id}`)} style={{cursor : "pointer"}}>{props.name}</h3>
           {props.admin &&
@@ -136,17 +141,15 @@ function MeetCard(props) {
             <span>Course : </span>
              <span className='ml-2'>{props.courseName} </span>
            </div>
+           
   
   
-           <div className="flex  text-[#9DA6BA] text-sm mb-5">
+           <div className="flex  text-[#9DA6BA] text-sm mb-4">
              <div className='flex items-center'>
                <span>{props.date}</span>
              </div>
-             <div className='flex items-center'>
-               <span className='ml-2'>-- {props.time} </span>
-             </div>
            </div>
-  
+      
   
            <div className='flex justify-center'>
              <AvatarGroup max={4}>

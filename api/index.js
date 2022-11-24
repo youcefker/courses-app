@@ -59,8 +59,8 @@ io.on("connection", (socket) => { // When a user coonnects to our server
   });
 });
 //----- env -----
-//const MONGO_URL = process.env.MONGO_URL
-MONGO_URL = "mongodb://localhost:27017/courses"
+const MONGO_URL = process.env.MONGO_URL
+//MONGO_URL = "mongodb://localhost:27017/courses"
 mongoose.connect(MONGO_URL)
   .then(result => {
     // set up connection to db for file storage
