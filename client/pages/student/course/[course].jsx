@@ -11,10 +11,24 @@ function Course() {
 
   const [courseData, setCourseData] = useState(null)
 
+  const [progress, setProgress] = useState(null)
+
+  const fetchProgress = ()=>{
+    axios.get("/student/progress")
+    .then((res)=>{
+      console.log(res.data.data);
+      setProgress(res.data.data)
+    })
+    .catch((err)=>{
+      console.log(err);
+    })
+
+  }
+
   const fetchCourseData = ()=>{
     axios.get("/lesson/course/"+router.query.course)
     .then((res)=>{
-      console.log(res.data.data.chapters[0]);
+   
       setCourseData(res.data.data)
     })
     .catch((err)=>{
@@ -25,6 +39,7 @@ function Course() {
 
   useEffect(() => {
     fetchCourseData()
+    fetchProgress()
   }, [router.query.course])
   
   return (
@@ -53,7 +68,7 @@ function Course() {
           <div className='bg-white rounded-xl px-3 col-span-5'>
             <h3 className='text-center text-[18px] font-bold my-4'>Chapters List</h3>
             <div>
-                {courseData?.chapters.map(chapter => <ChapterCard courseId={courseData._id} student name={chapter.title}  key={Math.random()} lessons={chapter.lessons} />)}
+                {courseData?.chapters.map(chapter => <ChapterCard courseId={courseData._id} progress={progress[courseData._id][chapter._id]} student name={chapter.title}  key={Math.random()} lessons={chapter.lessons} />)}
           
            
             </div>

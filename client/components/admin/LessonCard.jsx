@@ -8,7 +8,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 function LessonCard(props) {
   const router = useRouter()
 
-  const [lessonCompleted, setLessonCompleted] = React.useState(false);
+  const [lessonCompleted, setLessonCompleted] = React.useState(props.progress.completed);
   return (
     <div className='flex justify-between my-2'>
         <div className="flex hover:underline cursor-pointer items-center" onClick={()=>router.push({
@@ -18,7 +18,7 @@ function LessonCard(props) {
           },
            shallow: false 
         })}>
-                 <span> {!lessonCompleted ?  <CheckCircleIcon />:  <RadioButtonUncheckedIcon />}</span>
+                 <span> {lessonCompleted ?  <CheckCircleIcon />:  <RadioButtonUncheckedIcon />}</span>
             <span className='font-bold ml-1'>Lesson {props.index} : </span>
             <span>{props.name}</span>
         </div>
