@@ -7,6 +7,8 @@ import ReplayIcon from '@mui/icons-material/Replay';
 import { Collapse, FormControlLabel, Paper, Switch } from '@mui/material';
 import { Box } from '@mui/system';
 import LessonCard from './LessonCard';
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 
 const icon = (
@@ -28,6 +30,7 @@ const icon = (
 
 function ChapterCard(props) {
     const [checked, setChecked] = React.useState(false);
+    const [chapterCompleted, setChapterCompleted] = React.useState(false);
     const [lessons, setLessons] = React.useState([{chapter_id: "635c4c64ece772b6422f4f09",
     description: "hellooooo",
     file_type: "FILE",
@@ -46,8 +49,19 @@ function ChapterCard(props) {
   
   return (
     <div className='bg-[#F5F5F5] py-4 px-5 rounded-xl my-3'>
+   
         <div className="flex justify-between items-center ">
-           <h3 className='text-lg text-[#079C49] font-bold'>{props.name}</h3>
+        {props.student ? 
+           <h3 className='text-lg text-[#079C49] font-bold flex items-center'>
+            {chapterCompleted ?  <CheckCircleIcon />:  <RadioButtonUncheckedIcon/>}
+          
+            <span className='ml-2'>{props.name}</span>
+            </h3>
+          :
+          <h3 className='text-lg text-[#079C49] font-bold'>
+           {props.name}
+           </h3>
+          }
            <div className='flex items-center'>
             {props.student ? null :
             <>

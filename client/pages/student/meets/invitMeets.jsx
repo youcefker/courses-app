@@ -73,8 +73,9 @@ function InvitMeets() {
     useEffect(() => {
       
         fetchMeets()
-    }, [typeof window])
-
+    }, [])
+  
+    
   return (
     <> 
     <Sidebar active="meets" />
