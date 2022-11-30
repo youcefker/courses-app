@@ -29,7 +29,7 @@ function LessonCard(props) {
 <div>
 {props.lessonType == "FILE" ? <DescriptionIcon />: <VideoLibraryIcon />} 
 
-</div>
+</div>  
          :
         <div>
               <DeleteIcon  className='cursor-pointer w-5' onClick={props.deleteLesson}/>
