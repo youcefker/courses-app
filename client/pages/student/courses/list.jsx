@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Toaster } from 'react-hot-toast'
 import IndexPage from '../../../components/dashboard/indexPage'
 import Sidebar from '../../../components/dashboard/sidebar'
@@ -7,6 +7,8 @@ import Image from 'next/image';
 import CourseCardStudent from '../../../components/student/courseCardStudent';
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
+import { useRouter } from 'next/router';
+import axios from '../../../axiosInstance';
 
 
 const responsive = {
@@ -30,6 +32,27 @@ const responsive = {
     }
   };
 function List() {
+
+  const [enrolledCourses, setEnrolledCourses] = useState([])
+  const [nonEnrolledCourses, setNonEnrolledCourses] = useState([])
+
+  const fetchStudentCourses = async (course_id) => {
+    try {
+      const response = await axios.get(`/course/student`)
+    console.log(response);
+      setEnrolledCourses(response.data.data?.enrolledCourses)
+      setNonEnrolledCourses(response.data.data?.notEnrolledCourses)
+    } catch(err) {
+      console.log(err)
+    }
+  }
+
+  useEffect(() => {
+    fetchStudentCourses()
+  }, [])
+  
+
+  const router = useRouter()
   return (
     <div>
         <Sidebar active="courses" />
@@ -47,6 +70,7 @@ function List() {
             </div>
             <div>
                <h4 className='text-[25px] font-[600] text-[#1F1F1F] my-5'>Enrolled Courses</h4>
+               {enrolledCourses?.length == 0 ? <h1 className='text-center text-xl font-bold'>No enrolled courses !!</h1>:
                <Carousel responsive={responsive} 
                   swipeable={false}
                   draggable={false}
@@ -59,25 +83,20 @@ function List() {
                   removeArrowOnDeviceType={["tablet", "mobile"]}
                   dotListClass="custom-dot-list-style"
                  >
-                <CourseCardStudent />
-                <CourseCardStudent />
-                <CourseCardStudent />
-                <CourseCardStudent />
-                <CourseCardStudent />
-                <CourseCardStudent />
+       
+               {enrolledCourses?.map((course)=> <CourseCardStudent courseId={course._id} enrolled courseName={course.name} courseDescription={course.description} />)}
                 </Carousel>
+}
             </div>
             <div>
                <h4 className='text-[23px] font-[600] text-[#1F1F1F] mt-5'>The world largest selection of courses</h4>
                <h4 className='text-[16px] text-[#1F1F1F] my-2'>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been</h4>
+               {nonEnrolledCourses?.length == 0 ? <h1 className='text-center text-xl font-bold'>No courses For now !!</h1>:
                <div  className=" py-5 grid grid-cols-4 gap-6 gap-y-10">
-               <CourseCardStudent />
-                <CourseCardStudent />
-                <CourseCardStudent />
-                <CourseCardStudent />
-                <CourseCardStudent />
-                <CourseCardStudent />
+                {nonEnrolledCourses?.map((course)=> <CourseCardStudent courseId={course._id}  courseName={course.name} courseDescription={course.description} />)}
+        
                </div>
+                }
             </div>
         </IndexPage>
     </div>

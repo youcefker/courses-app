@@ -14,7 +14,7 @@ import MenuBookIcon from '@mui/icons-material/MenuBook';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Transition } from "@headlessui/react";
 import { Button } from "@mui/material";
-
+import GroupsIcon from '@mui/icons-material/Groups';
 
 const Sidebar = ({ active }) => {
   const [activeItem, setActiveItem] = useState("");
@@ -102,6 +102,40 @@ const Sidebar = ({ active }) => {
         >
           {" "}
           <MenuBookIcon className="mr-2 text-[22px]" /> Courses
+        
+        </li> : null}
+
+
+
+        {!student ? <li
+          onClick={() => {
+            setActiveItem("meets");
+            router.push("/meets/list");
+          }}
+          className={
+            activeItem === "meets"
+              ? "my-3 hover:text-[#079C49] font-semibold flex items-center pl-10  cursor-pointer text-[14px] text-[#079C49] relative"
+              : "my-3 hover:text-[#079C49] font-semibold flex items-center pl-10  cursor-pointer text-[14px] text-[#9DA6BA] relative"
+          }
+        >
+          {" "}
+          <GroupsIcon className="mr-2 text-[22px]" /> Meets
+        
+        </li> : null}
+
+        {student ?<li
+          onClick={() => {
+            setActiveItem("meets");
+            router.push("/student/meets/invitMeets");
+          }}
+          className={
+            activeItem === "meets"
+              ? "my-3 hover:text-[#079C49] font-semibold flex items-center pl-10  cursor-pointer text-[14px] text-[#079C49] relative"
+              : "my-3 hover:text-[#079C49] font-semibold flex items-center pl-10  cursor-pointer text-[14px] text-[#9DA6BA] relative"
+          }
+        >
+          {" "}
+          <GroupsIcon className="mr-2 text-[22px]" /> Meets
         
         </li> : null}
       </ul>

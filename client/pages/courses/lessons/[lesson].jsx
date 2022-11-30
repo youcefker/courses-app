@@ -22,10 +22,11 @@ import HashLoader from 'react-spinners/HashLoader'
 import toast, { Toaster } from 'react-hot-toast'
 import { faLeaf } from '@fortawesome/free-solid-svg-icons'
 import { SelectContext } from '@material-tailwind/react/components/Select/SelectContext'
+import ChapterCard from '../../../components/admin/ChapterCard'
 
 function Lesson() {
    const router = useRouter()
-   const [lesson, setLesson] = useState({ lesson_id: router.query.lesson_id, name: router.query.name, description: router.query.description, filename: router.query.filename,courseName : router.query.courseName, classement:  router.query.classement})
+   const [lesson, setLesson] = useState({})
    const [storageData, setStorageData] = useState(null)
    const [isLoading, setIsLoading] = useState(true)
    const [lessonId, setLessonId] = useState(lesson.lesson_id)
@@ -39,15 +40,45 @@ function Lesson() {
     right: false,
   });
 
+  const [courseData, setCourseData] = useState(null)
+
+  const fetchCourseData = ()=>{
+    axios.get("/lesson/course/"+router.query.course_id)
+    .then((res)=>{
+      setCourseData(res.data.data)
+    })
+    .catch((err)=>{
+      console.log(err);
+    })
+
+  }
+
+  useEffect(() => {
+    
+    fetchCourseData()
+  }, [router.query.lesson])
+
+
   const fetchLessons = async () => {
     try {
+      console.log(router.query.course_id);
       const response = await axios.get(`/lesson/course/${router.query.course_id}`)
+      console.log(response);
       setLessons(response.data.data)
     } catch(err) {
       console.log(err)
     }
   }
 
+  const getLessonData = async ()=>{
+    try {
+      const response = await axios.get(`/lesson/${router.query.lesson}`)
+      console.log(response);
+      setLesson(response.data.data)
+    } catch(err) {
+      console.log(err)
+    }
+  }
   const toggleDrawer = (anchor, open) => (event) => {
     if (
       event &&
@@ -68,24 +99,22 @@ function Lesson() {
     videoTag.setAttribute('src', `http://localhost:4000/api/v1/lesson/file/${lesson.lesson_id}`);
     videoTag.load()
   }
-  useEffect(() => {
-    loadVideo()
-  }, [lesson])
 
-  const nextLesson = () => {
-    lessons.map((less, index) => {
-      if(less._id === lesson.lesson_id){
-        if(index < lessons.length - 1) {
-          setNext(index + 1)
-        } else {
-          setNext(0)
-        }
-      }
-    })
-  }
-  useEffect(() => {
-    nextLesson()
-  }, [lesson, lessons])
+
+  // const nextLesson = () => {
+  //   lessons?.map((less, index) => {
+  //     if(less._id === lesson.lesson_id){
+  //       if(index < lessons.length - 1) {
+  //         setNext(index + 1)
+  //       } else {
+  //         setNext(0)
+  //       }
+  //     }
+  //   })
+  // }  
+  // useEffect(() => {
+  //   nextLesson()
+  // }, [lesson, lessons])
   
   
   const list = (anchor) => (
@@ -98,7 +127,7 @@ function Lesson() {
       <h5 className='text-center mt-3 mb-2 font-bold text-lg text-[#079C49]'>Your lessons</h5>
       <List>
       <Divider />
-        {lessons.map((lessonItem,index) =>  
+        {lessons?.map((lessonItem,index) =>  
        
         <ListItem  key={lessonItem._id}  onClick={() => {
           setLesson({course_id: router.query.course_id, courseName : router.query.courseName, lesson_id: lessonItem._id, filename: lessonItem.filename, name: lessonItem.name, description: lessonItem.description})
@@ -153,6 +182,7 @@ function Lesson() {
       } 
   }
   useEffect(() => {
+   console.log(router);
    const auth = fetchStorageData()
    if(auth) {
      setStorageData(auth)
@@ -162,6 +192,20 @@ function Lesson() {
    }
    console.log();
  }, [])
+
+ useEffect(() => {
+  getLessonData()
+}, [router.query.lesson != undefined])
+
+useEffect(() => {
+  getLessonData()
+}, [router.asPath])
+useEffect(() => {
+
+  loadVideo()
+}, [lesson])
+
+
  console.log(isLoading)
   return (
     <>
@@ -170,11 +214,11 @@ function Lesson() {
     <IndexPage>
       <div className="flex justify-between items-center">
          <div>
-            <h3 className='text-[#1F1F1F] text-[20px] font-[600]  '>Course : {lesson.courseName} </h3>
+            {/* <h3 className='text-[#1F1F1F] text-[20px] font-[600]  '>Course : {lesson.courseName} </h3> */}
           <h3 className='text-[#1F1F1F] text-[20px] font-[600] mt-3'>Lesson {lesson.classement} : {lesson.name}</h3>
          </div>
          <div>
-                      {['right'].map((anchor) => (
+                      {/* {['right'].map((anchor) => (
                         <React.Fragment key={anchor}>
                           <button className='bg-[#079C49] text-white py-2 px-2  rounded-xl sm:mr-5 font-bold text-[14px]' onClick={toggleDrawer(anchor, true)}>
                             <PlayLessonIcon />
@@ -189,13 +233,13 @@ function Lesson() {
                             {list(anchor)}
                           </SwipeableDrawer>
                         </React.Fragment>
-                      ))}
+                      ))} */}
                     </div> 
       </div>
-       <div className="grid grid-cols-1 lg:grid-cols-6 lg:gap-x-6 mt-6 w-full">
+      <div className="grid grid-cols-12 gap-5">
 
 
-        <div className='col-span-12'>
+<div className='flex flex-col items-center col-span-7'>
    
         {lesson? <video  id="lesson_video" muted controls autoPlay onEnded={handleEndedVideo} controlsList="nodownload" type="video/mp4" src={`http://localhost:4000/api/v1/lesson/file/${lesson.lesson_id}`}>
                
@@ -265,6 +309,14 @@ function Lesson() {
        </div>*/}
 
 
+<div className='bg-white rounded-xl px-3 col-span-5'>
+            <h3 className='text-center text-[18px] font-bold my-4'>Chapters List</h3>
+            <div>
+                {courseData?.chapters.map(chapter => <ChapterCard courseId={courseData._id} student name={chapter.title}  key={Math.random()} lessons={chapter.lessons} />)}
+          
+           
+            </div>
+          </div>
       
       </div>
        

@@ -39,23 +39,23 @@ app.use("/peerjs", peerServer);
 
 io.on("connection", (socket) => { // When a user coonnects to our server
   socket.on("join-room", (roomId, id, myname) => { // When the socket a event 'join room' event
-      socket.join(roomId); // Join the roomid
-      socket.to(roomId).broadcast.emit("user-connected", id, myname);// emit a 'user-connected' event to tell all the other users
-      // in that room that a new user has joined
+    socket.join(roomId); // Join the roomid
+    socket.to(roomId).broadcast.emit("user-connected", id, myname);// emit a 'user-connected' event to tell all the other users
+    // in that room that a new user has joined
 
-      socket.on("messagesend", (message) => { 
-          console.log(message);
-          io.to(roomId).emit("createMessage", message);
-      });
+    socket.on("messagesend", (message) => {
+      console.log(message);
+      io.to(roomId).emit("createMessage", message);
+    });
 
-      socket.on("tellName", (myname) => {
-          console.log(myname);
-          socket.to(roomId).broadcast.emit("AddName", myname);
-      });
+    socket.on("tellName", (myname) => {
+      console.log(myname);
+      socket.to(roomId).broadcast.emit("AddName", myname);
+    });
 
-      socket.on("disconnect", () => { // When a user disconnects or leaves
-          socket.to(roomId).broadcast.emit("user-disconnected", id);
-      });
+    socket.on("disconnect", () => { // When a user disconnects or leaves
+      socket.to(roomId).broadcast.emit("user-disconnected", id);
+    });
   });
 });
 //----- env -----
