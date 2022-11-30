@@ -105,10 +105,10 @@ module.exports = {
                     data: null
                 });
             }
+            console.log(req.decoded)
+            req.decoded = decoded;
+            next();
         })
-        console.log(req.decoded)
-          req.decoded = decoded;
-          next();
         }
       });
     } else {

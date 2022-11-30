@@ -419,7 +419,8 @@ module.exports = {
         }
     },
     getEnrollRequests: async (req, res) => {
-        getEnrollRequests((err, enrollRequests) => {
+        let filters = {}
+        getEnrollRequests(filters, (err, enrollRequests) => {
             if(err) {
                 return res.status(400).json({
                     error: true,

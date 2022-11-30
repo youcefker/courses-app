@@ -11,7 +11,7 @@ module.exports = {
     }, 
     filterMeets: async (filters, callBack) => {
         try {
-            const docs = await Meet.find(filters).populate({
+            const docs = await Meet.find(filters).select('-joins').populate({
                 path: "course",
                 select: "name"
             })

@@ -385,4 +385,28 @@ module.exports = {
             })
         })
     },
+    getStudentProgress: (req, res) => {
+        const student_id = req.decoded.student_id
+        getStudent(student_id, (err, student) => {
+            if(err) {
+                return res.status(400).json({
+                    error: true,
+                    message: "something went wrong",
+                    data: null
+                })
+            }
+            if(!student) {
+                return res.status(400).json({
+                    error: true,
+                    message: "student not allowed!",
+                    data: null
+                })
+            }
+            return res.status(200).json({
+                error: false,
+                message: "Progress fetched succesfully",
+                data: student.progress
+            })
+        })
+    }
 }

@@ -1,6 +1,6 @@
 const { param, checkSchema } = require("express-validator")
 const { checkStudentToken, checkAdminToken } = require("../Auth")
-const { addCourseToStudent, getStudents, deleteStudent, getStudentCourses, updateStudent, deleteEnrollRequest, createEnrollRequest } = require("../Controllers/StudentControllers")
+const { addCourseToStudent, getStudents, deleteStudent, getStudentCourses, updateStudent, deleteEnrollRequest, createEnrollRequest, getStudentProgress } = require("../Controllers/StudentControllers")
 
 const router = require("express").Router()
 
@@ -18,7 +18,7 @@ router.post("/addcourse",  checkAdminToken, checkSchema({
 }), addCourseToStudent)
 
 router.get("/",  checkAdminToken, getStudents)
-
+router.get("/progress", checkStudentToken, getStudentProgress)
 router.get("/courses/:student_id", checkStudentToken, param("student_id", "invalid student id.").isMongoId(), getStudentCourses)
 router.put("/:student_id",  checkStudentToken, param("student_id", "invalid student id.").isMongoId(), updateStudent)
 router.delete("/request/:request_id", checkAdminToken, param("request_id", "invalid student id.").isMongoId(), deleteEnrollRequest)
