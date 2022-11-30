@@ -108,12 +108,7 @@ module.exports = {
             console.log(req.decoded)
             req.decoded = decoded;
             next();
-<<<<<<< HEAD
-        })
-=======
           })
-
->>>>>>> 394419a508fa4ebef676d1f5240d98a9b7cace10
         }
       });
     } else {
