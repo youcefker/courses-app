@@ -91,7 +91,7 @@ function ChapterCard(props) {
             <div className="my-5">
               {props.lessons?.length !== 0?
               props.lessons?.map((lesson,index) =>
-                <LessonCard lessonId={lesson._id} progress={props.progress[lesson._id]} courseId={props.courseId} student={props.student} name={lesson.name}  key={index} index={index+1}  deleteLesson={()=>props.deleteLesson(lesson._id)}/>
+                <LessonCard lessonTpe={lesson.file_type} lessonId={lesson._id} progress={props.progress[lesson._id]} courseId={props.courseId} student={props.student} name={lesson.name}  key={index} index={index+1}  deleteLesson={()=>props.deleteLesson(lesson._id)}/>
         
               ): <h2 className='text-center'>No lessons</h2>}
    

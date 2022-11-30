@@ -690,6 +690,7 @@ module.exports = {
             })
             student.progress[course_id][chapter_id].completed = chapter_completed
             try {
+                await student.markModified("progress")
                 await student.save()
                 return res.status(200).json({
                     error: false,

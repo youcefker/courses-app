@@ -4,6 +4,8 @@ import ReplayIcon from '@mui/icons-material/Replay';
 import { useRouter } from 'next/router';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import VideoLibraryIcon from '@mui/icons-material/VideoLibrary';
+import DescriptionIcon from '@mui/icons-material/Description';
 
 function LessonCard(props) {
   const router = useRouter()
@@ -22,12 +24,21 @@ function LessonCard(props) {
             <span className='font-bold ml-1'>Lesson {props.index} : </span>
             <span>{props.name}</span>
         </div>
-        {props.student ? null :
+        {props.student ? 
+
+<div>
+{props.lessonType == "FILE" ? <DescriptionIcon />: <VideoLibraryIcon />} 
+
+</div>
+         :
         <div>
               <DeleteIcon  className='cursor-pointer w-5' onClick={props.deleteLesson}/>
          
         </div>
 }
+      
+
+
     </div>
   )
 }

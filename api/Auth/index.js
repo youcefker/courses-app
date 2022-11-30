@@ -109,7 +109,6 @@ module.exports = {
             req.decoded = decoded;
             next();
           })
-
         }
       });
     } else {
