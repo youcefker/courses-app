@@ -30,7 +30,7 @@ const icon = (
 
 function ChapterCard(props) {
     const [checked, setChecked] = React.useState(false);
-    const [chapterCompleted, setChapterCompleted] = React.useState(props.progress.completed);
+    const [chapterCompleted, setChapterCompleted] = React.useState(props.progress?.completed);
     const [lessons, setLessons] = React.useState([{chapter_id: "635c4c64ece772b6422f4f09",
     description: "hellooooo",
     file_type: "FILE",
@@ -91,7 +91,7 @@ function ChapterCard(props) {
             <div className="my-5">
               {props.lessons?.length !== 0?
               props.lessons?.map((lesson,index) =>
-                <LessonCard lessonTpe={lesson.file_type} lessonId={lesson._id} progress={props.progress[lesson._id]} courseId={props.courseId} student={props.student} name={lesson.name}  key={index} index={index+1}  deleteLesson={()=>props.deleteLesson(lesson._id)}/>
+                <LessonCard lessonTpe={lesson.file_type} lessonId={lesson._id} progress={props.progress? props.progress[lesson._id]: null} courseId={props.courseId} student={props.student} name={lesson.name}  key={index} index={index+1}  deleteLesson={()=>props.deleteLesson(lesson._id)}/>
         
               ): <h2 className='text-center'>No lessons</h2>}
    

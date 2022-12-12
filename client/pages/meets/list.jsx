@@ -162,6 +162,18 @@ function List() {
           });
       }
 
+      const handleDeleteMeet = (meet_id) => {
+        try {
+          const response = await axios.delete(`/meet/${meet_id}`)
+          if (!response.data.error){
+            toast.success(response.data.message)
+            fetchMeets()
+          }
+        } catch(err){
+          console.log(err)
+        }
+      }
+
   return (
     <> 
     <Sidebar active="meets" />

@@ -10,7 +10,7 @@ import DescriptionIcon from '@mui/icons-material/Description';
 function LessonCard(props) {
   const router = useRouter()
 
-  const [lessonCompleted, setLessonCompleted] = React.useState(props.progress.completed);
+  const [lessonCompleted, setLessonCompleted] = React.useState(props.progress?.completed);
   return (
     <div className='flex justify-between my-2'>
         <div className="flex hover:underline cursor-pointer items-center" onClick={()=>router.push({
