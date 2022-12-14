@@ -84,7 +84,7 @@ function List() {
                   dotListClass="custom-dot-list-style"
                  >
        
-               {enrolledCourses?.map((course)=> <CourseCardStudent courseId={course._id} enrolled courseName={course.name} courseDescription={course.description} />)}
+               {enrolledCourses?.map((course)=> <CourseCardStudent key={course.id} courseId={course._id} enrolled courseName={course.name} courseDescription={course.description} />)}
                 </Carousel>
 }
             </div>
@@ -93,7 +93,7 @@ function List() {
                <h4 className='text-[16px] text-[#1F1F1F] my-2'>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been</h4>
                {nonEnrolledCourses?.length == 0 ? <h1 className='text-center text-xl font-bold'>No courses For now !!</h1>:
                <div  className=" py-5 grid grid-cols-4 gap-6 gap-y-10">
-                {nonEnrolledCourses?.map((course)=> <CourseCardStudent courseId={course._id}  courseName={course.name} courseDescription={course.description} />)}
+                {nonEnrolledCourses?.map((course)=> <CourseCardStudent key={course.id} courseId={course._id}  courseName={course.name} courseDescription={course.description} />)}
         
                </div>
                 }

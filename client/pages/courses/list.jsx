@@ -323,7 +323,7 @@ const handleClose = () => setOpen(false);
                       </div>
                   
                       <div  className=" py-2 grid grid-cols-4 gap-6 gap-y-10">
-                      {courses.map((course, index) =><CourseCard deleteCourse={(courseId)=>{setOpenDeleteCourse(true), setCourseId(courseId)}} updateCourse={()=>setOpenUpdateCourse(true)} updateToast={(msg)=>updateMsg(msg)} refresh={()=>refresh()} isActive={course.isActive} id={course._id} fetchLessons={() => fetchCourseLessons(course._id)} name={course.name} description={course.description} teacherName={course.teacher_name} nbrLessons={course.lessons?.length}  />)}
+                      {courses.map((course, index) =><CourseCard key={course.id} deleteCourse={(courseId)=>{setOpenDeleteCourse(true), setCourseId(courseId)}} updateCourse={()=>setOpenUpdateCourse(true)} updateToast={(msg)=>updateMsg(msg)} refresh={()=>refresh()} isActive={course.isActive} id={course._id} fetchLessons={() => fetchCourseLessons(course._id)} name={course.name} description={course.description} teacherName={course.teacher_name} nbrLessons={course.lessons?.length}  />)}
 
                       {/* <Accordion key={course._id} fetchLessons={() => fetchCourseLessons(course._id)} title={`Course ${index + 1} : ${course.name}`} 
                       content={coursesLessons[course._id] ?  coursesLessons[course._id].map((lesson, lessonIndex) =><div key={lesson._id} className='text-[18px] font-[600] text-[#1F1F1F]  ml-5 mb-2 flex items-center justify-between hover:bg-[#eee] p-2 rounded-lg'>

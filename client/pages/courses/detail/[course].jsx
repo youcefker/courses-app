@@ -55,16 +55,16 @@ const reorder = (list, startIndex, endIndex) => {
 // ]
 
 const chapters = [
-  <div id="1" className="box bg-[#000] text-[#fff] mb-3">
+  <div key={"1"} id="1" className="box bg-[#000] text-[#fff] mb-3">
   1
 </div>,
-<div id="2" className="box bg-[#000] text-[#fff] mb-3">
+<div key={"2"} id="2" className="box bg-[#000] text-[#fff] mb-3">
   2
 </div>,
-<div id="3" className="box bg-[#000] text-[#fff] mb-3">
+<div key={"3"} id="3" className="box bg-[#000] text-[#fff] mb-3">
   3
 </div>,
-<div id="4" className="box bg-[#000] text-[#fff] mb-3">
+<div key={"4"} id="4" className="box bg-[#000] text-[#fff] mb-3">
   4
 </div>
 ]

@@ -162,7 +162,7 @@ function List() {
           });
       }
 
-      const handleDeleteMeet = (meet_id) => {
+      const handleDeleteMeet = async (meet_id) => {
         try {
           const response = await axios.delete(`/meet/${meet_id}`)
           if (!response.data.error){
@@ -191,7 +191,7 @@ function List() {
                       </div>
                   
                       <div  className=" py-2 grid grid-cols-4 gap-6 gap-y-10">
-                        {meets?.map((meet)=><MeetCard timeRemains={moment(meet.date).startOf('hour').fromNow()} name={meet.title} courseName={meet.course.name} date={moment(meet.date).format('MMMM Do YYYY, h:mm:ss a')} time="9pm" admin/>)}
+                        {meets?.map((meet)=><MeetCard key={meet.id} timeRemains={moment(meet.date).startOf('hour').fromNow()} name={meet.title} courseName={meet.course.name} date={moment(meet.date).format('MMMM Do YYYY, h:mm:ss a')} time="9pm" admin/>)}
                
                       {/* <Accordion key={course._id} fetchLessons={() => fetchCourseLessons(course._id)} title={`Course ${index + 1} : ${course.name}`} 
                       content={coursesLessons[course._id] ?  coursesLessons[course._id].map((lesson, lessonIndex) =><div key={lesson._id} className='text-[18px] font-[600] text-[#1F1F1F]  ml-5 mb-2 flex items-center justify-between hover:bg-[#eee] p-2 rounded-lg'>

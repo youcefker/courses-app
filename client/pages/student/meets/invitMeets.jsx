@@ -93,7 +93,7 @@ function InvitMeets() {
                       </div>
                   
                       <div  className=" py-2 grid grid-cols-4 gap-6 gap-y-10">
-                      {meets?.map((meet)=><MeetCard timeRemains={moment(meet.date).startOf('hour').fromNow()} name={meet.title} courseName={meet.course.name} date={moment(meet.date).format('MMMM Do YYYY, h:mm:ss a')} />)}
+                      {meets?.map((meet)=><MeetCard key={meet.id} timeRemains={moment(meet.date).startOf('hour').fromNow()} name={meet.title} courseName={meet.course.name} date={moment(meet.date).format('MMMM Do YYYY, h:mm:ss a')} />)}
                       </div>
                             </IndexPage>
 
