@@ -23,6 +23,8 @@ import toast, { Toaster } from 'react-hot-toast'
 import { faLeaf } from '@fortawesome/free-solid-svg-icons'
 import { SelectContext } from '@material-tailwind/react/components/Select/SelectContext'
 import ChapterCard from '../../../components/admin/ChapterCard'
+import DescriptionIcon from '@mui/icons-material/Description';
+
 
 function Lesson() {
    const router = useRouter()
@@ -41,11 +43,14 @@ function Lesson() {
   });
 
   const [courseData, setCourseData] = useState(null)
+  const [courseStatus, setCourseStatus] = useState(false)
+  const [progress, setProgress] = useState(null)
 
   const fetchCourseData = ()=>{
     axios.get("/lesson/course/"+router.query.course_id)
     .then((res)=>{
-      setCourseData(res.data.data)
+      setCourseStatus(res.data.data.enrolled)
+      setCourseData(res.data.data.course)
     })
     .catch((err)=>{
       console.log(err);
@@ -58,17 +63,6 @@ function Lesson() {
     fetchCourseData()
   }, [router.query.lesson])
 
-
-  const fetchLessons = async () => {
-    try {
-      console.log(router.query.course_id);
-      const response = await axios.get(`/lesson/course/${router.query.course_id}`)
-      console.log(response);
-      setLessons(response.data.data)
-    } catch(err) {
-      console.log(err)
-    }
-  }
 
   const getLessonData = async ()=>{
     try {
@@ -94,53 +88,37 @@ function Lesson() {
   const loadVideo = () => {
     console.log("video src changed")
     const videoTag = document.getElementById("lesson_video")
-    console.log(videoTag)
-    videoTag.pause()
-    videoTag.setAttribute('src', `http://localhost:4000/api/v1/lesson/file/${lesson.lesson_id}`);
-    videoTag.load()
+    videoTag?.pause()
+    videoTag?.setAttribute('src', `http://localhost:4000/api/v1/lesson/file/${lesson._id}?token=${localStorage.getItem("jwt")}&course_id=${router.query.course_id}`);
+    videoTag?.load()
   }
 
+  const fetchProgress = ()=>{
+    axios.get("/student/progress")
+    .then((res)=>{
+      console.log(res.data.data);
+      setProgress(res.data.data)
+    })
+    .catch((err)=>{
+      console.log(err);
+    })
 
-  // const nextLesson = () => {
-  //   lessons?.map((less, index) => {
-  //     if(less._id === lesson.lesson_id){
-  //       if(index < lessons.length - 1) {
-  //         setNext(index + 1)
-  //       } else {
-  //         setNext(0)
-  //       }
-  //     }
-  //   })
-  // }  
-  // useEffect(() => {
-  //   nextLesson()
-  // }, [lesson, lessons])
+  }
   
   
   const list = (anchor) => (
     <Box
       sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 320 }}
       role="presentation"
-      onClick={toggleDrawer(anchor, false)}
       onKeyDown={toggleDrawer(anchor, false)}
     >
-      <h5 className='text-center mt-3 mb-2 font-bold text-lg text-[#079C49]'>Your lessons</h5>
+      <h5 className='text-center mt-3 mb-2 font-bold text-lg text-[#079C49]'>Course chapters</h5>
       <List>
       <Divider />
-        {lessons?.map((lessonItem,index) =>  
+        {courseData?.chapters.map((chapter,index) =>  
        
-        <ListItem  key={lessonItem._id}  onClick={() => {
-          setLesson({course_id: router.query.course_id, courseName : router.query.courseName, lesson_id: lessonItem._id, filename: lessonItem.filename, name: lessonItem.name, description: lessonItem.description})
-          router.push({
-            pathname: "/courses/lessons/"+lesson._id,
-              query : {course_id: router.query.course_id, courseName : router.query.courseName, lesson_id: lessonItem._id, filename: lessonItem.filename, name: lessonItem.name, description: lessonItem.description}
-            })
-        }} disablePadding className={lessonItem._id == lesson.lesson_id ? 'my-2 bg-[#eee]' : 'my-2' }>
-            <ListItemButton>
-              <span className='mr-2 font-bold'>{index +1}-</span>
-          
-              {lessonItem.name}
-            </ListItemButton>
+        <ListItem  key={chapter._id} disablePadding className={chapter._id == lesson.lesson_id ? 'bg-[#eee] w-full' : 'w-full' }>
+            <ChapterCard courseId={courseData._id} student name={chapter.title}  progress={progress && progress[courseData._id]? progress[courseData._id][chapter._id]: null} key={Math.random()} lessons={chapter.lessons} enrolled={courseStatus}/>
           </ListItem>)}
       
 
@@ -151,47 +129,50 @@ function Lesson() {
     </Box>
   );
    const handleEndedVideo = async() => {
+    console.log("video ended")
       try {
          const body = {
             course_id: router.query.course_id,
-            student_id: localStorage.getItem("student_id"),
-            lesson_id: router.query.lesson_id
+            chapter_id: lesson?.chapter_id,
+            lesson_id: router.query.lesson
          }
          const response = await axios.post("/lesson/complete", body)
-         console.log(response.data)
+         console.log("complete response", response.data)
+         fetchProgress()
          response.data.error ? toast.error(response.data?.message) : toast.success(response.data?.message)
-         setLesson({course_id: router.query.course_id, courseName : router.query.courseName, lesson_id: lessons[next]._id, filename: lessons[next].filename, name: lessons[next].name, description: lessons[next].description})
-          router.push({
-            pathname: "/courses/lessons/"+lesson._id,
-              query : {course_id: router.query.course_id, courseName : router.query.courseName, lesson_id: lessons[next]._id, filename: lessons[next].filename, name: lessons[next].name, description: lessons[next].description}
+         courseData.chapters.map((chapter, chapterIndex) => {
+          console.log("chapter_founded", chapter._id === lesson.chapter_id)
+          if(chapter._id === lesson.chapter_id){
+            chapter.lessons.map((chapterLesson, lessonIndex) => {
+              console.log("lesson founded", chapterLesson._id === lesson._id)
+              if(chapterLesson._id === lesson._id){
+                console.log(courseData[chapterIndex]?.lessons[lessonIndex + 1])
+                if(courseData.chapters[chapterIndex]?.lessons[lessonIndex + 1]){
+                  router.push({
+                    pathname: "/courses/lessons/"+ courseData.chapters[chapterIndex]?.lessons[lessonIndex + 1]?._id,
+                      query : {
+                        course_id: router.query.course_id
+                      }
+                    })
+                } else if (courseData.chapters[chapterIndex + 1] && courseData.chapters[chapterIndex + 1].lessons[0]){
+                  router.push({
+                    pathname: "/courses/lessons/"+ courseData.chapters[chapterIndex + 1]?.lessons[0]?._id,
+                      query : {
+                        course_id: router.query.course_id
+                      }
+                    })
+                } else {
+                  toast.success("Congratulations! you completed the course.")
+                }
+              }
             })
+          }
+         })
       } catch(err) {
          console.log(err)
          toast.error(err.response?.data.message)
       }
    }
-   const fetchStorageData = () => {
-      const jwt = localStorage.getItem("jwt")
-      const role =  localStorage.getItem("role")
-      if(role === "student") {
-        const email = localStorage.getItem("email")
-        const name =  localStorage.getItem("name")
-        const student_id =  localStorage.getItem("student_id")
-        const data = jwt && email && name && student_id && role ? {jwt, name, email, role, student_id} : null
-        return data
-      } 
-  }
-  useEffect(() => {
-   console.log(router);
-   const auth = fetchStorageData()
-   if(auth) {
-     setStorageData(auth)
-     fetchLessons()
-   } else {
-     router.replace("/adminLogin")
-   }
-   console.log();
- }, [])
 
  useEffect(() => {
   getLessonData()
@@ -205,8 +186,14 @@ useEffect(() => {
   loadVideo()
 }, [lesson])
 
+useEffect(() => {
+  console.log(localStorage.getItem("role"))
+  if(localStorage.getItem("role") === "student"){
+    fetchProgress()
+  }
+}, [])
 
- console.log(isLoading)
+
   return (
     <>
     <Toaster />
@@ -217,8 +204,8 @@ useEffect(() => {
             {/* <h3 className='text-[#1F1F1F] text-[20px] font-[600]  '>Course : {lesson.courseName} </h3> */}
           <h3 className='text-[#1F1F1F] text-[20px] font-[600] mt-3'>Lesson {lesson.classement} : {lesson.name}</h3>
          </div>
-         <div>
-                      {/* {['right'].map((anchor) => (
+         <div className='lg:invisible'>
+                      {['right'].map((anchor) => (
                         <React.Fragment key={anchor}>
                           <button className='bg-[#079C49] text-white py-2 px-2  rounded-xl sm:mr-5 font-bold text-[14px]' onClick={toggleDrawer(anchor, true)}>
                             <PlayLessonIcon />
@@ -233,17 +220,27 @@ useEffect(() => {
                             {list(anchor)}
                           </SwipeableDrawer>
                         </React.Fragment>
-                      ))} */}
+                      ))}
                     </div> 
       </div>
-      <div className="grid grid-cols-12 gap-5">
+      <div className="lg:grid lg:grid-cols-12 lg:gap-5">
 
 
-<div className='flex flex-col items-center col-span-7'>
+<div className='flex flex-col items-center lg:col-span-7'>
    
-        {lesson? <video  id="lesson_video" muted controls autoPlay onEnded={handleEndedVideo} controlsList="nodownload" type="video/mp4" src={`http://localhost:4000/api/v1/lesson/file/${lesson.lesson_id}`}>
+        {lesson? lesson.file_type === "VIDEO" ?<video  onError={(err) => {
+          console.log(err)
+        }} id="lesson_video" muted controls autoPlay onEnded={handleEndedVideo} controlsList="nodownload" type="video/mp4" src={`http://localhost:4000/api/v1/lesson/file/${lesson._id}?token=${localStorage.getItem("jwt")}&course_id=${router.query.course_id}`}>
                
-            </video>: null}
+            </video>: 
+            <>
+              <a href={`http://localhost:4000/api/v1/lesson/file/${lesson._id}?token=${localStorage.getItem("jwt")}&course_id=${router.query.course_id}`} download>
+                <DescriptionIcon sx={{ fontSize: 120 }} color={"#079C49"} className="mt-[20px]"/>
+              </a>
+              <a className='underline hover:text-[#079C49] ' href={`http://localhost:4000/api/v1/lesson/file/${lesson._id}?token=${localStorage.getItem("jwt")}&course_id=${router.query.course_id}`} download>View file from here</a>
+                <button className='ormal-case  text-[white] bg-[#079C49] border border-[#079C49] font-bold  text-[16px] p-2 px-3 rounded-xl mt-[30px]' onClick={handleEndedVideo}>mark as completed</button>
+            </>
+            :null}
             
            
            {/*isLoading && (<Skeleton variant="rectangular" width="100%" height="70vh" />)*/}
@@ -309,10 +306,10 @@ useEffect(() => {
        </div>*/}
 
 
-<div className='bg-white rounded-xl px-3 col-span-5'>
+<div className='bg-white rounded-xl px-3 lg:col-span-5 invisible lg:visible'>
             <h3 className='text-center text-[18px] font-bold my-4'>Chapters List</h3>
             <div>
-                {courseData?.chapters.map(chapter => <ChapterCard courseId={courseData._id} student name={chapter.title}  key={Math.random()} lessons={chapter.lessons} />)}
+                {courseData?.chapters?.map(chapter => <ChapterCard courseId={courseData._id} student name={chapter.title}  progress={progress && progress[courseData._id]? progress[courseData._id][chapter._id]: null} key={Math.random()} lessons={chapter.lessons} enrolled={courseStatus}/>)}
           
            
             </div>

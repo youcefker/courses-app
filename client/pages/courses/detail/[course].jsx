@@ -72,19 +72,22 @@ const chapters = [
 
 
 function CourseDetail(props) {
-
+  
   const router = useRouter()
 
   const [courseId, setCourseId] = useState(null)
   const [courseData, setCourseData] = useState(null)
   const [chapterId, setChapterId] = useState(null)
   const [lessonId, setLessonId] = useState(null)
+  const [courseStatus, setCourseStatus] = useState(false)
+
   
   const fetchCourseData = ()=>{
+    console.log("query content", router.query)
     axios.get("/lesson/course/"+router.query.course)
     .then((res)=>{
-      console.log(res.data.data.chapters);
-      setCourseData(res.data.data)
+      setCourseStatus(res.data.data.enrolled)
+      setCourseData(res.data.data.course)
     })
     .catch((err)=>{
       console.log(err);
@@ -163,7 +166,7 @@ function CourseDetail(props) {
             className="my-4"
             key={Math.random()}
           >
-           <ChapterCard name={quote.title} lessons={quote.lessons}  key={Math.random()} id={quote._id}  addLesson={()=> {setOpenAddLesson(true),setChapterId(quote._id)}} deleteChapter={()=>{setOpenDeleteChapter(true),setChapterId(quote._id)}}  deleteLesson={(lessonId)=>{ setOpenDeleteLesson(true),setLessonId(lessonId)}}/>
+           <ChapterCard name={quote.title} courseId={courseData._id} lessons={quote.lessons}  key={Math.random()} id={quote._id}  addLesson={()=> {setOpenAddLesson(true),setChapterId(quote._id)}} deleteChapter={()=>{setOpenDeleteChapter(true),setChapterId(quote._id)}}  deleteLesson={(lessonId)=>{ setOpenDeleteLesson(true),setLessonId(lessonId)}} enrolled={courseStatus}/>
           </div>
         )}
       </Draggable>
@@ -267,6 +270,7 @@ function CourseDetail(props) {
       fetchCourseData()
     })
     .catch((err)=>{
+      console.log(err)
       console.log(err);
     })
 
@@ -331,7 +335,7 @@ function CourseDetail(props) {
 
           <div className='flex flex-col items-center col-span-7'>
             <h1 className='text-[22px] font-bold mb-5'>{courseData?.name}</h1>
-            <video className='w-4/5'  id="lesson_video" muted controls autoPlay  controlsList="nodownload" type="video/mp4" src={`http://localhost:4000/api/v1/lesson/file/`}></video>
+              <img className='w-4.5/5'  id="image_video" src={`http://localhost:4000/api/v1/images/${courseData?.filename}`}></img>
             <h6 className='text-[#1F1F1F] text-[14px] font-[500] mt-5 text-center'>
                {courseData?.description}
              </h6>
@@ -350,7 +354,7 @@ function CourseDetail(props) {
       <Droppable droppableId="list">
         {provided => (
           <div ref={provided.innerRef} {...provided.droppableProps}>
-            <QuoteList quotes={courseData?.chapters} />
+            <QuoteList quotes={courseData?.chapters}/>
             {provided.placeholder}
           </div>
         )}
@@ -374,7 +378,7 @@ function CourseDetail(props) {
                 <input type="text" value={chapterName} onChange={(e)=>setChapterName(e.target.value)} className='w-full border border-2 border-[#079C49]   px-2 py-3 rounded-xl mt-2 focus:outline-none h-[40px]' placeholder='Chapter Name' />
             </div>
             <div className="flex justify-end mt-5">
-            <button disabled={chapterName == ""} className='ormal-case  text-[#fff] border border-[#079C49] bg-[#079C49]  font-bold  text-[18px] px-3 rounded-xl h-10' onClick={()=> handleAddChapter()}>Save</button>
+            <button disabled={chapterName === ""} className='ormal-case  text-[#fff] border border-[#079C49] bg-[#079C49]  font-bold  text-[18px] px-3 rounded-xl h-10' onClick={()=> handleAddChapter()}>Save</button>
             </div>
         </Box>
     </Modal>

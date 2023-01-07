@@ -12,7 +12,7 @@ module.exports = {
                 data: null
             })
         }
-        const { title, date, students, course_id } = req.body
+        const { title, date, students, course_id, link } = req.body
         getCourse(course_id, (err, course) => {
             if (err) {
                 return res.status(400).json({
@@ -34,6 +34,7 @@ module.exports = {
                 date: formatted_date, 
                 students,
                 course: course._id,
+                link
             }
             createMeet(data, async(err, meet) => {
                 if (err) {
@@ -60,6 +61,11 @@ module.exports = {
     }, 
     filterMeets: (req, res) => {
         const filters = {}
+        if (req.query.title) {
+            filters.title = {
+                $regex: req.query.title
+            }
+        }
         filterMeets(filters, (err, meets) => {
             if (err) {
                 return res.status(400).json({
@@ -299,9 +305,14 @@ module.exports = {
         })
     },
     getStudentMeetings: (req, res) => {
+        const filters = {}
+        if (req.query.title) {
+            filters.title = {
+                $regex: req.query.title
+            }
+        }
         const student_id = req.decoded.student_id
-        console.log(student_id)
-        filterMeets({}, (err, meetings) => {
+        filterMeets(filters, (err, meetings) => {
             if (err) {
                 return res.status(400).json({
                     error: true,

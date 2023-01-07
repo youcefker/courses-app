@@ -14,6 +14,7 @@ import { Button, Modal } from '@mui/material'
 import StudentRow from '../components/dashboard/studentRow'
 import axios from '../axiosInstance'
 import HashLoader from "react-spinners/HashLoader";
+import { MenuItem, Select } from '@mui/material';
 
 import PropTypes from 'prop-types';
 import SwipeableViews from 'react-swipeable-views';
@@ -97,8 +98,9 @@ const CustomTab = withStyles({
 function Dashboard() {
     const router = useRouter()
     const [student, setStudent] = useState(null)
-    const [firstCourse, setFirstCourse] = useState(null)
-    const [firstCourseProgress, setFirstCourseProgress] = useState(null)
+    const [selectedCourse, setSelectedCourse] = useState(null)
+    const [courses, setCourses] = useState(null)
+    const [selectedCourseProgress, setFirstCourseProgress] = useState(null)
     const [lastWatched, setLastWatched] = useState(null)
     const [latest, setLatest] = useState(null)
     const [upcoming, setUpcoming] = useState(null)
@@ -229,7 +231,7 @@ else{
           return data
         } 
     } 
-    const fetchDataForStudent = async (student_id) => {
+    /*const fetchDataForStudent = async (student_id) => {
       try {
         console.log("storage data", storageData)
         const { data } = await axios.get(`/student/courses/${student_id}`)
@@ -291,31 +293,48 @@ else{
           } else {
             setLatest(courseData.data.data.lessons.slice(0, lastWatched + 1))
             setUpcoming(courseData.data.data.lessons.slice(lastWatched + 1))
-          }*/
+          }
         }
       } catch(err){
         console.log(err)
       }
+    }*/
+    const fetchCourseStudents = async (course_id) => {
+      try {
+        const courseStudentsRes = await axios.get(`course/students/${course_id}`)
+          console.log("##### course students", courseStudentsRes.data.data)
+          setCourseStudents(courseStudentsRes.data.data)
+      } catch(err){
+        console.log(err)
+      }
     }
-
     const fetchDataForAdmin = async () => {
       try {
         const requestsRes = await axios.get("/auth/requests")
-        console.log("requests", requestsRes.data.data)
         setEnrollRequests(requestsRes.data.data)
-        const studentRes = await axios.get("/course")
-        console.log(studentRes.data.data)
-        if(studentRes.data.data.length > 0) {
-          setFirstCourse(studentRes.data.data[0])
-          const firstCourse_name = studentRes.data.data[0].name
-          const courseStudentsRes = await axios.get(`course/students/${firstCourse_name}`)
-          console.log(courseStudentsRes.data.data)
-          setCourseStudents(courseStudentsRes.data.data)
+        const coursesRes = await axios.get("/course")
+        let availableCourses = []
+        coursesRes.data.data.map(course => {
+          availableCourses.push({
+            id: course._id,
+            name: course.name
+          })
+        })
+        setCourses(availableCourses)
+        if(coursesRes.data.data.length > 0) {
+          setSelectedCourse({id: coursesRes.data.data[0]._id, name: coursesRes.data.data[0].name})
         }
       } catch(err) {
         console.log(err)
       }
     }
+
+    useEffect(() => {
+      if(selectedCourse){
+        fetchCourseStudents(selectedCourse.id)
+      }
+    }, [selectedCourse])
+    
 
     const handleAcceptModal = (accepted)=>{
       setAcceptModal(true)
@@ -333,6 +352,10 @@ else{
 
     const handleCloseRefuse = ()=>{
       setRefuseModal(false)
+    }
+
+    const handleSelectChange = (event) => {
+      setSelectedCourse(event.target.value)
     }
 
     const acceptEnrollRequest = async (request) => { 
@@ -366,6 +389,7 @@ else{
     }
 
     const deleteStudentFromCourse = async (course_id, student_id) => {
+      console.log(selectedCourse)
       try {
         const response = await axios.delete(`/course/${course_id}/student/${student_id}`)
         console.log(response)
@@ -376,7 +400,7 @@ else{
         console.log(err)
       }
     }
-    const calculateProgress = (student, course_id) => {
+    /*const calculateProgress = (student, course_id) => {
       console.log("studnet to calculate", student)
       const course_progress = student.progress.filter(course => course.course_id === course_id)[0]
       let num_lessons_completed = 0
@@ -387,11 +411,10 @@ else{
       })
       console.log(num_lessons_completed / course_progress.lessons_progress.length)
       return num_lessons_completed / course_progress.lessons_progress.length
-    }
+    }*/
     useEffect(() => {
-      console.log("student########", student)
-      const auth = fetchStorageData()
-      console.log("auth", auth)
+      if(typeof window != "undefined"){
+        const auth = fetchStorageData()
       if(auth){
         if(auth.role === "admin") {
           setStudent(false)
@@ -409,17 +432,8 @@ else{
       } else {
         router.replace('login')
       }
-    }, [])
-    useEffect(() => {
-      
-    }, [student])
-    useEffect(() => {
-      
-    }, [upcoming, latest,firstCourse, storageData])
-
-    useEffect(() => {
-
-    }, [enrollRequests, courseStudents, storageData])
+      }
+    }, [typeof window, student])
     
     const content =  storageData ? ( 
       <>
@@ -482,7 +496,7 @@ else{
                      <div className="flex justify-center mt-8">
                       <button onClick={()=> setDeleteModal(false)} className="muiBtn  sign text-[#079C49] border-2 border-[#079C49] w-[120px] 2xl:w-[120px] h-[40px] 2xl:h-[40px] text-[16px] 2xl:text-[18px] rounded-[10px] font-[600] mr-3" >Cancel</button>
                       <button  onClick={() => {
-                        deleteStudentFromCourse(firstCourse._id, deleted)
+                        deleteStudentFromCourse(selectedCourse.id, deleted)
                       }} className='muiBtn register text-[#079C49] border-2 border-[#079C49] w-[120px] 2xl:w-[120px] h-[40px] 2xl:h-[40px] text-[16px] 2xl:text-[18px] rounded-[10px] font-[600] '> <span>yes</span></button>
                     </div>
                    
@@ -494,285 +508,6 @@ else{
           {!fetched ?
               <HashLoader color="#079C49" loading={true} size={60} />
             :
-          student ? 
-              !firstCourse ? 
-                <h3 className='text-[#1F1F1F] text-[18px] font-[600]'>No course enrolled right now .</h3>
-              :
-              latest && upcoming? (
-                <>
-             
-                <div>
-                <div className="flex justify-between">
-                <div>
-                   <h3 className='text-[#1F1F1F] text-[18px] font-[600]'>Home</h3>
-                   <h5 className='text-[#1F1F1F] text-[14px]'>Hello and welcome back! Let’s keep learning</h5>
-                </div>
-                <div className='flex items-center'>
-                    <div>
-                      {['right'].map((anchor) => (
-                        <React.Fragment key={anchor}>
-                          <button className='bg-[#079C49] text-white py-2 px-2  rounded-xl sm:mr-5 font-bold text-[14px]' onClick={toggleDrawer(anchor, true)}>
-                            <PlayLessonIcon />
-                            <span className='ml-2 hidden sm:inline-block'>Lessons</span>
-                            </button>
-                          <SwipeableDrawer
-                            anchor={anchor}
-                            open={state[anchor]}
-                            onClose={toggleDrawer(anchor, false)}
-                            onOpen={toggleDrawer(anchor, true)}
-                          >
-                            {list(anchor)}
-                          </SwipeableDrawer>
-                        </React.Fragment>
-                      ))}
-                    </div> 
-                    <div  className='hidden sm:block border-2 border-[#079C49] rounded-full w-[50px] h-[50px] overflow-hidden cursor-pointer' style={{position: "relative"}} onClick={() => router.push("/profile")}>
-                        <Image src="/images/main1.png"  layout="fill"
-                     objectFit="cover"/>
-                    </div>
-                </div>
-              
-
-                           
-            </div>
-          
-            <div className='sm:hidden mt-5'>
-                          <h3 className='text-[#1F1F1F] font-[600] text-[18px]'>Total progress</h3>
-                           <h5 className='text-[#1F1F1F] text-[14px]'>{firstCourse.name}</h5>
-
-                           <div className="flex justify-center mt-3">
-                                <div className='bg-[#48DA6F] w-[200px] h-[200px] rounded-full p-8 relative'>
-                                 <CircularProgressbar
-                                   value={percentage.toFixed(0)}
-                              
-                                   
-                                   backgroundColor="#48DA6F"
-                                   
-                                   styles={buildStyles({
-                                     // Rotation of path and trail, in number of turns (0-1)
-                                     rotation: 0.25,
-                                 
-                                     // Whether to use rounded or flat corners on the ends - can use 'butt' or 'round'
-                                     strokeLinecap: 'butt',
-                                 
-                                     // Text size
-                                     textSize: '18px',
-                                     
-                                     
-                                     // How long animation takes to go from one percentage to another, in seconds
-                                     pathTransitionDuration: 0.5,
-                                 
-                                     // Can specify path transition in more detail, or remove it entirely
-                                     // pathTransition: 'none',
-                                 
-                                     // Colors
-                                     pathColor: "#079C49",
-                                     textColor: '#fff',
-                                     trailColor: '#fff',
-                                     backgroundColor: '#3e98c7',
-                                   })}
-                                 />
-                                 {percentage.toFixed(0) == 100 && (<div className="absolute top-[45%] left-[35%] text-white font-bold text-[22px]">{percentage.toFixed(0)}%</div>)}
-                                 {percentage.toFixed(0) != 100  && (<div className="absolute top-[45%] left-[40%] text-white font-bold text-[22px]">{percentage.toFixed(0)}%</div>)}
-                                 </div>
-                            </div>
-                          
-            </div>
-         
-            
-
-              <div className="mobile_dash sm:hidden w-full flex flex-col items-center mt-10">
-              <Box sx={{  width: "100%" }}>
-              
-                     <Tabs
-                       value={value}
-                       onChange={handleChange}
-                       indicatorColor="secondary"
-                       textColor="inherit"
-                       sx={{p: 0}}
-                       variant="fullWidth"
-                       aria-label="full width tabs example"
-                     >
-                       <Tab label="Upcoming courses" sx={{textTransform : "unset",p:1, whiteSpace : "nowrap", fontSize: "13px", fontWeight : 600, color: "#000"}} {...a11yProps(0)} />
-                       <Tab label="New courses" sx={{textTransform : "unset", p:1,whiteSpace : "nowrap", fontSize: "13px", fontWeight : 600, color: "#000"}}  {...a11yProps(1)} />
-                       <Tab label="Latest lessons" sx={{textTransform : "unset", p:1,whiteSpace : "nowrap", fontSize: "13px", fontWeight : 600, color: "#000"}}  {...a11yProps(2)} />
-                     </Tabs>
-                  
-                   <SwipeableViews
-                     axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-                     index={value}
-                     onChangeIndex={handleChangeIndex}
-                   >
-                     <TabPanel value={value} index={0} dir={theme.direction}>
-                     <div className="grid grid-cols-1 gap-y-2 my-4">
-                           
-                      {upcoming.length == 0 && ( <h3 className='text-center'>No upcoming courses found</h3>)}        
-                     {upcoming[0]? <CourseCard lessonIndex={"lesson " + upcoming[0].classement} goToLesson={() => {
-                              console.log("upcoming 0 ", upcoming[0])
-                             router.push({
-                             pathname: "/courses/lessons/"+upcoming[0]._id,
-                               query : {course_id: firstCourse._id, lesson_id: upcoming[0]._id, filename: upcoming[0].filename, name: upcoming[0].name, description: upcoming[0].description, courseName : firstCourse.name, classement: upcoming[0].classement}
-                             })
-                           }} name ={upcoming[0].name} descrip="Lesson 6" icon="/icons/courseIcon.svg" />: null}
-                           {upcoming[1]? <CourseCard lessonIndex={"lesson " + upcoming[1].classement} goToLesson={() => {
-                             console.log("upcoming", upcoming[1])
-                             router.push({
-                              pathname: "/courses/lessons/"+upcoming[1]._id,
-                                query : {course_id: firstCourse._id, lesson_id: upcoming[1]._id, filename: upcoming[1].filename, name: upcoming[1].name, description: upcoming[1].description,courseName : firstCourse.name, classement: upcoming[1].classement}
-                              })
-                           }} name ={upcoming[1].name} descrip="Lesson 6" icon="/icons/courseIcon.svg" />: null}
-                           {upcoming[2]? <CourseCard lessonIndex={"lesson " + upcoming[2].classement} goToLesson={() => {
-                             console.log("upcoming",upcoming[2])
-                            router.push({
-                              pathname: "/courses/lessons/"+upcoming[2]._id,
-                              query : {course_id: firstCourse._id, lesson_id: upcoming[2]._id, filename: upcoming[2].filename, name: upcoming[2].name, description: upcoming[2].description,courseName : firstCourse.name, classement: upcoming[2].classement}
-                              })
-                           }} name ={upcoming[2].name} descrip="Lesson 6" icon="/icons/courseIcon.svg" />: null}
-    
-                   
-    
-    
-    
-    
-                       </div>
-                     </TabPanel>
-                     <TabPanel value={value} index={1} dir={theme.direction}>
-                         {/* <div className='mt-2'>
-                             <CourseCard name="Lorem ipsum dolor sit" descrip="Lorem ipsum" icon="/icons/newCourse.svg"/>
-                             <CourseCard name="Lorem ipsum dolor sit" descrip="Lorem ipsum" icon="/icons/newCourse.svg"/>
-                             <CourseCard name="Lorem ipsum dolor sit" descrip="Lorem ipsum" icon="/icons/newCourse.svg"/>
-                           </div> */}
-                     </TabPanel>
-                     <TabPanel value={value} index={2} dir={theme.direction}>
-                     <div className='mt-3'>
-                     {latest.length == 0 && ( <h3 className='text-center'>No latest lessons found</h3>)}   
-                     {latest.map(lesson => <ProgressCard key={lesson._id} progress="25" goToLesson={() => {
-                             router.push({
-                             pathname: "/courses/lessons/"+lesson._id,
-                               query : {course_id: firstCourse._id, lesson_id: lesson._id, filename: lesson.filename, name: lesson.name, description: lesson.description, courseName : firstCourse.name, classement: lesson.classement}
-                             })
-                           }} course={lesson.name} descrip={"Lesson " + lesson.classement} />)}
-                   </div>
-                     </TabPanel>
-                   </SwipeableViews>
-              </Box>
-              
-              </div>
-    
-            <div className="hidden sm:grid grid-cols-3 gap-4 xl:gap-x-8 mt-12">
-                <div className="col-span-3 xl:col-span-2">
-    
-    
-                    <div className="bg-[#fff] p-4 rounded-[15px] ">
-                       <h3 className='text-[#1F1F1F] font-[600] text-[22px]'>Upcoming lessons</h3>
-                       {upcoming.length == 0 && ( <h3 className='text-center'>No upcoming courses found</h3>)}   
-                       <div className="grid grid-cols-3 gap-4 my-4">
-                      
-                           {upcoming[0]? <CourseCard lessonIndex={"lesson " + upcoming[0].classement} goToLesson={() => {
-                              console.log("upcoming @@@@@@", upcoming)
-                             router.push({
-                             pathname: "/courses/lessons/"+upcoming[0]._id,
-                             query : {course_id: firstCourse._id, lesson_id: upcoming[0]._id, filename: upcoming[0].filename, name: upcoming[0].name, description: upcoming[0].description, courseName : firstCourse.name, classement: upcoming[0].classement}
-                             })
-                           }} name ={upcoming[0].name} descrip="Lesson 6" icon="/icons/courseIcon.svg" />: null}
-                           {upcoming[1]? <CourseCard lessonIndex={"lesson " + upcoming[1].classement} goToLesson={() => {
-                             router.push({
-                              pathname: "/courses/lessons/"+upcoming[1]._id,
-                              query : {course_id: firstCourse._id, lesson_id: upcoming[1]._id, filename: upcoming[1].filename, name: upcoming[1].name, description: upcoming[1].description, courseName : firstCourse.name, classement: upcoming[1].classement}
-                              })
-                           }} name ={upcoming[1].name} descrip="Lesson 6" icon="/icons/courseIcon.svg" />: null}
-                           {upcoming[2]? <CourseCard lessonIndex={"lesson " + upcoming[2].classement} goToLesson={() => {
-                            router.push({
-                              pathname: "/courses/lessons/"+upcoming[2]._id,
-                              query : {course_id: firstCourse._id, lesson_id: upcoming[2]._id, filename: upcoming[2].filename, name: upcoming[2].name, description: upcoming[2].description, courseName : firstCourse.name, classement: upcoming[2].classement}
-                              })
-                           }} name ={upcoming[2].name} descrip="Lesson 6" icon="/icons/courseIcon.svg" />: null}
-    
-                   
-    
-    
-    
-                       </div>
-                    </div>
-    
-    
-                    <div className="grid grid-cols-2 gap-6 mt-3">
-                        <div className='circleProgress flex-col  rounded-[15px] p-4'>
-                           <h3 className='text-[#1F1F1F] font-[600] text-[22px]'>Total progress</h3>
-                           <h5 className='text-[#1F1F1F] text-[16px] mt-2'>{firstCourse.name}</h5>
-                           <div className="flex justify-center mt-5">
-                                <div className='bg-[#48DA6F] w-[200px] h-[200px] rounded-full p-8 relative'>
-                                 <CircularProgressbar
-                                   value={percentage.toFixed(0)}
-                         
-                                   
-                                   backgroundColor="#48DA6F"
-                                   
-                                   styles={buildStyles({
-                                     // Rotation of path and trail, in number of turns (0-1)
-                                     rotation: 0.25,
-                                 
-                                     // Whether to use rounded or flat corners on the ends - can use 'butt' or 'round'
-                                     strokeLinecap: 'butt',
-                                 
-                                     // Text size
-                                     textSize: '18px',
-                                     
-                                     
-                                     // How long animation takes to go from one percentage to another, in seconds
-                                     pathTransitionDuration: 0.5,
-                                 
-                                     // Can specify path transition in more detail, or remove it entirely
-                                     // pathTransition: 'none',
-                                 
-                                     // Colors
-                                     pathColor: "#079C49",
-                                     textColor: '#fff',
-                                     trailColor: '#fff',
-                                     backgroundColor: '#3e98c7',
-                                   })}
-                                 />
-                                                    {percentage.toFixed(0) == 100 && (<div className="absolute top-[45%] left-[35%] text-white font-bold text-[22px]">{percentage.toFixed(0)}%</div>)}
-                                 {percentage.toFixed(0) != 100  && (<div className="absolute top-[45%] left-[40%] text-white font-bold text-[22px]">{percentage.toFixed(0)}%</div>)}
-                                 </div>
-                            </div>
-                          
-                          
-                        </div>
-                        <div className='bg-[#fff] p-4 rounded-[15px]'>
-                           <h3 className='text-[#1F1F1F] font-[600] text-[22px]'>New courses</h3>
-                           <h5 className='text-[#1F1F1F] text-[16px] mt-2'>Discover new courses</h5>
-                           {/* <div className='mt-2'>
-                             <CourseCard name="Lorem ipsum dolor sit" descrip="Lorem ipsum" icon="/icons/newCourse.svg"/>
-                             <CourseCard name="Lorem ipsum dolor sit" descrip="Lorem ipsum" icon="/icons/newCourse.svg"/>
-                             <CourseCard name="Lorem ipsum dolor sit" descrip="Lorem ipsum" icon="/icons/newCourse.svg"/>
-                           </div> */}
-                        </div>
-                    </div>
-                </div>
-                <div className='bg-[white] p-4 rounded-[15px] col-span-3 xl:col-span-1'>
-                   <h3 className='text-[#1F1F1F] font-[600] text-[22px]'>Latest lessons</h3>
-                   {latest.length == 0 && ( <h3 className='text-center mt-5'>No latest courses found</h3>)}   
-                   <div className='mt-3'>
-                     {latest.map(lesson => <ProgressCard key={lesson._id} progress="25" goToLesson={() => {
-                             router.push({
-                             pathname: "/courses/lessons/"+lesson._id,
-                               query : {course_id: firstCourse._id, lesson_id: lesson._id, filename: lesson.filename, name: lesson.name, description: lesson.description, courseName : firstCourse.name, classement: lesson.classement}
-                             })
-                           }} course={lesson.name} descrip={"Lesson " + lesson.classement} />)}
-                   </div>
-                </div>
-            </div>
-            </div>
-            </>
-            ) : (firstCourse !== undefined ?
-              <div className='flex justify-center items-center'>
-                <HashLoader color="#079C49" loading={true} size={60} />
-              </div> : <h1 className='text-center text-xl'>You're not accepted yet !</h1>)
-            
-           
-            
-          : 
           enrollRequests ? 
           (
             <>
@@ -801,7 +536,16 @@ else{
   
   
                 <div className='sm:px-4 py-6 bg-[#fff] rounded-[15px]'>
-                    <h4 className='text-[22px] text-[#1F1F1F]'>My students <span className='text-[14px]'>({courseStudents?.length})</span> </h4>
+                        <div className='flex-row'>
+                          <h4 className='text-[22px] text-[#1F1F1F]'>My students <span className='text-[14px]'>({courseStudents?.length})</span></h4>
+                          <div className='my-3'>
+                            <Select value={selectedCourse?.name}
+                              className='selectInput w-full h-[40px] border border-2 border-[#079C49] rounded-lg'
+                              onChange={handleSelectChange} >
+                                {courses?.map(course => <MenuItem value={course}>{course.name}</MenuItem>)}
+                              </Select>
+                          </div>
+                        </div>
                     <div className='flex items-center border-[1px] border-[#9DA6BACC] p-2 rounded-[10px] mt-3 text-[#9DA6BA]'>
                         <SearchIcon />
                         <input type="search" className='w-full outline-none pl-2 text-[#000]' placeholder='Search a student’s name ...' onChange={(e) => searchStudents(e.target.value)}/>
@@ -814,14 +558,14 @@ else{
                             <h5 className='text-[#1F1F1F] text-[12px] font-[600] text-center'>Action</h5>
                         </div>
                         {searchStudent.length > 1 ? (
-                          filteredStudents?.map(student => <StudentRow key={student._id} name={student.name} cours={firstCourse.name} progress={parseInt(calculateProgress(student, firstCourse._id) * 100) == 0 ? -1 :parseInt(calculateProgress(student, firstCourse._id) * 100) } delete deleteStudent={()=> {
+                          filteredStudents?.map(student => <StudentRow key={student._id} name={student.name} cours={selectedCourse.name} delete deleteStudent={()=> {
                             setDeleted(student._id)
                             setDeleteModal(true)
-                          }}/>)):
-                        courseStudents?.map(student => <StudentRow key={student._id} name={student.name} cours={firstCourse.name} progress={parseInt(calculateProgress(student, firstCourse._id) * 100) == 0 ? -1 :parseInt(calculateProgress(student, firstCourse._id) * 100) } delete deleteStudent={()=> {
+                          }} progress={student?.progress * 100}/>)):
+                        courseStudents?.map(student => <StudentRow key={student._id} name={student.name} cours={selectedCourse.name} delete deleteStudent={()=> {
                           setDeleted(student._id)
                           setDeleteModal(true)
-                        }}/>)}
+                        }} progress={student?.progress ? student?.progress * 100 : 0}/>)}
                     </div>
               
                 </div>

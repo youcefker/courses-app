@@ -9,7 +9,8 @@ const storage = multer.diskStorage({
         cb(null, 'lessons/')
     },
     filename: function (req, file, cb) {
-        cb(null, Date.now() + file.fieldname + ".mp4")
+        console.log("fileeeeeee",file)
+        cb(null, Date.now() + file.originalname)
     },
 })
 const upload = multer({

@@ -9,6 +9,10 @@ const meetSchema = new Schema({
         type: Date,
         require: true
     },
+    link: {
+        type: String,
+        require: true
+    },
     students: [{
         type: Schema.Types.ObjectId,
         ref: "Student"

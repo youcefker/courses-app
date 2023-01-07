@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Toaster } from 'react-hot-toast'
+import toast, { Toaster } from 'react-hot-toast';
 import IndexPage from '../../components/dashboard/indexPage'
 import Sidebar from '../../components/dashboard/sidebar'
 import SearchIcon from '@mui/icons-material/Search';
@@ -52,6 +52,8 @@ function List() {
 
     const [meetName, setMeetName] = useState("")
 
+    const [meetLink, setMeetLink] = useState("")
+
     const [courseId, setCourseId] = useState(null)
 
     const [meetDate, setMeetDate] = useState(null)
@@ -97,10 +99,10 @@ function List() {
         }
       }
    
-    const fetchMeets = async () => {
+    const fetchMeets = async (title) => {
       try {
-        const response = await axios.get("/meet")
-  
+        const response = await axios.get(`/meet${typeof title !== 'undefined' ? "?title=" + title : ""}`)
+        console.log(response.data.data)
         setMeets(response.data.data)
    
       } catch(err){
@@ -131,7 +133,7 @@ function List() {
         fetchMeets()
         fetchCoursesNames()
         fetchStudents()
-      }, [])
+      }, [typeof window])
 
 
 
@@ -141,7 +143,8 @@ function List() {
           title: meetName,
           date: meetDate,
           students: personName,
-          course_id: courseId
+          course_id: courseId,
+          link: meetLink
         }
         
       
@@ -174,6 +177,10 @@ function List() {
         }
       }
 
+      const handleSearchChange = (event) => {
+        fetchMeets(event.target.value)
+      }
+
   return (
     <> 
     <Sidebar active="meets" />
@@ -181,17 +188,17 @@ function List() {
     <IndexPage>
    
           
-                      <div className="flex justify-between items-center mb-4">
+                      <div className="lg:flex justify-between items-center mb-4">
                         <h4 className='text-[30px] font-[600] text-[#1F1F1F] mt-5 mb-2'>Meets list</h4>
                         <div className='flex items-center border-[1px] border-[#9DA6BACC] p-2 rounded-[10px] mt-3 text-[#9DA6BA] bg-white h-12'>
                           <SearchIcon />
-                          <input type="search" className='w-full outline-none pl-2 text-[#000]' placeholder='Search ...' />
+                          <input type="search" className='w-full outline-none pl-2 text-[#000]' placeholder='Search ...' onChange={handleSearchChange}/>
                         </div>
                         <button className='ormal-case bg-[#079C49] text-[#fff] font-bold  text-[20px] p-2 px-3 rounded-xl h-12'  onClick={()=>setOpenAddCourse(true)}>Create a Meet</button>
                       </div>
                   
-                      <div  className=" py-2 grid grid-cols-4 gap-6 gap-y-10">
-                        {meets?.map((meet)=><MeetCard key={meet.id} timeRemains={moment(meet.date).startOf('hour').fromNow()} name={meet.title} courseName={meet.course.name} date={moment(meet.date).format('MMMM Do YYYY, h:mm:ss a')} time="9pm" admin/>)}
+                      <div  className=" py-2 grid md:grid-cols-2 gap-6 gap-y-10 sm:grid-cols-1 lg:grid-cols-3">
+                        {meets?.map((meet)=><MeetCard key={meet.id} timeRemains={moment(meet.date).startOf('hour').fromNow()} name={meet.title} courseName={meet.course?.name} date={moment(meet.date).format('MMMM Do YYYY, h:mm:ss a')} time="9pm" admin link={meet.link} deleteMeet={() => handleDeleteMeet(meet._id)}/>)}
                
                       {/* <Accordion key={course._id} fetchLessons={() => fetchCourseLessons(course._id)} title={`Course ${index + 1} : ${course.name}`} 
                       content={coursesLessons[course._id] ?  coursesLessons[course._id].map((lesson, lessonIndex) =><div key={lesson._id} className='text-[18px] font-[600] text-[#1F1F1F]  ml-5 mb-2 flex items-center justify-between hover:bg-[#eee] p-2 rounded-lg'>
@@ -245,7 +252,10 @@ function List() {
              <div  className='mt-4'>
                 <input type="text" value={meetName} onChange={(e)=>setMeetName(e.target.value)} className='w-full border border-2 border-[#079C49]   px-2 py-3 rounded-xl mt-2 focus:outline-none h-[40px]' placeholder='Meet Name' />
             </div>
-            <FormControl className='w-full my-4'>
+             <div  className='mt-4'>
+                <input type="text" value={meetLink} onChange={(e)=>setMeetLink(e.target.value)} className='w-full border border-2 border-[#079C49]   px-2 py-3 rounded-xl mt-2 focus:outline-none h-[40px]' placeholder='Meet Link' />
+            </div>
+            <FormControl className='w-full my-5'>
                      <label htmlFor="choosed" className='text-[#079C49] ml-1'>Course name</label>
                             <Select
                               name='choosed'

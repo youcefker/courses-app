@@ -55,7 +55,7 @@ const Sidebar = ({ active }) => {
      
       <Image src="/images/footer_logo.svg" width={60} height={60} />
       <ul className="flex flex-col justify-start items-stretch w-full my-8">
-        <li
+        {!student?<li
           onClick={() => {
             setActiveItem("dashboard");
             router.push("/dashboard");
@@ -69,7 +69,7 @@ const Sidebar = ({ active }) => {
           {" "}
           <HomeIcon className="mr-2 text-[22px]" />Dashboard
      
-        </li>
+        </li> : null}
       
        
   
@@ -222,7 +222,7 @@ const Sidebar = ({ active }) => {
                     <Image src="/images/main1.png"  layout="fill"
                  objectFit="cover"/>
                 </div>
-                <li
+                {!student ?<li
                   onClick={() => {
                     setActiveItem("dashboard");
                     router.push("/dashboard");
@@ -236,7 +236,7 @@ const Sidebar = ({ active }) => {
                   {" "}
                   <HomeIcon className="mr-2 text-[22px]" />Dashboard
              
-                </li>
+                </li> : null}
               
                
           
@@ -255,6 +255,36 @@ const Sidebar = ({ active }) => {
                   <MenuBookIcon className="mr-2 text-[22px]" /> Courses
                 
                 </li> : null}
+                {student ? <li
+                  onClick={() => {
+                    setActiveItem("courses");
+                    router.push("/student/courses/list");
+                  }}
+                  className={
+                    activeItem === "courses"
+                      ? "my-3 hover:text-[#079C49] font-semibold flex items-center  cursor-pointer text-[14px] text-[#079C49] relative"
+                      : "my-3 hover:text-[#079C49] font-semibold flex items-center  cursor-pointer text-[14px] text-[#9DA6BA] relative"
+                  }
+                >
+                  {" "}
+                  <MenuBookIcon className="mr-2 text-[22px]" /> Courses
+                
+                </li> : null}
+                <li
+                  onClick={() => {
+                    setActiveItem("meets");
+                    router.push("/student/meets/invitMeets");
+                  }}
+                  className={
+                    activeItem === "meets"
+                      ? "my-3 hover:text-[#079C49] font-semibold flex items-center  cursor-pointer text-[14px] text-[#079C49] relative"
+                      : "my-3 hover:text-[#079C49] font-semibold flex items-center  cursor-pointer text-[14px] text-[#9DA6BA] relative"
+                  }
+                >
+                  {" "}
+                  <GroupsIcon className="mr-2 text-[22px]" /> Meets
+                
+                </li>
                </ul>
                <div className=" flex flex-col justify-center items-center" onClick={handleLogout}>
                   

@@ -20,7 +20,7 @@ const meetRoutes = require("./Routes/MeetRoutes")
 
 //----- middlewares -----
 require('dotenv').config({ silent: true });
-app.use("/api/v1/images", express.static("uploads/images"))
+app.use("/api/v1/images", express.static("uploads/courses_images"))
 app.use(cors());
 app.use(express.json())
 app.use('/api/v1/auth', authRoutes)
@@ -29,35 +29,6 @@ app.use('/api/v1/lesson', lessonRoutes)
 app.use('/api/v1/student', studentRoutes)
 app.use('/api/v1/chapter', chapterRoutes)
 app.use('/api/v1/meet', meetRoutes)
-
-//----- virtual meeting tool setup -----
-const peerServer = ExpressPeerServer(server, { // Here we are actually defining our peer server that we want to host
-  debug: true,
-});
-
-app.use("/peerjs", peerServer);
-
-io.on("connection", (socket) => { // When a user coonnects to our server
-  socket.on("join-room", (roomId, id, myname) => { // When the socket a event 'join room' event
-    socket.join(roomId); // Join the roomid
-    socket.to(roomId).broadcast.emit("user-connected", id, myname);// emit a 'user-connected' event to tell all the other users
-    // in that room that a new user has joined
-
-    socket.on("messagesend", (message) => {
-      console.log(message);
-      io.to(roomId).emit("createMessage", message);
-    });
-
-    socket.on("tellName", (myname) => {
-      console.log(myname);
-      socket.to(roomId).broadcast.emit("AddName", myname);
-    });
-
-    socket.on("disconnect", () => { // When a user disconnects or leaves
-      socket.to(roomId).broadcast.emit("user-disconnected", id);
-    });
-  });
-});
 //----- env -----
 const MONGO_URL = process.env.MONGO_URL
 //MONGO_URL = "mongodb://localhost:27017/courses"

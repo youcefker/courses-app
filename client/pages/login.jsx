@@ -60,7 +60,7 @@ function Login() {
             await localStorage.setItem("name", response.data.data.student.name)
             await localStorage.setItem("student_id", response.data.data.student._id)
             router.push({
-              pathname :"/profile",
+              pathname :"/student/courses/list",
             })
           }
       } catch(err) {

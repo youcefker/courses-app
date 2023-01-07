@@ -2,7 +2,7 @@ import Image from 'next/image'
 import React from 'react'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-  import { faFacebookF, faInstagram, faLinkedin, faLinkedinIn, faTwitter } from '@fortawesome/free-brands-svg-icons' 
+  import { faFacebookF, faInstagram, faLinkedin, faLinkedinIn, faTiktok, faTwitter } from '@fortawesome/free-brands-svg-icons' 
 import { Button } from '@mui/material';
 import { useRouter } from 'next/router';
 
@@ -22,20 +22,18 @@ function Footer() {
           </div>
             <div className='md:hidden  mt-4 '>
                <h5 className='text-[20px] font-[700] text-[#fff]'>Contact Us</h5>
-               <h6 className='text-[#fff] text-[15px] font-[400] mt-[15px]'>exemple2022@gmail.com</h6>
+               <h6 className='text-[#fff] text-[15px] font-[400] mt-[15px]'>contact@investinsmart.com</h6>
             </div>
-            <h6 className='text-[#F4F4F4] text-[24px] mt-[40px] hidden md:block'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam mollis, justo nec porttitor auctor, erat sapien faucibus lectus, vel tempor dolor augue et lectus. </h6>
+            <h6 className='text-[#F4F4F4] text-[24px] mt-[40px] hidden md:block'>Become truly accomplished by learning our financial education training and the financial art of catching the best opportunities in the stock market</h6>
             <div className="social flex justify-center md:justify-start mt-[30px]">
-              <button className='w-[45px] mr-6 text-[#fff] border-2 border-[#fff]  py-1 text-[22px] hover:text-[#079C49] hover:border-[#079C49]'><FontAwesomeIcon icon={faFacebookF} /></button>
-              <button className='w-[45px] mr-6 text-[#fff] border-2 border-[#fff]  py-1 text-[22px] hover:text-[#079C49] hover:border-[#079C49]'><FontAwesomeIcon icon={faTwitter} /></button>
-              <button className='w-[45px] mr-6 text-[#fff] border-2 border-[#fff]  py-1 text-[22px] hover:text-[#079C49] hover:border-[#079C49]'><FontAwesomeIcon icon={faLinkedinIn} /></button>
-              <button className='w-[45px] text-[#fff] border-2 border-[#fff]  py-1 text-[22px] hover:text-[#079C49] hover:border-[#079C49]'><FontAwesomeIcon icon={faInstagram} /></button>
+            <a href='https://www.instagram.com/invest_in_smart/' className='w-[45px] text-center mr-6 text-[#fff] border-2 border-[#fff]  py-1 text-[22px] hover:text-[#079C49] hover:border-[#079C49]'><FontAwesomeIcon icon={faInstagram} /></a>
+            <a href='https://www.tiktok.com/@invest_in_smart?_t=8Yq1ywYFKNy&_r=1' className='w-[45px] text-center mr-6 text-[#fff] border-2 border-[#fff]  py-1 text-[22px] hover:text-[#079C49] hover:border-[#079C49]'><FontAwesomeIcon icon={faTiktok} /></a>
      
             </div>
         </div>
         <div className='hidden md:block mt-12 lg:mt-0'>
             <h5 className='text-[30px] font-[700] text-[#fff]'>Contact Us</h5>
-            <h6 className='text-[#fff] text-[23px] font-[400] mt-[30px]'>exemple2022@gmail.com</h6>
+            <h6 className='text-[#fff] text-[23px] font-[400] mt-[30px]'>contact@investinsmart.com</h6>
         </div>
     </div>
   )

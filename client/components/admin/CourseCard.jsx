@@ -83,9 +83,8 @@ function CourseCard(props) {
   }
   
   return (
-    <>
 
-    <div className='bg-white rounded-lg overflow-hidden'>
+    <div className='bg-white rounded-lg overflow-hidden text-center border-black-1'>
     
       <div className={props.isActive ? "bg-[green] h-2 w-full" : "bg-[red] h-2 w-full"}></div>
       <div className='px-4 py-5'>
@@ -165,7 +164,6 @@ function CourseCard(props) {
           </div>
       </div>
     </div>
-    </>
   )
 }
 

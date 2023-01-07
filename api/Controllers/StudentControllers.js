@@ -75,8 +75,8 @@ module.exports = {
                             }
                         })
                     })
-                    console.log("progress", chapters_progress)
-                    student.progress[course.id] = {...chapters_progress}
+                    student.progress= {}
+                    student.progress[course.id] = {...chapters_progress} 
                     await course.save()
                     await student.markModified("progress")
                     await student.save()
@@ -327,6 +327,7 @@ module.exports = {
                     data: null
                 })
             }
+            console.log("course id", course_id)
             getCourse(course_id, async (err, course) => {
                 if(err) {
                     return res.status(400).json({
@@ -342,46 +343,41 @@ module.exports = {
                         data: null
                     })
                 }
-                const existedCourse = student.courses.filter(courseId => courseId.toString() === course.id) 
-                if(existedCourse.length > 0){
+                if(student.courses.includes(course._id)){
                     return res.status(400).json({
                         error: true,
                         message: "course already enrolled by student!",
                         data: null
                     })
                 }
-                try {
-                    const data = {
-                        course_id, 
-                        student_id,
-                        course_name: course.name,
-                        email,
-                        student_name: student.name
-                    }
-                    createEnrollRequest(data, (err, enrollRequest) => {
-                        if(err) {
-                            return res.status(400).json({
-                                error: true,
-                                message: "something went wrong!",
-                                data: null
-                            })
-                        }
-                        if(!enrollRequest) {
-                            return res.status(400).json({
-                                error: true,
-                                message: "enroll request not found!",
-                                data: null
-                            })
-                        }
-                        return res.status(201).json({
+                const data = {
+                    course_id, 
+                    student_id,
+                    course_name: course.name,
+                    email,
+                    student_name: student.name
+                }
+                createEnrollRequest(data, (err, enrollRequest) => {
+                    if(err) {
+                        return res.status(400).json({
                             error: true,
-                            message: "enroll request created succesfully",
+                            message: "something went wrong!",
                             data: null
                         })
+                    }
+                    if(!enrollRequest) {
+                        return res.status(400).json({
+                            error: true,
+                            message: "enroll request not found!",
+                            data: null
+                        })
+                    }
+                    return res.status(201).json({
+                        error: false,
+                        message: "enroll request created succesfully",
+                        data: null
                     })
-                } catch(err){
-                    console.log(err)
-                }
+                })
             })
         })
     },

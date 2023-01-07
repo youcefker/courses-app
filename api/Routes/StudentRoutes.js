@@ -23,11 +23,5 @@ router.get("/courses/:student_id", checkStudentToken, param("student_id", "inval
 router.put("/:student_id",  checkStudentToken, param("student_id", "invalid student id.").isMongoId(), updateStudent)
 router.delete("/request/:request_id", checkAdminToken, param("request_id", "invalid student id.").isMongoId(), deleteEnrollRequest)
 router.delete("/:student_id",  checkAdminToken, param("student_id", "invalid student id.").isMongoId(), deleteStudent)
-router.post("/request", checkStudentToken,  checkSchema({
-    course_id: {
-        isMongoId: {
-            errorMessage: "invalid course id"
-        }
-    }
-}), createEnrollRequest)
+router.post("/request", checkStudentToken, createEnrollRequest)
 module.exports = router

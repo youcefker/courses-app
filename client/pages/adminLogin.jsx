@@ -51,7 +51,7 @@ function AdminLogin() {
             await localStorage.setItem("role","admin")
             await toast.success(response.data?.message);
             router.push({
-              pathname :"/profile",
+              pathname :"/dashboard",
             })
           }else  toast.error(response.data.message);
       } catch(err) {

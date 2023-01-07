@@ -86,6 +86,7 @@ function Courses() {
   const [file, setFile] = useState(null)
   const [openUpdateCourse, setOpenUpdateCourse] = useState(false)
  const [openDeleteCourse, setOpenDeleteCourse] = useState(false)
+ const [search, setSearch] = useState(null)
   const handleOpenAcc = (value) => {
     setOpenAcc(openAcc === value ? 0 : value);
   };
@@ -100,10 +101,11 @@ const handleClose = () => setOpen(false);
 
 
 
-  const fetchCourses = async () => {
+  const fetchCourses = async (name) => {
+    console.log("####### name", name)
+    console.log(`/course${typeof name !== 'undefined' ? "?name=" + name : ""}`)
     try {
-      const response = await axios.get("/course")
-      console.log(response.data)
+      const response = await axios.get(`/course${typeof name !== 'undefined' ? "?name=" + name : ""}`)
       if(response.data.data.length != 0){
         setFirstCourse(response.data.data[0])
       }
@@ -272,7 +274,9 @@ const handleClose = () => setOpen(false);
 
   }
 
-
+  const handleSearchChange = (event) => {
+    fetchCourses(event.target.value)
+  }
   
   return (
     <>
@@ -313,16 +317,16 @@ const handleClose = () => setOpen(false);
                         </Box>
                       </Modal>
           
-                      <div className="flex justify-between items-center mb-4">
-                        <h4 className='text-[30px] font-[600] text-[#1F1F1F] mt-5 mb-2'>Courses list</h4>
+                      <div className="lg:flex justify-between items-center mb-4 sm:flex-col lg:flex-row">
+                        <h4 className='text-[24px] font-[600] text-[#1F1F1F] mt-5 mb-2'>Courses list</h4>
                         <div className='flex items-center border-[1px] border-[#9DA6BACC] p-2 rounded-[10px] mt-3 text-[#9DA6BA] bg-white h-12'>
                           <SearchIcon />
-                          <input type="search" className='w-full outline-none pl-2 text-[#000]' placeholder='Search ...' />
+                          <input type="search" className='w-full outline-none pl-2 text-[#000]' placeholder='Search ...' onChange={handleSearchChange}/>
                         </div>
-                        <button className='ormal-case bg-[#079C49] text-[#fff] font-bold  text-[20px] p-2 px-3 rounded-xl h-12' onClick={()=>setOpenAddCourse(true)}>Add Course</button>
+                        <button className='ormal-case bg-[#079C49] text-[#fff] font-bold  text-[20px] p-2 px-3 rounded-xl h-12 sm:mt-[10px]' onClick={()=>setOpenAddCourse(true)}>Add Course</button>
                       </div>
                   
-                      <div  className=" py-2 grid grid-cols-4 gap-6 gap-y-10">
+                      <div  className=" py-2 grid md:grid-cols-2 gap-6 gap-y-10 sm:grid-cols-1 lg:grid-cols-3">
                       {courses.map((course, index) =><CourseCard key={course.id} deleteCourse={(courseId)=>{setOpenDeleteCourse(true), setCourseId(courseId)}} updateCourse={()=>setOpenUpdateCourse(true)} updateToast={(msg)=>updateMsg(msg)} refresh={()=>refresh()} isActive={course.isActive} id={course._id} fetchLessons={() => fetchCourseLessons(course._id)} name={course.name} description={course.description} teacherName={course.teacher_name} nbrLessons={course.lessons?.length}  />)}
 
                       {/* <Accordion key={course._id} fetchLessons={() => fetchCourseLessons(course._id)} title={`Course ${index + 1} : ${course.name}`} 

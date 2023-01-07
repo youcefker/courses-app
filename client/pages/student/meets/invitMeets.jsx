@@ -57,9 +57,9 @@ function InvitMeets() {
       }
 
 
-    const fetchMeets = async () => {
+    const fetchMeets = async (title) => {
       try {
-        const response = await axios.get("/meet/student")
+        const response = await axios.get(`/meet/student${typeof title !== 'undefined' ? "?title=" + title : ""}`)
         console.log(response);
         setMeets(response.data.meetings)
     
@@ -75,7 +75,9 @@ function InvitMeets() {
         fetchMeets()
     }, [])
   
-    
+    const handleSearchChange = (event) => {
+      fetchMeets(event.target.value)
+    }
   return (
     <> 
     <Sidebar active="meets" />
@@ -83,16 +85,16 @@ function InvitMeets() {
     <IndexPage>
    
           
-                      <div className="flex justify-between items-center mb-4">
+                      <div className="lg:flex justify-between items-center mb-4">
                         <h4 className='text-[30px] font-[600] text-[#1F1F1F] mt-5 mb-2'>Meets invitations list</h4>
                         <div className='flex items-center border-[1px] border-[#9DA6BACC] p-2 rounded-[10px] mt-3 text-[#9DA6BA] bg-white h-12'>
                           <SearchIcon />
-                          <input type="search" className='w-full outline-none pl-2 text-[#000]' placeholder='Search ...' />
+                          <input type="search" className='w-full outline-none pl-2 text-[#000]' placeholder='Search ...' onChange={handleSearchChange}/>
                         </div>
 
                       </div>
                   
-                      <div  className=" py-2 grid grid-cols-4 gap-6 gap-y-10">
+                      <div  className=" py-2 grid md:grid-cols-2 gap-6 gap-y-10 sm:grid-cols-1 lg:grid-cols-3">
                       {meets?.map((meet)=><MeetCard key={meet.id} timeRemains={moment(meet.date).startOf('hour').fromNow()} name={meet.title} courseName={meet.course.name} date={moment(meet.date).format('MMMM Do YYYY, h:mm:ss a')} />)}
                       </div>
                             </IndexPage>

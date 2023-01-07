@@ -3,6 +3,7 @@ import AddIcon from '@mui/icons-material/Add';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import DeleteIcon from '@mui/icons-material/Delete';
+import LockIcon from '@mui/icons-material/Lock';
 import ReplayIcon from '@mui/icons-material/Replay';
 import { Collapse, FormControlLabel, Paper, Switch } from '@mui/material';
 import { Box } from '@mui/system';
@@ -48,12 +49,12 @@ function ChapterCard(props) {
     
   
   return (
-    <div className='bg-[#F5F5F5] py-4 px-5 rounded-xl my-3'>
+    <div className='bg-[#F5F5F5] py-4 px-5 rounded-xl my-1 w-full'>
    
         <div className="flex justify-between items-center ">
         {props.student ? 
            <h3 className='text-lg text-[#079C49] font-bold flex items-center'>
-            {chapterCompleted ?  <CheckCircleIcon />:  <RadioButtonUncheckedIcon/>}
+            {props.enrolled ? chapterCompleted ?  <CheckCircleIcon />:  <RadioButtonUncheckedIcon/>: <LockIcon />}
           
             <span className='ml-2'>{props.name}</span>
             </h3>
@@ -91,7 +92,7 @@ function ChapterCard(props) {
             <div className="my-5">
               {props.lessons?.length !== 0?
               props.lessons?.map((lesson,index) =>
-                <LessonCard lessonTpe={lesson.file_type} lessonId={lesson._id} progress={props.progress? props.progress[lesson._id]: null} courseId={props.courseId} student={props.student} name={lesson.name}  key={index} index={index+1}  deleteLesson={()=>props.deleteLesson(lesson._id)}/>
+                <LessonCard lessonType={lesson.file_type} lessonId={lesson._id} progress={props.progress? props.progress[lesson._id]: null} courseId={props.courseId} student={props.student} name={lesson.name}  key={index} index={index+1}  deleteLesson={()=>props.deleteLesson(lesson._id)} enrolled={props.enrolled}/>
         
               ): <h2 className='text-center'>No lessons</h2>}
    

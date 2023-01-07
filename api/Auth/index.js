@@ -47,8 +47,7 @@ module.exports = {
                 data: null
               });
             }
-            console.log(req.decoded)
-            req.decoded = { ...decoded, email: account.email };
+            req.decoded = { ...decoded, email: account.email, student_id: account.student, role: account.role };
             next();
           })
         }
